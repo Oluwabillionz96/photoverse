@@ -17,13 +17,13 @@ export default function Home() {
 
   useEffect(() => {
     const filter = searchParams.get("filter");
-    if (!filter) {
+    if (!filter || filter !== tab) {
       router.replace(`${pathname}?filter=${tab}`);
     }
   }, [router, pathname, searchParams, tab]);
   return (
     <section>
-      <nav className="flex justify-between px-2 my-4">
+      <nav className="flex justify-between  px-2 my-4 md:hidden">
         <Link href={"/favourites"}>
           <button className="border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500">
             <span className="text-blue-500">
@@ -43,9 +43,11 @@ export default function Home() {
         </Link>
       </nav>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4">
+      <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
         <button
-          className="flex flex-col justify-center items-center text-black text-xl"
+          className={`flex flex-col justify-center items-center text-black text-xl  ${
+            tab === "photos" && "text-blue-600"
+          }`}
           onClick={() => {
             setTab("photos");
           }}
@@ -57,7 +59,9 @@ export default function Home() {
           <FaPlus />
         </button>{" "}
         <button
-          className="flex flex-col justify-center items-center text-blue-600 text-xl"
+          className={`flex flex-col justify-center items-center ${
+            tab === "folders" && "text-blue-600"
+          } text-xl`}
           onClick={() => {
             setTab("folders");
           }}

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
+import SideNav from "@/components/SideNav";
+import Layout from "@/components/MainLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,23 +26,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const [collapsed, setCollapsed] = useState(false);
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-scroll`}
       >
-        <header className="bg-black">
-          <Link href={"/"}>
-            <Image
-              width={100}
-              height={100}
-              src={"/photoverse-logo.png"}
-              alt="logo"
-              className="block mx-auto"
-            />
-          </Link>
-        </header>
-        <main>{children}</main>
+        <main>
+          <Layout />
+          {children}
+        </main>
       </body>
     </html>
   );
