@@ -62,16 +62,17 @@ const SideNav = ({
   };
   return (
     <motion.aside
-      layout
+      animate={{
+        width: collapsed ? "5rem" : "17.5rem",
+        paddingInline: collapsed ? "0.2rem" : "0.5rem",
+      }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 ${
-        collapsed ? "w-20" : "w-70"
-      }`}
+      className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 `}
     >
       <div className="  h-8 mb-12 relative">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className=" absolute top-6 right-2"
+          className=" absolute top-6 right-2 hover:cursor-pointer"
         >
           {collapsed ? (
             <GoSidebarCollapse size={30} color="white" />
@@ -80,16 +81,6 @@ const SideNav = ({
           )}
         </button>
       </div>
-
-      {/* <nav>
-        {navLinks.map((nav, id) => {
-          const isActive = active(nav.url);
-            return <Link key={id} href={nav.url}>
-              
-          </Link>;
-        })}
-      </nav> */}
-
       <nav>
         {navLinks.map((nav, id) => {
           const isActive = active(nav.url);

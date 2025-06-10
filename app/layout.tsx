@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Image from "next/image";
-import Link from "next/link";
-import SideNav from "@/components/SideNav";
 import Layout from "@/components/MainLayout";
 
 const geistSans = Geist({
@@ -26,16 +23,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const [collapsed, setCollapsed] = useState(false);
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-scroll`}
       >
-        <main>
-          <Layout />
-          {children}
-        </main>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );

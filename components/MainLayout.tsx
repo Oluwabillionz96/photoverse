@@ -4,24 +4,32 @@ import Link from "next/link";
 import { useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
+import useScreenSize from "@/hooks/useScreenSize";
 
-const Layout = () => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useScreenSize();
   return (
-    <motion.header
-      className={`bg-[#141414] ${collapsed ? "md:ml-20" : "md:ml-70"}`}
+    <motion.main
+      animate={{
+        marginLeft: isMobile ? "0" : collapsed ? "5rem" : "17.5rem",
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <Link href={"/"}>
-        <Image
-          width={100}
-          height={100}
-          src={"/photoverse-logo.png"}
-          alt="logo"
-          className="block mx-auto"
-        />
-      </Link>
+      <motion.header className={`bg-[#141414]`}>
+        <Link href={"/"}>
+          <Image
+            width={100}
+            height={100}
+            src={"/photoverse-logo.png"}
+            alt="logo"
+            className="block mx-auto"
+          />
+        </Link>
+      </motion.header>
       <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-    </motion.header>
+      {children}
+    </motion.main>
   );
 };
 
