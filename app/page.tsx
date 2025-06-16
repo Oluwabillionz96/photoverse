@@ -23,6 +23,7 @@ export default function Home() {
   }, [router, pathname, searchParams, tab]);
   return (
     <section>
+      {/* Mobile Nav */}
       <nav className="flex justify-between  px-2 my-4 md:hidden ">
         <Link href={"/favourites"}>
           <button className="border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500">
@@ -43,7 +44,7 @@ export default function Home() {
         </Link>
       </nav>
 
-      <div className="md:flex justify-between items-center px-4 my-4 hidden">
+      <div className="md:flex  justify-between items-center px-4 my-4 hidden">
         <div className="flex justify-center  gap-8">
           <button
             className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500 hover:cursor-pointer ${
@@ -79,18 +80,11 @@ export default function Home() {
         </div>
         <div>
           <button
-            className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-2 rounded-[5px] border-gray-500 hover:cursor-pointer ${
-              tab === "folders" && "bg-blue-500 text-white border-0"
-            }`}
-            onClick={() => {
-              setTab("folders");
-            }}
+            className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-2 rounded-[5px] border-gray-500 hover:cursor-pointer `}
           >
-            <span
-              className={`text-blue-500 ${tab === "folders" && "text-white"}`}
-            >
+            <span>
               <FaPlus />
-            </span>{" "}
+            </span>
             Create
           </button>
         </div>
