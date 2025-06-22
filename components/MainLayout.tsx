@@ -13,6 +13,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <motion.main
+        initial={{
+          marginLeft: isMobile ? 0 : "17.5rem",
+        }}
         animate={{
           marginLeft: isMobile ? "0" : collapsed ? "5rem" : "17.5rem",
         }}

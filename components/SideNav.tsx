@@ -62,6 +62,7 @@ const SideNav = ({
   };
   return (
     <motion.aside
+      initial={{ width: "17.5rem", paddingInline: "0.5rem" }}
       animate={{
         width: collapsed ? "5rem" : "17.5rem",
         paddingInline: collapsed ? "0.2rem" : "0.5rem",
