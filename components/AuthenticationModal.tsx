@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
@@ -18,7 +18,10 @@ const AuthenticationModal = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted)
+    return (
+      <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center"></div>
+    );
 
   return (
     <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center">
@@ -42,35 +45,51 @@ const AuthenticationModal = () => {
           transition={{ duration: 0.5, ease: "easeIn", delay: 0.6 }}
           className="flex w-[74%] mx-auto"
         >
-          <motion.button
-            transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="h-10 rounded-tl-sm rounded-bl-sm text-xl font-semibold hover:cursor-pointer flex-1/2 bg-blue-500 text-white"
-            onClick={() => {
-              setIsLogin(true);
-            }}
-          >
-            Login
-          </motion.button>
-          <motion.button
-            onClick={() => {
-              setIsLogin(false);
-            }}
-            transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="h-10 flex-1/2 rounded-tr-sm rounded-br-sm font-semibold hover:cursor-pointer text-xl bg-[#EAEAEB]"
-          >
-            Register
-          </motion.button>
+          <MotionConfig transition={{ duration: 0.1, ease: "easeInOut" }}>
+            <motion.button
+              whileHover={{
+                scale: 1.1,
+              }}
+              className={`h-10 rounded-tl-sm rounded-bl-sm text-xl font-semibold hover:cursor-pointer flex-1/2 ${
+                isLogin ? " bg-blue-500 text-white" : "bg-[#EAEAEB]"
+              }`}
+              onClick={() => {
+                setIsLogin(true);
+              }}
+            >
+              Login
+            </motion.button>
+            <motion.button
+              whileHover={{
+                scale: 1.1,
+              }}
+              onClick={() => {
+                setIsLogin(false);
+              }}
+              className={`h-10 flex-1/2 rounded-tr-sm rounded-br-sm font-semibold hover:cursor-pointer text-xl ${
+                !isLogin ? " bg-blue-500 text-white" : "bg-[#EAEAEB]"
+              }`}
+            >
+              Register
+            </motion.button>
+          </MotionConfig>
         </motion.div>
-        <AnimatePresence>
-          {isLogin && (
-            <>
-              <motion.form
-                initial={{ x: 0, opacity: 0 }}
-                animate={{ x: [-400, 0], opacity: [0, 0.2, 0.5, 1] }}
-                exit={{ x: -400, opacity: [1, 0.5, 0.2, 0] }}
-                transition={{ duration: 0.5, ease: "easeIn", delay: 0.7 }}
-                className="flex flex-col w-[74%] gap-4"
-              >
+        <AnimatePresence mode="wait">
+          {isLogin ? (
+            <motion.div
+              className="w-full flex items-center justify-center flex-col gap-4"
+              variants={{
+                initial: { x: 0, opacity: 0 },
+                animate: { x: [-400, 0], opacity: 1 },
+                exit: { x: -400, opacity: 0 },
+              }}
+              key={"login"}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.5, ease: "easeIn", delay: 0.7 }}
+            >
+              <form className="flex flex-col w-[74%] gap-4">
                 <input
                   type="email"
                   name="email"
@@ -111,7 +130,7 @@ const AuthenticationModal = () => {
                 >
                   Login
                 </button>
-              </motion.form>
+              </form>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 0.5, 1] }}
@@ -123,10 +142,64 @@ const AuthenticationModal = () => {
                   Forgot Password?
                 </Link>
               </motion.p>
-            </>
+            </motion.div>
+          ) : (
+            <motion.form
+              variants={{
+                initial: { x: 0, opacity: 0 },
+                animate: { x: [400, 0], opacity: 1 },
+                exit: { x: 400, opacity: 0 },
+              }}
+              key={"register"}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.5, ease: "easeIn", delay: 0.7 }}
+              className="flex flex-col w-[74%] gap-4"
+            >
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Email"
+                autoComplete="off"
+                autoFocus
+                className="h-12 outline-0 border px-2 text-[1.1rem] rounded-sm border-gray-500"
+                required
+              />
+              <div className="relative">
+                <input
+                  type={viewPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="Password"
+                  autoComplete="off"
+                  className="h-12 outline-0 border-1 px-2 text-[1.1rem] rounded-sm border-gray-500 w-full"
+                  required
+                />
+                <button
+                  className="absolute top-3 right-2 hover:cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    setViewPassword(!viewPassword);
+                  }}
+                >
+                  {viewPassword ? (
+                    <MdOutlineRemoveRedEye size={20} />
+                  ) : (
+                    <FaRegEyeSlash size={20} />
+                  )}
+                </button>
+              </div>
+              <button
+                type="submit"
+                className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500"
+              >
+                Create Account
+              </button>
+            </motion.form>
           )}
         </AnimatePresence>
-        
       </motion.div>
     </div>
   );
