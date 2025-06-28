@@ -22,7 +22,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="relative"
       >
-        {/* <AuthenticationModal /> */}
+        <AuthenticationModal />
         <motion.header className={`bg-[#141414]`}>
           <Link href={"/"}>
             <Image
