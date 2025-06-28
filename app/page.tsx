@@ -1,6 +1,8 @@
 "use client";
 
 import DropDown from "@/components/dropDown";
+import CreateFolderModal from "@/components/modals/CreateFolderModal";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 // import { useRouter } from "next/router";
@@ -17,6 +19,8 @@ export default function Home() {
   const [tab, setTab] = useState(searchParams.get("filter") || "folders");
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
   const [values, setValues] = useState("Recent");
+  const [createFolder, setCreateFolder] = useState(false);
+  const [folderName, setFolderName] = useState("");
 
   useEffect(() => {
     const filter = searchParams.get("filter");
@@ -49,52 +53,58 @@ export default function Home() {
 
       <div className="md:flex  justify-between items-center px-4 my-4 hidden">
         <div className="flex justify-center  gap-8">
-          <button
-            className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500 hover:cursor-pointer ${
-              tab === "photos" && "bg-blue-500 text-white border-0"
+          <Button
+            variant={"outline"}
+            className={`w-[8.6rem] hover:transition hover:duration-500 h-[2.6rem] flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
+              tab === "photos" &&
+              "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
             }`}
             onClick={() => {
               setTab("photos");
             }}
           >
-            <span
-              className={`text-blue-500 ${tab === "photos" && "text-white"}`}
-            >
-              <MdOutlinePhotoSizeSelectActual />
-            </span>
+            <MdOutlinePhotoSizeSelectActual
+              className={`${tab !== "photos" && "text-blue-500"}`}
+            />
             Photos
-          </button>
+          </Button>
 
-          <button
-            className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500 hover:cursor-pointer ${
-              tab === "folders" && "bg-blue-500 text-white border-0"
+          <Button
+            variant={"outline"}
+            className={`w-[8.6rem] h-[2.6rem] hover:transition hover:duration-500 flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
+              tab === "folders" &&
+              "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
             }`}
             onClick={() => {
               setTab("folders");
             }}
           >
-            <span
-              className={`text-blue-500 ${tab === "folders" && "text-white"}`}
-            >
-              <FaFolder />
-            </span>{" "}
+            <FaFolder className={`${tab !== "folders" && "text-blue-500"}`} />
             Folders
-          </button>
+          </Button>
         </div>
-        <div>
-          <button
-            className={`border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-2 rounded-[5px] border-gray-500 hover:cursor-pointer `}
-          >
-            <span>
-              <FaPlus />
-            </span>
-            Create Folder
-          </button>
+        <div className="flex items-center justify-center gap-6 relative">
           <DropDown
-            trigger="Filter"
+            trigger={values}
             items={filterValues}
             initialValue={values}
             changeValue={setValues}
+            className="w-32"
+          />
+          <Button
+            variant={"outline"}
+            disabled={createFolder}
+            className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
+            onClick={() => setCreateFolder(true)}
+          >
+            <FaPlus />
+            Create Folder
+          </Button>
+          <CreateFolderModal
+            value={folderName}
+            open={createFolder}
+            setOpen={setCreateFolder}
+            setValue={setFolderName}
           />
         </div>
       </div>
@@ -111,7 +121,10 @@ export default function Home() {
           <MdOutlinePhotoSizeSelectActual />
           Photos
         </button>
-        <button className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full ">
+        <button
+          className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
+          onClick={() => setCreateFolder(true)}
+        >
           <FaPlus />
         </button>{" "}
         <button

@@ -6,6 +6,7 @@ import { FaRegStar, FaTrashAlt } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "./ui/button";
 
 export const navLinks = [
   {
@@ -71,7 +72,8 @@ const SideNav = ({
       className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 `}
     >
       <div className="  h-8 mb-12 relative">
-        <button
+        <Button
+          size={"icon"}
           onClick={() => setCollapsed(!collapsed)}
           className=" absolute top-6 right-2 hover:cursor-pointer"
         >
@@ -80,7 +82,7 @@ const SideNav = ({
           ) : (
             <GoSidebarExpand size={30} color="white" />
           )}
-        </button>
+        </Button>
       </div>
       <nav>
         {navLinks.map((nav, id) => {

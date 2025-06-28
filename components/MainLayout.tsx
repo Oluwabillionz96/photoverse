@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
-import AuthenticationModal from "./AuthenticationModal";
+import AuthenticationModal from "./modals/AuthenticationModal";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
