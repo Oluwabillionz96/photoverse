@@ -1,5 +1,6 @@
 "use client";
 
+import DropDown from "@/components/dropDown";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 // import { useRouter } from "next/router";
@@ -14,6 +15,8 @@ export default function Home() {
   const pathname = usePathname();
 
   const [tab, setTab] = useState(searchParams.get("filter") || "folders");
+  const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
+  const [values, setValues] = useState("Recent");
 
   useEffect(() => {
     const filter = searchParams.get("filter");
@@ -85,8 +88,14 @@ export default function Home() {
             <span>
               <FaPlus />
             </span>
-            Create
+            Create Folder
           </button>
+          <DropDown
+            trigger="Filter"
+            items={filterValues}
+            initialValue={values}
+            changeValue={setValues}
+          />
         </div>
       </div>
 
