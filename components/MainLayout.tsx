@@ -10,6 +10,12 @@ import AuthenticationModal from "./modals/AuthenticationModal";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const isMobile = useScreenSize();
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+  const [registerInfo, setRegisterInfo] = useState({
+    email: "",
+    password: "",
+    confirmedPassword: "",
+  });
   return (
     <>
       <motion.main
@@ -22,7 +28,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="relative"
       >
-        <AuthenticationModal />
+        <AuthenticationModal
+          loginInfo={loginInfo}
+          setLoginInfo={setLoginInfo}
+          registerInfo={registerInfo}
+          setRegisterInfo={setRegisterInfo}
+        />
         <motion.header className={`bg-[#141414]`}>
           <Link href={"/"}>
             <Image
