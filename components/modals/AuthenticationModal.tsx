@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "../ui/button";
 
@@ -37,17 +37,26 @@ const AuthenticationModal = ({
   const [isCreated, setIsCreated] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [resendCode, setResendCode] = useState(60);
+  const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
+  const inputRef = useRef<(HTMLInputElement | null)[]>([]);
 
   function updateResendCode() {
-    setInterval(() => {
-        setResendCode((prev) => prev - 1);
+    const timerInterval = setInterval(() => {
+      setResendCode((prev) => {
+        if (prev === 0) {
+          clearInterval(timerInterval);
+          return 0;
+        } else {
+          return prev - 1;
+        }
+      });
     }, 1000);
   }
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setMounted(true);
-    }, 100);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -62,6 +71,7 @@ const AuthenticationModal = ({
       <AnimatePresence mode="wait">
         {!isCreated ? (
           <motion.div
+            key={"auth-form"}
             initial={{ y: -600 }}
             animate={{ y: 0 }}
             exit={{ y: -600 }}
@@ -70,7 +80,9 @@ const AuthenticationModal = ({
           >
             <motion.h2
               initial={{ x: 0 }}
-              animate={{ x: [-400, 0] }}
+              animate={{
+                x: [-400, 0],
+              }}
               transition={{ duration: 0.5, ease: "easeIn", delay: 0.5 }}
               className="md:text-3xl text-xl  font-semibold  w-fit mx-auto text-center"
             >
@@ -340,63 +352,72 @@ const AuthenticationModal = ({
           </motion.div>
         ) : (
           <motion.div
+            key={"email-confirmation"}
             initial={{ y: 600 }}
             animate={{ y: 0 }}
             exit={{ y: 600 }}
             transition={{ duration: 0.5, ease: "easeIn" }}
             className="bg-white lg:w-[30%] md:w-[60%] w-9/10  md:h-fit flex flex-col justify-center items-center gap-6 py-8 rounded-xl overflow-hidden"
           >
-            <h2 className="md:text-3xl text-xl  font-semibold  w-fit mx-auto text-center">
+            <h2 className="md:text-3xl text-xl  font-semibold  md:w-fit mx-auto text-center">
               Confirm Your Email
             </h2>
-            <p className="text-center text-[1.15rem] w-9/10">
+            <p className="text-center text-[1.15rem] md:w-9/10">
               Please enter the 6-digit code that was sent to{" "}
               {registerInfo.email}
             </p>
-            <div className="grid grid-cols-6 gap-4 px-4 w-9/10">
-              <input
-                type="text"
-                name="OTP1"
-                id="OTP1"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
-              <input
-                type="text"
-                name="OTP2"
-                id="OTP2"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
-              <input
-                type="text"
-                name="OTP3"
-                id="OTP3"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
-              <input
-                type="text"
-                name="OTP4"
-                id="OTP4"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
-              <input
-                type="text"
-                name="OTP5"
-                id="OTP5"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
-              <input
-                type="text"
-                name="OTP6"
-                id="OTP6"
-                className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
-              />
+            <div className="grid grid-cols-6 md:gap-4 gap-2 md:px-4 px-2 md:w-9/10">
+              {inputValue.map((item, index) => (
+                <input
+                  type="text"
+                  ref={(el) => {
+                    inputRef.current[index] = el;
+                  }}
+                  key={index}
+                  value={item}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    if (
+                      value !== "" &&
+                      (isNaN(Number(value)) || value.includes("."))
+                    ) {
+                      return;
+                    }
+
+                    const update = [...inputValue];
+                    update[index] = value;
+                    setInputValue(update);
+
+                    if (value !== "" && index < inputValue.length - 1) {
+                      inputRef.current[index + 1]?.focus();
+                    } else if (
+                      value !== "" &&
+                      index === inputValue.length - 1
+                    ) {
+                      inputRef.current[index]?.blur();
+                    }
+                  }}
+                  maxLength={1}
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && !item && index > 0) {
+                      inputRef.current[index - 1]?.focus();
+                    }
+                  }}
+                  className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
+                />
+              ))}
             </div>
-            <Button className="w-9/10 h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed">
+            <Button
+              className="w-9/10 h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
+              disabled={
+                inputValue.join("").length !== 6 || !inputValue.join("").trim()
+              }
+            >
               Confirm
             </Button>
             {resendCode !== 0 ? (
               <p className="text-blue-500 text-[1.1rem]">
-                Resend Code in {resendCode}
+                Resend Code in {resendCode} seconds
               </p>
             ) : (
               <Link href={""} className="text-blue-500 text-[1.1rem]">
@@ -407,17 +428,18 @@ const AuthenticationModal = ({
         )}
       </AnimatePresence>
 
-      {!isLogin && !isCreated && (
+      {/* {!isLogin && (
         <Button
           variant={"destructive"}
           onClick={() => {
-            setIsCreated(true);
+            setIsCreated(!isCreated);
             updateResendCode();
           }}
+          className="absolute bottom-0"
         >
           Account Created
         </Button>
-      )}
+      )} */}
     </div>
   );
 };
