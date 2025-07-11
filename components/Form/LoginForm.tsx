@@ -1,7 +1,11 @@
+"use client";
+
 import { LoginInfo, ViewPassword } from "@/lib/types";
+import { useLoginMutation } from "@/services/api";
 import { motion, MotionConfig } from "framer-motion";
 import Link from "next/link";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
@@ -18,6 +22,45 @@ const LoginForm = ({
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
 }) => {
+  const [login, { isLoading, error, isError }] = useLoginMutation();
+  const [loginError, setLoginError] = useState({
+    email: false,
+    password: false,
+  });
+
+  function validateLoginInfo(loginInfo: LoginInfo) {
+    const { email, password } = loginInfo;
+    let error = true;
+    if (!email.trim()) {
+      toast.error("Email cannot be empty");
+      setLoginError({ ...loginError, email: true });
+      return error;
+    }
+
+    if (!email.includes("@") || !email.includes(".com")) {
+      toast.error("Please provide a valid email");
+      setLoginError({ ...loginError, email: true });
+      return error;
+    }
+
+    if (!password) {
+      toast.error("Password cannot be empty");
+      setLoginError({ ...loginError, password: true });
+      return error;
+    }
+
+    return;
+  }
+
+  const handleLogin = async () => {
+    await login(loginInfo);
+  };
+
+  if (isError) {
+    console.log(error);
+    return <p>Error</p>;
+  }
+
   return (
     <motion.div
       className="w-full flex items-center justify-center flex-col gap-4"
@@ -31,7 +74,15 @@ const LoginForm = ({
       exit="exit"
       transition={{ duration: 0.5, ease: "easeIn", delay: 0.7 }}
     >
-      <form className="flex flex-col w-[74%] gap-4">
+      <form
+        className="flex flex-col w-[74%] gap-4"
+        onSubmit={(e: React.FormEvent) => {
+          e.preventDefault();
+          const error = validateLoginInfo(loginInfo);
+          if (error) return;
+          handleLogin();
+        }}
+      >
         <input
           type="email"
           name="email"
@@ -41,8 +92,13 @@ const LoginForm = ({
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setLoginInfo({ ...loginInfo, email: e.target.value });
           }}
+          onKeyDown={() => {
+            setLoginError({ ...loginError, email: false });
+          }}
           autoFocus
-          className="h-12 outline-0 border px-2 text-[1.1rem] rounded-sm border-gray-500"
+          className={`h-12 outline-0 border px-2 text-[1.1rem] rounded-sm border-gray-500 ${
+            loginError.email ? "border-red-500 border-2" : ""
+          }`}
           required
         />
         <div className="relative">
@@ -83,7 +139,7 @@ const LoginForm = ({
           className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
           disabled={!loginInfo.email.trim() || !loginInfo.password.trim()}
         >
-          Login
+          {isLoading ? "Logging in..." : "Login"}
         </button>
       </form>
       <MotionConfig transition={{ duration: 0.5, ease: "easeIn", delay: 1.2 }}>

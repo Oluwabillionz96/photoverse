@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Layout from "@/components/MainLayout";
+import AppProvider from "@/state/Providers/AppProvider";
+import ToastManager from "@/components/ToastManager";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +31,46 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-scroll`}
       >
-        <Layout>{children}</Layout>
+        <AppProvider>
+          <Layout>
+            <ToastManager />
+            {children}
+          </Layout>
+          <Toaster
+            position="top-center"
+            containerStyle={{ zIndex: 99999999999 }}
+            toastOptions={{
+              success: {
+                style: {
+                  backgroundColor: "#064e3b",
+                  border: "1px solid #10b981",
+                  color: "#d1fae5",
+                  padding: "16px",
+                  fontSize: "14px",
+                  zIndex: 99999999999,
+                },
+              },
+              error: {
+                style: {
+                  backgroundColor: "#7f1d1d",
+                  border: "1px solid #ef4444",
+                  color: "#fee2e2",
+                  padding: "16px",
+                  fontSize: "14px",
+                  zIndex: 99999999999,
+                },
+              },
+              style: {
+                backgroundColor: "#1e3a8a",
+                border: "1px solid #3b82f6",
+                color: "#dbeafe",
+                padding: "16px",
+                fontSize: "14px",
+                zIndex: 99999999999,
+              },
+            }}
+          />
+        </AppProvider>
       </body>
     </html>
   );

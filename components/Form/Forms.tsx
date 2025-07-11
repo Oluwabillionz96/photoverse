@@ -1,3 +1,4 @@
+"use client";
 import { LoginInfo, RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion, MotionConfig, AnimatePresence } from "framer-motion";
 import LoginForm from "./LoginForm";
