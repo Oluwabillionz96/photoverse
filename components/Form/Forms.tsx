@@ -13,6 +13,7 @@ const Forms = ({
   setRegisterInfo,
   viewPassword,
   setViewPassword,
+  setIsCreated,
 }: {
   isLogin: boolean;
   setIsLogin: (arg: boolean) => void;
@@ -22,6 +23,7 @@ const Forms = ({
   setRegisterInfo: (arg: RegisterInfo) => void;
   viewPassword: ViewPassword;
   setViewPassword: (arg: ViewPassword) => void;
+  setIsCreated: (arg: boolean) => void;
 }) => {
   return (
     <motion.div
@@ -93,7 +95,8 @@ const Forms = ({
             setRegisterInfo={setRegisterInfo}
             viewPassword={viewPassword}
             setViewPassword={setViewPassword}
-            setIsLogin={setIsLogin}
+              setIsLogin={setIsLogin}
+              setIsCreated={setIsCreated}
           />
         )}
       </AnimatePresence>

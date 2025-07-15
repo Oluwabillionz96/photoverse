@@ -8,6 +8,7 @@ import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import Input from "../Input/Input";
 
 const LoginForm = ({
   loginInfo,
@@ -24,8 +25,8 @@ const LoginForm = ({
 }) => {
   const [login, { isLoading, error, isError }] = useLoginMutation();
   const [loginError, setLoginError] = useState({
-    email: false,
-    password: false,
+    email: "",
+    password: "",
   });
 
   function validateLoginInfo(loginInfo: LoginInfo) {
@@ -33,19 +34,19 @@ const LoginForm = ({
     let error = true;
     if (!email.trim()) {
       toast.error("Email cannot be empty");
-      setLoginError({ ...loginError, email: true });
+      // setLoginError({ ...loginError, email: true });
       return error;
     }
 
     if (!email.includes("@") || !email.includes(".com")) {
       toast.error("Please provide a valid email");
-      setLoginError({ ...loginError, email: true });
+      setLoginError({ ...loginError, email: "Email isn't valid" });
       return error;
     }
 
     if (!password) {
       toast.error("Password cannot be empty");
-      setLoginError({ ...loginError, password: true });
+      // setLoginError({ ...loginError, password: true });
       return error;
     }
 
@@ -83,29 +84,22 @@ const LoginForm = ({
           handleLogin();
         }}
       >
-        <input
+        <Input
           type="email"
-          name="email"
-          id="email"
-          placeholder="Email"
+          placeholder="email"
           value={loginInfo.email}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setLoginInfo({ ...loginInfo, email: e.target.value });
           }}
+          error={loginError.email}
           onKeyDown={() => {
-            setLoginError({ ...loginError, email: false });
+            setLoginError({ ...loginError, email: "" });
           }}
-          autoFocus
-          className={`h-12 outline-0 border px-2 text-[1.1rem] rounded-sm border-gray-500 ${
-            loginError.email ? "border-red-500 border-2" : ""
-          }`}
           required
         />
         <div className="relative">
-          <input
+          <Input
             type={viewPassword.loginPassword ? "text" : "password"}
-            name="password"
-            id="password"
             placeholder="Password"
             value={loginInfo.password}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -114,8 +108,8 @@ const LoginForm = ({
                 password: e.target.value,
               });
             }}
-            className="h-12 outline-0 border-1 px-2 text-[1.1rem] rounded-sm border-gray-500 w-full"
             required
+            error={loginError.password}
           />
           <button
             className="absolute top-3 right-2 hover:cursor-pointer"

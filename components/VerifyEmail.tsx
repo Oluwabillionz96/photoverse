@@ -1,18 +1,24 @@
 "use client";
 import { motion } from "framer-motion";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
 const VerifyEmail = ({
   email,
   resendCode,
+  countDown,
 }: {
   email: string;
   resendCode: number;
+  countDown: () => void;
 }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
   const inputRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    countDown();
+  }, []);
 
   return (
     <motion.div

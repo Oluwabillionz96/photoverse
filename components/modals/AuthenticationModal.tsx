@@ -78,28 +78,17 @@ const AuthenticationModal = ({
             viewPassword={viewPassword}
             setViewPassword={setViewPassword}
             key={"auth-form"}
+            setIsCreated={setIsCreated}
           />
         ) : (
           <VerifyEmail
             email={registerInfo.email}
             resendCode={resendCode}
             key={"email-confirmation"}
+            countDown={updateResendCode}
           />
         )}
       </AnimatePresence>
-
-      {!isLogin && (
-        <Button
-          variant={"destructive"}
-          onClick={() => {
-            setIsCreated(!isCreated);
-            updateResendCode();
-          }}
-          className="absolute bottom-0"
-        >
-          Account Created
-        </Button>
-      )}
     </div>
   );
 };

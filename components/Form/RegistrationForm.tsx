@@ -1,7 +1,9 @@
 "use client";
+import baseUrl from "@/baseUrl";
 import { RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion } from "framer-motion";
-import { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
@@ -11,13 +13,47 @@ const RegistrationForm = ({
   viewPassword,
   setViewPassword,
   setIsLogin,
+  setIsCreated,
 }: {
   registerInfo: RegisterInfo;
   setRegisterInfo: (arg: RegisterInfo) => void;
   viewPassword: ViewPassword;
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
+  setIsCreated: (arg: boolean) => void;
 }) => {
+  const [loading, setLoading] = useState(false);
+  const signUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${baseUrl}auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: registerInfo.email,
+          password: registerInfo.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsCreated(true);
+      }
+    } catch (error) {
+      console.error(error);
+      // toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <motion.form
       variants={{
@@ -30,10 +66,7 @@ const RegistrationForm = ({
       exit="exit"
       transition={{ duration: 0.5, ease: "easeIn" }}
       className="flex flex-col w-[74%] gap-4"
-      onSubmit={(e: FormEvent) => {
-        e.preventDefault();
-        console.log(registerInfo);
-      }}
+      onSubmit={signUp}
     >
       <input
         type="email"
@@ -123,10 +156,11 @@ const RegistrationForm = ({
         disabled={
           !registerInfo.email.trim() ||
           !registerInfo.password.trim() ||
-          !registerInfo.confirmedPassword.trim()
+          !registerInfo.confirmedPassword.trim() ||
+          loading
         }
       >
-        Create Account
+        {loading ? "Creating..." : "Create Account"}
       </button>
       <motion.p
         initial={{ opacity: 0 }}
