@@ -2,10 +2,10 @@
 import baseUrl from "@/baseUrl";
 import { RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion } from "framer-motion";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import toast from "react-hot-toast";
+import React, { ChangeEvent, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import Input from "../Input/Input";
 
 const RegistrationForm = ({
   registerInfo,
@@ -23,8 +23,44 @@ const RegistrationForm = ({
   setIsCreated: (arg: boolean) => void;
 }) => {
   const [loading, setLoading] = useState(false);
+  const [registerError, setRegisterError] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  function VerifyRegisterationData(formData: RegisterInfo) {
+    const { email, password, confirmedPassword } = formData;
+
+    const error = true;
+
+    if (!email.includes("@") || !email.includes(".com")) {
+      setRegisterError({
+        ...registerError,
+        email: "The email address you provided is not valid",
+      });
+      return error;
+    }
+
+    if (confirmedPassword !== password) {
+      setRegisterError({
+        ...registerError,
+        confirmPassword: "Passwords doesn't match",
+      });
+
+      return error;
+    }
+
+    return;
+  }
+
   const signUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const error = VerifyRegisterationData(registerInfo);
+
+    if (error) {
+      return;
+    }
 
     setLoading(true);
 
@@ -68,27 +104,21 @@ const RegistrationForm = ({
       className="flex flex-col w-[74%] gap-4"
       onSubmit={signUp}
     >
-      <input
+      <Input
         type="email"
-        name="email"
-        id="email"
         placeholder="Email"
         value={registerInfo.email}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          setRegisterInfo({
-            ...registerInfo,
-            email: e.target.value,
-          });
+          setRegisterInfo({ ...registerInfo, email: e.target.value });
         }}
-        autoFocus
-        className="h-12 outline-0 border px-2 text-[1.1rem] rounded-sm border-gray-500"
-        required
+        onKeyDown={() => {
+          setRegisterError({ ...registerError, email: "" });
+        }}
+        error={registerError.email}
       />
       <div className="relative">
-        <input
+        <Input
           type={viewPassword.registerPassword ? "text" : "password"}
-          name="password"
-          id="password"
           placeholder="Password"
           value={registerInfo.password}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -97,8 +127,7 @@ const RegistrationForm = ({
               password: e.target.value,
             });
           }}
-          className="h-12 outline-0 border-1 px-2 text-[1.1rem] rounded-sm border-gray-500 w-full"
-          required
+          error={registerError.password}
         />
         <button
           className="absolute top-3 right-2 hover:cursor-pointer"
@@ -118,13 +147,9 @@ const RegistrationForm = ({
         </button>
       </div>
       <div className="relative">
-        <input
+        <Input
           type={viewPassword.confirmPassword ? "text" : "password"}
-          name="confirmPassword"
-          id="confirmPassword"
           placeholder="Confirm Password"
-          className="h-12 outline-0 border-1 px-2 text-[1.1rem] rounded-sm border-gray-500 w-full"
-          required
           value={registerInfo.confirmedPassword}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setRegisterInfo({
@@ -132,6 +157,10 @@ const RegistrationForm = ({
               confirmedPassword: e.target.value,
             });
           }}
+          onKeyDown={() => {
+            setRegisterError({ ...registerError, confirmPassword: "" });
+          }}
+          error={registerError.confirmPassword}
         />
         <button
           className="absolute top-3 right-2 hover:cursor-pointer"

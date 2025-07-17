@@ -5,7 +5,6 @@ import { useLoginMutation } from "@/services/api";
 import { motion, MotionConfig } from "framer-motion";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
-import toast from "react-hot-toast";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
@@ -30,23 +29,13 @@ const LoginForm = ({
   });
 
   function validateLoginInfo(loginInfo: LoginInfo) {
-    const { email, password } = loginInfo;
-    let error = true;
-    if (!email.trim()) {
-      toast.error("Email cannot be empty");
-      // setLoginError({ ...loginError, email: true });
-      return error;
-    }
-
+    const { email } = loginInfo;
+    const error = true;
     if (!email.includes("@") || !email.includes(".com")) {
-      toast.error("Please provide a valid email");
-      setLoginError({ ...loginError, email: "Email isn't valid" });
-      return error;
-    }
-
-    if (!password) {
-      toast.error("Password cannot be empty");
-      // setLoginError({ ...loginError, password: true });
+      setLoginError({
+        ...loginError,
+        email: "The email address you provided is not valid",
+      });
       return error;
     }
 
@@ -153,10 +142,13 @@ const LoginForm = ({
           exit={{ opacity: [1, 0.5, 0] }}
           className="md:hidden"
         >
-          Don't have an account?{" "}
+          {"Don't have an account?"}
           <span
             className="text-blue-500 font-semibold"
-            onClick={() => setIsLogin(false)}
+            onClick={() => {
+              setIsLogin(false);
+              setLoginInfo({ email: "", password: "" });
+            }}
           >
             Sign up
           </span>
