@@ -16,12 +16,12 @@ const Input = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   error: string;
   required?: boolean;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <div className={` flex flex-col gap-2 items-start justify-center `}>
       <div
-        className={`h-12 outline-0 border  px-2 text-[1.1rem] rounded-sm ${
+        className={`h-12 outline-0 border    rounded-sm ${
           error.trim() ? "border-red-500 border-2" : "border-gray-500"
         }  overflow-hidden w-full`}
       >
@@ -30,7 +30,7 @@ const Input = ({
           placeholder={placeholder || ""}
           value={value}
           onChange={onChange}
-          className="w-full h-full border-0 outline-0"
+          className="w-full h-full px-2 border-0 outline-0"
           required={required}
           {...props}
         />

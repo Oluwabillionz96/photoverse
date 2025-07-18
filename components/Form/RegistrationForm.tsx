@@ -1,11 +1,15 @@
 "use client";
-import baseUrl from "@/baseUrl";
+// import baseUrl from "@/baseUrl";
 import { RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion } from "framer-motion";
 import React, { ChangeEvent, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
+import { VerifyRegisterationData } from "@/lib/utils/Validation";
+import { useRegisterMutation } from "@/services/api";
+import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 const RegistrationForm = ({
   registerInfo,
@@ -28,66 +32,46 @@ const RegistrationForm = ({
     password: "",
     confirmPassword: "",
   });
-
-  function VerifyRegisterationData(formData: RegisterInfo) {
-    const { email, password, confirmedPassword } = formData;
-
-    const error = true;
-
-    if (!email.includes("@") || !email.includes(".com")) {
-      setRegisterError({
-        ...registerError,
-        email: "The email address you provided is not valid",
-      });
-      return error;
-    }
-
-    if (confirmedPassword !== password) {
-      setRegisterError({
-        ...registerError,
-        confirmPassword: "Passwords doesn't match",
-      });
-
-      return error;
-    }
-
-    return;
-  }
+  const [register] = useRegisterMutation();
 
   const signUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const error = VerifyRegisterationData(registerInfo);
+    const error = VerifyRegisterationData(
+      registerInfo,
+      setRegisterError,
+      registerError
+    );
 
     if (error) {
       return;
     }
 
     setLoading(true);
+    const payload = {
+      email: registerInfo.email,
+      password: registerInfo.password,
+    };
 
-    try {
-      const response = await fetch(`${baseUrl}auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          email: registerInfo.email,
-          password: registerInfo.password,
-        }),
-      });
+    const response = await register(payload);
 
-      const data = await response.json();
+    if ("data" in response) {
+      setIsCreated(true);
+    } else if ("error" in response) {
+      const error = response.error as {
+        status?: number | string;
+        data?: { message: string };
+      };
 
-      if (data.success) {
-        setIsCreated(true);
-      }
-    } catch (error) {
-      console.error(error);
-      // toast.error(error.message);
-    } finally {
-      setLoading(false);
+      const message =
+        error?.data?.message ||
+        (error?.status === "FETCH_ERROR"
+          ? "Network error. Please check your connection."
+          : "An unexpected error occurred.");
+
+      toast.error(message);
     }
+    setLoading(false);
+    return;
   };
 
   return (
@@ -126,6 +110,9 @@ const RegistrationForm = ({
               ...registerInfo,
               password: e.target.value,
             });
+          }}
+          onKeyDown={() => {
+            setRegisterError({ ...registerError, password: "" });
           }}
           error={registerError.password}
         />

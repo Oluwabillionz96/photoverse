@@ -12,7 +12,14 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    register: builder.mutation({
+      query: (body) => ({
+        url: "auth/register",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = PhotoverseAPI;
+export const { useLoginMutation, useRegisterMutation } = PhotoverseAPI;

@@ -8,6 +8,7 @@ import { ChangeEvent, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
+import { validateLoginInfo } from "@/lib/utils/Validation";
 
 const LoginForm = ({
   loginInfo,
@@ -27,20 +28,6 @@ const LoginForm = ({
     email: "",
     password: "",
   });
-
-  function validateLoginInfo(loginInfo: LoginInfo) {
-    const { email } = loginInfo;
-    const error = true;
-    if (!email.includes("@") || !email.includes(".com")) {
-      setLoginError({
-        ...loginError,
-        email: "The email address you provided is not valid",
-      });
-      return error;
-    }
-
-    return;
-  }
 
   const handleLogin = async () => {
     await login(loginInfo);
@@ -68,7 +55,7 @@ const LoginForm = ({
         className="flex flex-col w-[74%] gap-4"
         onSubmit={(e: React.FormEvent) => {
           e.preventDefault();
-          const error = validateLoginInfo(loginInfo);
+          const error = validateLoginInfo(loginInfo, setLoginError, loginError);
           if (error) return;
           handleLogin();
         }}
