@@ -19,7 +19,26 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    verifyEmail: builder.mutation({
+      query: (body) => ({
+        url: "auth/verify-otp",
+        method: "POST",
+        body,
+      }),
+    }),
+    resendOTP: builder.mutation({
+      query: (body) => ({
+        url: "auth/resend-otp",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = PhotoverseAPI;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useVerifyEmailMutation,
+  useResendOTPMutation,
+} = PhotoverseAPI;

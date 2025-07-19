@@ -4,7 +4,7 @@ import { LoginInfo, ViewPassword } from "@/lib/types";
 import { useLoginMutation } from "@/services/api";
 import { motion, MotionConfig } from "framer-motion";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
@@ -28,6 +28,10 @@ const LoginForm = ({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    setLoginInfo({ email: "", password: "" });
+  }, []);
 
   const handleLogin = async () => {
     await login(loginInfo);
@@ -134,7 +138,6 @@ const LoginForm = ({
             className="text-blue-500 font-semibold"
             onClick={() => {
               setIsLogin(false);
-              setLoginInfo({ email: "", password: "" });
             }}
           >
             Sign up

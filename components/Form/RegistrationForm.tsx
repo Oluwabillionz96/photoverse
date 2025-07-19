@@ -2,7 +2,7 @@
 // import baseUrl from "@/baseUrl";
 import { RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion } from "framer-motion";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
@@ -73,6 +73,10 @@ const RegistrationForm = ({
     setLoading(false);
     return;
   };
+
+  useEffect(() => {
+    setRegisterInfo({ email: "", password: "", confirmedPassword: "" });
+  }, []);
 
   return (
     <motion.form

@@ -1,10 +1,8 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
 import Forms from "../Form/Forms";
 import VerifyEmail from "../VerifyEmail";
-import { useLoginMutation } from "@/services/api";
 
 interface LoginInfo {
   email: string;
@@ -36,20 +34,20 @@ const AuthenticationModal = ({
   const [isLogin, setIsLogin] = useState(true);
   const [isCreated, setIsCreated] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [resendCode, setResendCode] = useState(60);
 
-  function updateResendCode() {
-    const timerInterval = setInterval(() => {
-      setResendCode((prev) => {
-        if (prev === 0) {
-          clearInterval(timerInterval);
-          return 0;
-        } else {
-          return prev - 1;
-        }
-      });
-    }, 1000);
-  }
+
+  // function updateResendCode() {
+  //   const timerInterval = setInterval(() => {
+  //     setResendCode((prev) => {
+  //       if (prev === 0) {
+  //         clearInterval(timerInterval);
+  //         return 0;
+  //       } else {
+  //         return prev - 1;
+  //       }
+  //     });
+  //   }, 1000);
+  // }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -83,9 +81,10 @@ const AuthenticationModal = ({
         ) : (
           <VerifyEmail
             email={registerInfo.email}
-            resendCode={resendCode}
+            // resendCode={resendCode}
             key={"email-confirmation"}
-            countDown={updateResendCode}
+            // countDown={updateResendCode}
+            // setResendCode={setResendCode}
           />
         )}
       </AnimatePresence>
