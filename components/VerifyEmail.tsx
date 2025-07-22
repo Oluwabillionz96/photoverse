@@ -10,6 +10,8 @@ import {
 import { Button } from "./ui/button";
 import { useResendOTPMutation, useVerifyEmailMutation } from "@/services/api";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { authenticate} from "@/lib/slices/authSlice";
 
 const VerifyEmail = ({ email }: { email: string }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
@@ -18,6 +20,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
   const [verify] = useVerifyEmailMutation();
   const [resend] = useResendOTPMutation();
   const [resendCode, setResendCode] = useState(60);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (resendCode <= 0) return;
@@ -59,6 +62,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
 
     if ("data" in response) {
       toast.success(response?.data?.message);
+      dispatch(
+        authenticate({ authenticate: true, token: response?.data?.token })
+      );
     } else if ("error" in response) {
       console.log(response);
       const error = response.error as {

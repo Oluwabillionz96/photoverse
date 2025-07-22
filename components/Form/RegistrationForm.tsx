@@ -76,7 +76,7 @@ const RegistrationForm = ({
 
   useEffect(() => {
     setRegisterInfo({ email: "", password: "", confirmedPassword: "" });
-  }, []);
+  }, [setRegisterInfo]);
 
   return (
     <motion.form

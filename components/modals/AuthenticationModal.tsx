@@ -36,19 +36,6 @@ const AuthenticationModal = ({
   const [mounted, setMounted] = useState(false);
 
 
-  // function updateResendCode() {
-  //   const timerInterval = setInterval(() => {
-  //     setResendCode((prev) => {
-  //       if (prev === 0) {
-  //         clearInterval(timerInterval);
-  //         return 0;
-  //       } else {
-  //         return prev - 1;
-  //       }
-  //     });
-  //   }, 1000);
-  // }
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setMounted(true);

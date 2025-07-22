@@ -9,6 +9,9 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
 import { validateLoginInfo } from "@/lib/utils/Validation";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { authenticate } from "@/lib/slices/authSlice";
 
 const LoginForm = ({
   loginInfo,
@@ -23,24 +26,53 @@ const LoginForm = ({
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
 }) => {
-  const [login, { isLoading, error, isError }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const [loginError, setLoginError] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setLoginInfo({ email: "", password: "" });
-  }, []);
+  }, [setLoginInfo]);
 
   const handleLogin = async () => {
-    await login(loginInfo);
+    setLoading(true);
+
+    const payload = { email: loginInfo.email, password: loginInfo.password };
+
+    const response = await login(payload);
+
+    if ("data" in response) {
+      toast.success(response?.data?.message);
+      dispatch(
+        authenticate({ authenticate: true, token: response?.data?.token })
+      );
+    } else if ("error" in response) {
+      console.log(response);
+      const error = response.error as {
+        status?: number | string;
+        data?: { message: string };
+      };
+
+      const message =
+        error?.data?.message ||
+        (error?.status === "FETCH_ERROR"
+          ? "Network error. Please check your connection."
+          : "An unexpected error occurred.");
+
+      toast.error(message);
+    }
+    setLoading(false);
+    return;
   };
 
-  if (isError) {
-    console.log(error);
-    return <p>Error</p>;
-  }
+  // if (isError) {
+  //   console.log(error);
+  //   return <p>Error</p>;
+  // }
 
   return (
     <motion.div
@@ -113,7 +145,7 @@ const LoginForm = ({
           className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
           disabled={!loginInfo.email.trim() || !loginInfo.password.trim()}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
       <MotionConfig transition={{ duration: 0.5, ease: "easeIn", delay: 1.2 }}>
