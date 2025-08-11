@@ -32,8 +32,8 @@ export const navLinks = [
       size: number;
       color: string;
     }) => <FaRegStar className={className} size={size} color={color} />,
-    label: "Favourite",
-    url: "/favourite",
+    label: "Favourites",
+    url: "/favourites",
   },
   {
     icon: ({
