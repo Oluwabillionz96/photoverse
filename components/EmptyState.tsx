@@ -125,9 +125,8 @@ const EmptyState = ({
             ) : (
               <>
                 <ImageIcon
-                  className="w-4 h-4"
-                  color={`${
-                    !(tab === "folders" || tab === "photos") && "white"
+                  className={`w-4 h-4 ${
+                    !(tab === "folders" || tab === "photos") && "text-white"
                   }`}
                 />
                 <span
