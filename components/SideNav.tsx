@@ -63,15 +63,14 @@ const SideNav = ({
   };
   return (
     <motion.aside
-      initial={{ width: "17.5rem", paddingInline: "0.5rem" }}
-      animate={{
-        width: collapsed ? "5rem" : "17.5rem",
-        paddingInline: collapsed ? "0.2rem" : "0.5rem",
-      }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 `}
+      className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 ${
+        collapsed
+          ? "w-[5rem] px-[0.2rem]"
+          : "md:w-[9rem] lg:w-[17.5rem] px-[0.5rem]"
+      }`}
     >
-      <div className="  h-8 mb-12 relative">
+      <div className="  h-8 mb-12 relative lg:visible invisible">
         <Button
           size={"icon"}
           onClick={() => setCollapsed(!collapsed)}
@@ -109,18 +108,21 @@ const SideNav = ({
                   color: "white",
                 })}
                 {!collapsed && (
-                  <span className={`inline-block -mb-[3px] z-20 font-semibold`}>
+                  <span
+                    className={`inline-block -mb-[3px] z-20 font-semibold md:hidden lg:inline-block`}
+                  >
                     {nav.label}
                   </span>
                 )}
                 <AnimatePresence>
                   {isActive && (
                     <motion.span
-                      exit={{ opacity: 0, x: 300 }}
+                      exit={{ opacity: 0 }}
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      animate={{ opacity: 1 }}
                       layoutId="active_state"
                       className={`absolute inset-0 bg-[#636262] rounded-[10px] cursor-pointer z-0`}
+                      transition={{ duration: 0.01 }}
                     />
                   )}
                 </AnimatePresence>

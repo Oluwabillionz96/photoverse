@@ -1,0 +1,149 @@
+import {
+  AlertTriangleIcon,
+  FolderIcon,
+  FolderPlusIcon,
+  ImageIcon,
+  ImagePlusIcon,
+  UploadIcon,
+} from "lucide-react";
+import { Button } from "./ui/button";
+
+const EmptyState = ({
+  tab,
+  setCreateFolder,
+  setTab,
+  handleUpload,
+}: {
+  tab: string;
+  setCreateFolder: (arg: boolean) => void;
+  setTab: (arg: string) => void;
+  handleUpload: () => void;
+}) => {
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center  min-h-fit text-center animate-in fade-in-50 duration-500">
+        {tab === "folders" ? (
+          <div className="relative md:mb-6 mb-8 animate-in slide-in-from-top-4 duration-700 delay-150">
+            <div className="w-24 h-24  bg-gradient-to-br from-blue-100 to-blue-200 md:rounded-2xl rounded-3xl flex items-center justify-center mb-4 transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-xl">
+              <FolderIcon className="md:w-12 md:h-12 w-16 h-16 text-blue-500 transition-all duration-300" />
+            </div>
+            <div className="absolute md:-top-1 md:-right-1 -top-2 -right-2 md:w-8 md:h-8 w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 md:rounded-xl rounded-2xl flex items-center justify-center animate-bounce">
+              <FolderPlusIcon className="w-4 h-4 text-purple-500" />
+            </div>
+          </div>
+        ) : tab === "photos" ? (
+          <div className="relative md:mb-6 mb-8 animate-in slide-in-from-top-4 duration-700 delay-150">
+            <div className=" w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 md:rounded-2xl rounded-3xl flex items-center justify-center mb-4 transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-xl">
+              <ImageIcon className="w-12 h-12 text-green-500 transition-all duration-300" />
+            </div>
+            <div className="absolute md:-top-1 md:-right-1 -top-2 -right-2 md:w-8 md:h-8 w-12 h-12 bg-gradient-to-br from-pink-100 to-pink-200 md:rounded-xl rounded-2xl flex items-center justify-center animate-bounce">
+              <ImagePlusIcon className="md:w-4 sm:h-4 w-6 h-6 text-pink-500" />
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="relative mb-6 sm:mb-8">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center animate-in zoom-in-50 duration-500 delay-200">
+                <AlertTriangleIcon className="w-10 h-10 sm:w-12 sm:h-12 text-red-500 animate-pulse" />
+              </div>
+              {/* Decorative circles */}
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-200 rounded-full animate-bounce delay-300"></div>
+              <div className="absolute -bottom-1 -left-2 w-4 h-4 bg-orange-200 rounded-full animate-bounce delay-500"></div>
+            </div>
+          </>
+        )}
+        {tab === "folders" || tab === "photos" ? (
+          <h1 className="text-2xl font-bold text-gray-900 md:text-xl md:mb-2">
+            No {tab} yet
+          </h1>
+        ) : (
+          <h1 className="text-2xl font-bold text-gray-900 md:text-xl md:mb-2">
+            Oops! Seems you're lost
+          </h1>
+        )}
+        <p className="text-gray-600 md:mb-6 mb-8 md:max-w-sm max-w-md leading-relaxed md:text-sm lg:text-[1rem] text-base md:px-4 px-0">
+          {tab === "folders"
+            ? "Create your first folder to organize your files and keep everything tidy"
+            : tab === "photos"
+            ? "Upload your first photos to start building your collection. Supported formats include JPG, PNG, GIF, and more."
+            : "Let's get you back on track"}
+        </p>
+        <div className="flex flex-col md:flex-row gap-3 w-full justify-center items-center min-w-fit overflow-hidden md:w-[25%] lg:w-[15%] md:p-4">
+          <Button
+            className={`flex items-center justify-center space-x-2 ${
+              tab === "photos"
+                ? " bg-green-500 hover:bg-green-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            } transition-all duration-200 hover:scale-105 hover:shadow-lg w-full md:w-auto`}
+            onClick={() => {
+              if (tab === "folders") {
+                setCreateFolder(true);
+              } else if (tab === "photos") {
+                handleUpload();
+              } else {
+                setTab("folders");
+              }
+            }}
+          >
+            {tab === "folders" ? (
+              <>
+                <FolderPlusIcon className="w-4 h-4" />
+                Create New Folder
+              </>
+            ) : tab === "photos" ? (
+              <>
+                <ImagePlusIcon className="w-4 h-4" />
+                Upload Photos
+              </>
+            ) : (
+              <>
+                <FolderIcon className="w-4 h-4" />
+                <span>Browse Folders</span>
+              </>
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            className={`flex items-center justify-center space-x-2 ${
+              tab === "folders" || tab === "photos"
+                ? "bg-transparent"
+                : " bg-green-500 hover:bg-green-600"
+            } transition-all w-full md:w-auto duration-200 hover:scale-105 hover:shadow-md`}
+            onClick={() => {
+              if (tab === "photos") {
+                setTab("folders");
+              } else {
+                setTab("photos");
+              }
+            }}
+          >
+            {tab === "photos" ? (
+              <>
+                <FolderIcon className="w-4 h-4" />
+                <span>Browse Folders</span>
+              </>
+            ) : (
+              <>
+                <ImageIcon
+                  className="w-4 h-4"
+                  color={`${
+                    !(tab === "folders" || tab === "photos") && "white"
+                  }`}
+                />
+                <span
+                  className={`${
+                    !(tab === "folders" || tab === "photos") && "text-white"
+                  }`}
+                >
+                  Browse Photos
+                </span>
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default EmptyState;

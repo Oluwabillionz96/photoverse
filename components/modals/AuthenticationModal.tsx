@@ -52,35 +52,40 @@ const AuthenticationModal = ({
     return () => clearTimeout(timer);
   }, []);
 
-  if (!mounted) return <Loading />;
 
   return (
-    <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center">
-      <AnimatePresence mode="wait">
-        {!isCreated ? (
-          <Forms
-            isLogin={isLogin}
-            setIsLogin={setIsLogin}
-            loginInfo={loginInfo}
-            setLoginInfo={setLoginInfo}
-            registerInfo={registerInfo}
-            setRegisterInfo={setRegisterInfo}
-            viewPassword={viewPassword}
-            setViewPassword={setViewPassword}
-            key={"auth-form"}
-            setIsCreated={setIsCreated}
-          />
-        ) : (
-          <VerifyEmail
-            email={registerInfo.email}
-            // resendCode={resendCode}
-            key={"email-confirmation"}
-            // countDown={updateResendCode}
-            // setResendCode={setResendCode}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+    <>
+      {!mounted ? (
+        <Loading />
+      ) : (
+        <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {!isCreated ? (
+              <Forms
+                isLogin={isLogin}
+                setIsLogin={setIsLogin}
+                loginInfo={loginInfo}
+                setLoginInfo={setLoginInfo}
+                registerInfo={registerInfo}
+                setRegisterInfo={setRegisterInfo}
+                viewPassword={viewPassword}
+                setViewPassword={setViewPassword}
+                key={"auth-form"}
+                setIsCreated={setIsCreated}
+              />
+            ) : (
+              <VerifyEmail
+                email={registerInfo.email}
+                // resendCode={resendCode}
+                key={"email-confirmation"}
+                // countDown={updateResendCode}
+                // setResendCode={setResendCode}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+    </>
   );
 };
 

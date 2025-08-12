@@ -1,12 +1,13 @@
 "use client";
 
 import DropDown from "@/components/dropDown";
+import EmptyState from "@/components/EmptyState";
 import CreateFolderModal from "@/components/modals/CreateFolderModal";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 // import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaFolder, FaRegStar } from "react-icons/fa6";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
@@ -21,6 +22,11 @@ export default function Home() {
   const [values, setValues] = useState("Recent");
   const [createFolder, setCreateFolder] = useState(false);
   const [folderName, setFolderName] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  function handleUpload() {
+    fileInput.current?.click();
+  }
 
   useEffect(() => {
     const filter = searchParams.get("filter");
@@ -29,7 +35,7 @@ export default function Home() {
     }
   }, [router, pathname, searchParams, tab]);
   return (
-    <section>
+    <>
       {/* Mobile Nav */}
       <nav className="flex justify-between  px-2 my-4 md:hidden ">
         <Link href={"/favourites"}>
@@ -139,6 +145,15 @@ export default function Home() {
           Folders
         </button>
       </nav>
-    </section>
+      <section className=" pt-5 mx-2 h-fit md:py-20">
+        <EmptyState
+          tab={tab}
+          setCreateFolder={setCreateFolder}
+          setTab={setTab}
+          handleUpload={handleUpload}
+        />
+      </section>
+      <input type="file" className="hidden" ref={fileInput} />
+    </>
   );
 }

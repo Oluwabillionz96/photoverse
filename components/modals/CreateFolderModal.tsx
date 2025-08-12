@@ -48,7 +48,7 @@ export default function CreateFolderModal({
           <Button
             type="button"
             disabled={!value.trim()}
-            className="text-[1.1rem] hover:scale-105"
+            className="text-[1.1rem] hover:scale-105 bg-green-500 hover:bg-green-600"
             // variant={"secondary"}
           >
             <FaPlus /> Create
