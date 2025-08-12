@@ -45,6 +45,14 @@ export default function CreateFolderModal({
           </div>
         </div>
         <DialogFooter className="sm:justify-start">
+          <Button
+            type="button"
+            disabled={!value.trim()}
+            className="text-[1.1rem] hover:scale-105"
+            // variant={"secondary"}
+          >
+            <FaPlus /> Create
+          </Button>
           <DialogClose asChild>
             <Button
               type="button"
@@ -54,13 +62,6 @@ export default function CreateFolderModal({
               <FaX /> Cancel
             </Button>
           </DialogClose>
-          <Button
-            type="button"
-            disabled={!value.trim()}
-            className="text-[1.1rem] hover:scale-105"
-          >
-            <FaPlus /> Cancel
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

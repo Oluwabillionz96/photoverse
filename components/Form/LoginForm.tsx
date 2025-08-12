@@ -48,7 +48,7 @@ const LoginForm = ({
     if ("data" in response) {
       toast.success(response?.data?.message);
       dispatch(
-        authenticate({ authenticate: true, token: response?.data?.token })
+        authenticate({ token: response?.data?.token })
       );
     } else if ("error" in response) {
       console.log(response);

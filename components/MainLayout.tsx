@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
-import AuthenticationModal from "./modals/AuthenticationModal";
+import AuthenticationModal, { Loading } from "./modals/AuthenticationModal";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import { verifyToken } from "@/lib/slices/authSlice";
+import { getUser, refreshAccessToken } from "@/lib/slices/authSlice";
 import useAppDispatch from "@/hooks/useAppDispatch";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -27,22 +27,24 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (token) {
-      dispatch(verifyToken());
+      dispatch(getUser());
+    } else {
+      dispatch(refreshAccessToken());
     }
   }, [token, dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <Loading />;
   }
 
   return (
     <>
       <motion.main
         initial={{
-          marginLeft: isMobile ? 0 : "17.5rem",
+          marginLeft: !isMobile ? "17.5rem" : "",
         }}
         animate={{
-          marginLeft: isMobile ? "0" : collapsed ? "5rem" : "17.5rem",
+          marginLeft: !isMobile ? (collapsed ? "5rem" : "17.5rem") : "",
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="relative"

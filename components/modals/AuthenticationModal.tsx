@@ -3,6 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import Forms from "../Form/Forms";
 import VerifyEmail from "../VerifyEmail";
+import Image from "next/image";
 
 interface LoginInfo {
   email: string;
@@ -14,6 +15,14 @@ interface RegisterInfo {
   password: string;
   confirmedPassword: string;
 }
+
+export const Loading = () => {
+  return (
+    <div className="fixed inset-0 z-[999999999] backdrop-blur-sm bg-black/50 flex items-center justify-center animate-pulse">
+      <Image src={"/photoverse-logo.png"} width={100} height={100} alt="logo" />
+    </div>
+  );
+};
 
 const AuthenticationModal = ({
   loginInfo,
@@ -35,7 +44,6 @@ const AuthenticationModal = ({
   const [isCreated, setIsCreated] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setMounted(true);
@@ -44,10 +52,7 @@ const AuthenticationModal = ({
     return () => clearTimeout(timer);
   }, []);
 
-  if (!mounted)
-    return (
-      <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center"></div>
-    );
+  if (!mounted) return <Loading />;
 
   return (
     <div className="fixed inset-0 z-[9999] backdrop-blur-sm bg-black/10 flex items-center justify-center">
