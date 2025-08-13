@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 // import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import { FaFolder, FaRegStar } from "react-icons/fa6";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
@@ -16,6 +17,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const [files, setFiles] = useState<File[]>([]);
 
   const [tab, setTab] = useState(searchParams.get("filter") || "folders");
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
@@ -34,6 +36,20 @@ export default function Home() {
       router.replace(`${pathname}?filter=${tab}`);
     }
   }, [router, pathname, searchParams, tab]);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    if (e.target.files.length >= 10) {
+      const selectedFiles = Array.from(e.target.files);
+      setFiles([...files, ...selectedFiles.slice(0, 10)]);
+      return toast.error("Only ten files must be uploaded at a time");
+    }
+    // if (e.target.files) {
+    setFiles([...files, ...Array.from(e.target.files)]);
+    // }
+    console.log(e.target.files);
+  };
+
   return (
     <>
       {/* Mobile Nav */}
@@ -115,6 +131,26 @@ export default function Home() {
         </div>
       </div>
 
+      <section className=" pt-5 mx-2 h-fit md:py-20">
+        <EmptyState
+          tab={tab}
+          setCreateFolder={setCreateFolder}
+          setTab={setTab}
+          handleUpload={handleUpload}
+          files={files}
+          setFiles={setFiles}
+        />
+      </section>
+      <input
+        type="file"
+        className="hidden"
+        ref={fileInput}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+          handleFileChange(e);
+        }}
+        accept="image/*"
+        multiple
+      />
       <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
         <button
           className={`flex flex-col justify-center items-center text-black text-xl  ${
@@ -145,15 +181,6 @@ export default function Home() {
           Folders
         </button>
       </nav>
-      <section className=" pt-5 mx-2 h-fit md:py-20">
-        <EmptyState
-          tab={tab}
-          setCreateFolder={setCreateFolder}
-          setTab={setTab}
-          handleUpload={handleUpload}
-        />
-      </section>
-      <input type="file" className="hidden" ref={fileInput} />
     </>
   );
 }
