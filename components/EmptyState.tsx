@@ -10,6 +10,7 @@ import {
 import { Button } from "./ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "./photosPreview";
+import { RefObject } from "react";
 
 const EmptyState = ({
   tab,
@@ -18,19 +19,21 @@ const EmptyState = ({
   handleUpload,
   files,
   setFiles,
+  ref,
 }: {
   tab: string;
   setCreateFolder: (arg: boolean) => void;
   setTab: (arg: string) => void;
   handleUpload: () => void;
   files: File[];
+  ref: RefObject<HTMLInputElement | null>;
   setFiles: (arg: File[]) => void;
 }) => {
   const isMobile = useScreenSize();
   return (
     <>
       {tab === "photos" && files.length > 0 ? (
-        <PhotosPreview files={files} setFiles={setFiles} />
+        <PhotosPreview files={files} setFiles={setFiles} ref={ref}/>
       ) : (
         <div className="flex flex-col items-center justify-center  min-h-fit text-center animate-in fade-in-50 duration-500">
           {tab === "folders" ? (

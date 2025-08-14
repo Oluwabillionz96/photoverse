@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -6,24 +6,32 @@ import { motion, AnimatePresence } from "framer-motion";
 const PhotosPreview = ({
   files,
   setFiles,
+  ref,
 }: {
   files: File[];
   setFiles: (arg: File[]) => void;
+  ref: RefObject<HTMLInputElement | null>;
 }) => {
-  const [previews, setPreviews] = useState(
-    files.map((file) => URL.createObjectURL(file))
-  );
-  function formatFileSize(byte: number) {
-    if (byte === 0) return "0 bytes";
+  function formatFileSize(bytes: number) {
+    if (bytes === 0) return "0 bytes";
 
-    const units = ["bytes", "KB", "MB", "GB"];
+    const units = ["Bytes", "KB", "MB", "GB"];
     const k = 1024;
-    const i = Math.floor(Math.log(byte) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return ` ${Number.parseFloat((byte / Math.pow(k, i)).toFixed(2))} ${
+    return ` ${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${
       units[i]
     }`;
   }
+
+  const [preview, setPreview] = useState<string[]>([]);
+
+  useEffect(() => {
+    const urls = files.map((item) => URL.createObjectURL(item));
+    setPreview(urls);
+
+    return () => urls.forEach((item) => URL.revokeObjectURL(item));
+  }, [files]);
 
   let size = 0;
   files.forEach((file) => {
@@ -44,6 +52,10 @@ const PhotosPreview = ({
           <Button
             variant="outline"
             className="flex items-center gap-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200 bg-transparent"
+            onClick={() => {
+              setFiles([]);
+              if (ref.current) ref.current.value = "";
+            }}
           >
             <TrashIcon className="w-4 h-4" />
             <span className="hidden md:inline">Clear</span>
@@ -53,6 +65,14 @@ const PhotosPreview = ({
             <UploadIcon className={`w-4 h-4 `} />
             Upload file{files.length > 1 && "s"}
           </Button>
+          {files.length < 10 && (
+            <Button
+              onClick={() => ref.current?.click()}
+              className="bg-blue-500  hidden md:block hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
+            >
+              Add more photos
+            </Button>
+          )}
         </div>
       </div>
       <div>
@@ -64,33 +84,30 @@ const PhotosPreview = ({
           <span className="text-sm text-gray-500">({files.length})</span>
         </div>
         <div className="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-3 ">
-          <AnimatePresence>
-            {previews.map((item, index) => (
+          <AnimatePresence mode="sync">
+            {files.map((item, index) => (
               <motion.div
-                key={index}
+                key={`${item.name} ${item.lastModified}`}
                 className="animate-in fade-in-0 zoom-in-95 duration-500 relative group hover:scale-105 "
                 style={{ animationDelay: `${index * 100 + 300}ms` }}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-blue-300 transition-all duration-200 ">
                   <img
-                    src={item}
-                    alt={files[index].name}
+                    src={preview[index]}
+                    alt={files[index].name || "Uploaded image preview"}
                     className="w-full h-full object-cover hover:cursor-pointer transition-transform duration-200"
+                    loading="lazy"
                   />
                 </div>
                 <button
-                  // onClick={() => onRemoveFile(file.id)}
                   onClick={() => {
                     const newFiles = [...files];
-                    const newPreviews = [...previews];
                     newFiles.splice(index, 1);
-                    newPreviews.splice(index, 1);
                     setFiles([...newFiles]);
-                    setPreviews(newPreviews);
                   }}
                   // disabled={isUploading}
                   className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
@@ -101,6 +118,14 @@ const PhotosPreview = ({
             ))}
           </AnimatePresence>
         </div>
+        {files.length < 10 && (
+          <Button
+            onClick={() => ref.current?.click()}
+            className="bg-blue-500 mt-4 w-full md:hidden"
+          >
+            Add more photos
+          </Button>
+        )}
       </div>
     </>
   );

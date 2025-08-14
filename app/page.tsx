@@ -39,15 +39,36 @@ export default function Home() {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    if (e.target.files.length >= 10) {
-      const selectedFiles = Array.from(e.target.files);
-      setFiles([...files, ...selectedFiles.slice(0, 10)]);
-      return toast.error("Only ten files must be uploaded at a time");
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length >= 10) {
+      selectedFiles.splice(10 - files.length);
+      toast.error("Only ten files must be uploaded at a time");
     }
-    // if (e.target.files) {
-    setFiles([...files, ...Array.from(e.target.files)]);
-    // }
-    console.log(e.target.files);
+
+    const uniqueNewFiles = selectedFiles.filter(
+      (newFile) =>
+        !files.some(
+          (existingFile) =>
+            existingFile.name === newFile.name &&
+            existingFile.size === newFile.size
+        )
+    );
+
+    if (
+      uniqueNewFiles.length < selectedFiles.length &&
+      uniqueNewFiles.length === 0
+    ) {
+      if (selectedFiles.length > 1) {
+        toast.error("The files you selected already exsists");
+      } else {
+        toast.error("The file you selected already exsists");
+      }
+    } else if (uniqueNewFiles.length < selectedFiles.length) {
+      toast.error("Some files were skipped because they already exist");
+    }
+
+    setFiles((prev) => [...prev, ...uniqueNewFiles]);
+    e.target.value = "";
   };
 
   return (
@@ -139,6 +160,7 @@ export default function Home() {
           handleUpload={handleUpload}
           files={files}
           setFiles={setFiles}
+          ref={fileInput}
         />
       </section>
       <input
