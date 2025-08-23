@@ -1,9 +1,23 @@
 import baseUrl from "@/baseUrl";
+import { Rootstate } from "@/lib/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const PhotoverseAPI = createApi({
   reducerPath: "phoverseAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: `${baseUrl}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${baseUrl}`,
+    prepareHeaders: (headers, { getState }) => {
+      const { auth } = getState() as Rootstate;
+      const token = auth.token;
+
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
+  }),
+
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (body) => ({
@@ -33,6 +47,16 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    getPhotos: builder.query({
+      query: () => "photos",
+    }),
+    createFolder: builder.mutation({
+      query: (body) => ({
+        url: "folders",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -41,4 +65,6 @@ export const {
   useRegisterMutation,
   useVerifyEmailMutation,
   useResendOTPMutation,
+  useGetPhotosQuery,
+  useCreateFolderMutation,
 } = PhotoverseAPI;

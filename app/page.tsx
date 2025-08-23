@@ -4,6 +4,7 @@ import DropDown from "@/components/dropDown";
 import EmptyState from "@/components/EmptyState";
 import CreateFolderModal from "@/components/modals/CreateFolderModal";
 import { Button } from "@/components/ui/button";
+import { useGetPhotosQuery } from "@/services/api";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 // import { useRouter } from "next/router";
@@ -25,6 +26,8 @@ export default function Home() {
   const [createFolder, setCreateFolder] = useState(false);
   const [folderName, setFolderName] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
+  const photos = useGetPhotosQuery({});
+  console.log(photos);
 
   function handleUpload() {
     fileInput.current?.click();

@@ -23,6 +23,7 @@ const PhotosPreview = ({
       units[i]
     }`;
   }
+  console.log(files)
 
   const [preview, setPreview] = useState<string[]>([]);
 

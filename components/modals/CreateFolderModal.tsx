@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreateFolderMutation } from "@/services/api";
 import { ChangeEvent } from "react";
+import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
@@ -24,6 +26,29 @@ export default function CreateFolderModal({
   value: string;
   setValue: (arg: string) => void;
 }) {
+  const [createFolder, { isLoading }] = useCreateFolderMutation();
+  async function CreateFolder() {
+    const response = await createFolder({ name: value });
+    if ("data" in response) {
+      toast.success(response.data.message);
+      setValue("");
+    } else if ("error" in response) {
+      const error = response.error as {
+        status?: number | string;
+        data?: { message: string };
+      };
+
+      const message =
+        error?.data?.message ||
+        (error?.status === "FETCH_ERROR"
+          ? "Network error. Please check your connection."
+          : "An unexpected error occurred.");
+
+      toast.error(message);
+    }
+    setOpen(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
@@ -47,9 +72,9 @@ export default function CreateFolderModal({
         <DialogFooter className="sm:justify-start">
           <Button
             type="button"
-            disabled={!value.trim()}
+            disabled={!value.trim() || value.length < 3 || isLoading}
             className="text-[1.1rem] hover:scale-105 bg-green-500 hover:bg-green-600"
-            // variant={"secondary"}
+            onClick={CreateFolder}
           >
             <FaPlus /> Create
           </Button>
