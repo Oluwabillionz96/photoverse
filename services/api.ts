@@ -57,10 +57,18 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    uploadPhotos: builder.mutation({
+      query: (formData) => ({
+        url: "photos/add",
+        method: "POST",
+        body: formData,
+      }),
+    }),
   }),
 });
 
 export const {
+  useUploadPhotosMutation,
   useLoginMutation,
   useRegisterMutation,
   useVerifyEmailMutation,

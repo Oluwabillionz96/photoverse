@@ -14,8 +14,6 @@ const Folders = () => {
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
-      {/* <FileInput /> */}
-      {/* <EmptyState tab={tab} setTab={setTab} setCreateFolder={setCreateFolder} /> */}
       <EmptyFolder setCreateFolder={setCreateFolder} setTab={setTab} />
     </section>
   );

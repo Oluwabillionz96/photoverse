@@ -2,6 +2,7 @@ import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUploadPhotosMutation } from "@/services/api";
 
 const PhotosPreview = ({
   files,
@@ -12,6 +13,51 @@ const PhotosPreview = ({
   setFiles: (arg: File[]) => void;
   ref: RefObject<HTMLInputElement | null>;
 }) => {
+  const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
+
+  async function handlePhotosUploads(urls: string[]) {
+    const payload = {
+      photos: files.map((item, index) => ({
+        link: urls[index],
+        size: item.size,
+      })),
+    };
+
+    const response = await uploadPhotos(payload);
+    setFiles([]);
+    console.log(response);
+    if (ref.current) ref.current.value = "";
+    return;
+  }
+
+  async function UploadToCloudinary() {
+    const presetKey = "photoverse_test";
+    const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
+    const url = [];
+
+    for (let index = files.length - 1; index > -1; index--) {
+      const formData = new FormData();
+      formData.append("file", files[index]);
+
+      formData.append("upload_preset", presetKey);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudname}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      url.push(data.secure_url);
+
+      console.log({ data: data.secure_url, url, index });
+    }
+
+    handlePhotosUploads(url);
+  }
+
   function formatFileSize(bytes: number) {
     if (bytes === 0) return "0 bytes";
 
@@ -61,7 +107,13 @@ const PhotosPreview = ({
             <span className="hidden md:inline">Clear</span>
             <span className="inline md:hidden">Clear All</span>
           </Button>
-          <Button className="flex items-center gap-2 bg-green-500 hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6">
+          <Button
+            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={files.length < 1 || isLoading}
+            onClick={async () => {
+              await UploadToCloudinary();
+            }}
+          >
             <UploadIcon className={`w-4 h-4 `} />
             Upload file{files.length > 1 && "s"}
           </Button>

@@ -66,6 +66,7 @@ export const getUser = createAsyncThunk(
       return data.isAuthenticated;
     } catch (err) {
       localStorage.removeItem("token");
+      console.log(err);
       return rejectWithValue(`Verification failed`);
     }
   }
