@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import { getUser, refreshAccessToken } from "@/lib/slices/authSlice";
 import useAppDispatch from "@/hooks/useAppDispatch";
+import MobileNavs from "./MobileNavs";
+import { useRouter } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -18,12 +20,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { authenticated, loading, token } = useSelector(
     (state: Rootstate) => state.auth
   );
+  const { tab } = useSelector((state: Rootstate) => state.routing);
   const dispatch = useAppDispatch();
   const [registerInfo, setRegisterInfo] = useState({
     email: "",
     password: "",
     confirmedPassword: "",
   });
+  const router = useRouter();
 
   useEffect(() => {
     if (token) {
@@ -32,6 +36,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       dispatch(refreshAccessToken());
     }
   }, [token, dispatch]);
+
+  useEffect(() => {
+    router.push(`/${tab}`);
+  }, [tab, router]);
 
   return (
     <>
@@ -69,7 +77,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </Link>
           </motion.header>
           <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-          {children}
+          <MobileNavs>{children}</MobileNavs>
         </motion.main>
       )}
     </>
