@@ -74,7 +74,7 @@ export default function CreateFolderModal({
             type="button"
             disabled={!value.trim() || value.length < 3 || isLoading}
             className="text-[1.1rem] hover:scale-105 bg-green-500 hover:bg-green-600"
-            onClick={CreateFolder}
+            // onClick={CreateFolder}
           >
             <FaPlus /> Create
           </Button>

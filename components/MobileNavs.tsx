@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathName = usePathname();
-  console.log(pathName);
   const dispatch = useDispatch();
   function setTab(value: "folders" | "photos") {
     dispatch(changeTab(value));
@@ -46,7 +45,7 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
           <button
             className={`flex flex-col justify-center items-center text-black text-xl  ${
-              tab === "photos" && "text-blue-600"
+              tab === "photos" && pathName === "/photos" && "text-blue-600"
             }`}
             onClick={() => {
               setTab("photos");
@@ -63,7 +62,7 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           </button>{" "}
           <button
             className={`flex flex-col justify-center items-center ${
-              tab === "folders" && "text-blue-600"
+              tab === "folders" && pathName === "/folders" && "text-blue-600"
             } text-xl`}
             onClick={() => {
               setTab("folders");
