@@ -3,11 +3,11 @@ import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
-import CreateFolderModal from "./modals/CreateFolderModal";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import { changeCreateFolder, changeTab } from "@/lib/slices/routingSlice";
 import { usePathname } from "next/navigation";
+import CreateFolder from "./CreateFolder";
 
 const TabLayouts = () => {
   const { tab, createFolder } = useSelector(
@@ -84,12 +84,14 @@ const TabLayouts = () => {
           <FaPlus />
           Create Folder
         </Button>
-        <CreateFolderModal
-          value={folderName}
-          open={createFolder}
-          setOpen={setCreateFolder}
-          setValue={setFolderName}
-        />
+        {createFolder && (
+          <CreateFolder
+            foldername={folderName}
+            setFoldername={setFolderName}
+            createFolder={createFolder}
+            setCreateFolder={setCreateFolder}
+          />
+        )}
       </div>
     </div>
   );

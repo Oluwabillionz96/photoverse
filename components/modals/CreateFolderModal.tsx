@@ -9,9 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateFolderMutation } from "@/services/api";
-import { ChangeEvent } from "react";
-import toast from "react-hot-toast";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
@@ -20,37 +18,24 @@ export default function CreateFolderModal({
   setOpen,
   value,
   setValue,
+  setSelectPhoto,
 }: {
   open: boolean;
   setOpen: (arg: boolean) => void;
   value: string;
   setValue: (arg: string) => void;
+  setSelectPhoto: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [createFolder, { isLoading }] = useCreateFolderMutation();
-  async function CreateFolder() {
-    const response = await createFolder({ name: value });
-    if ("data" in response) {
-      toast.success(response.data.message);
-      setValue("");
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { message: string };
-      };
-
-      const message =
-        error?.data?.message ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
-    }
-    setOpen(false);
-  }
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          setValue("");
+        }
+        setOpen(isOpen);
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Folder Name</DialogTitle>
@@ -69,12 +54,15 @@ export default function CreateFolderModal({
             />
           </div>
         </div>
-        <DialogFooter className="sm:justify-start">
+        <DialogFooter className="sm:justify-start flex-row">
           <Button
             type="button"
-            disabled={!value.trim() || value.length < 3 || isLoading}
-            className="text-[1.1rem] hover:scale-105 bg-green-500 hover:bg-green-600"
-            // onClick={CreateFolder}
+            disabled={!value.trim() || value.length < 3}
+            className="sm:text-[1.1rem] text-sm hover:scale-105 bg-green-500 hover:bg-green-600"
+            onClick={() => {
+              setSelectPhoto(true);
+              setOpen(false);
+            }}
           >
             <FaPlus /> Create
           </Button>
@@ -82,7 +70,7 @@ export default function CreateFolderModal({
             <Button
               type="button"
               variant="destructive"
-              className="text-[1.1rem] hover:scale-105"
+              className="sm:text-[1.1rem] text-sm hover:scale-105"
             >
               <FaX /> Cancel
             </Button>
