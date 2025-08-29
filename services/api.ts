@@ -1,4 +1,5 @@
 import baseUrl from "@/baseUrl";
+import { GetFolderResponse } from "@/lib/apiTypes";
 import { Rootstate } from "@/lib/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -17,6 +18,7 @@ export const PhotoverseAPI = createApi({
       return headers;
     },
   }),
+  tagTypes: ["folders"],
 
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -56,6 +58,11 @@ export const PhotoverseAPI = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["folders"],
+    }),
+    getFolders: builder.query<GetFolderResponse, void>({
+      query: () => "folders",
+      providesTags: ["folders"],
     }),
     uploadPhotos: builder.mutation({
       query: (formData) => ({
@@ -75,4 +82,5 @@ export const {
   useResendOTPMutation,
   useGetPhotosQuery,
   useCreateFolderMutation,
+  useGetFoldersQuery,
 } = PhotoverseAPI;

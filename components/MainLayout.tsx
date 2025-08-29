@@ -14,7 +14,14 @@ import MobileNavs from "./MobileNavs";
 import { useRouter } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const isCollapsed =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("collapsed") || "true")
+      : true;
   const [collapsed, setCollapsed] = useState(true);
+  useEffect(() => {
+    setCollapsed(isCollapsed);
+  }, []);
   const isMobile = useScreenSize();
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
   const { authenticated, loading, token } = useSelector(

@@ -85,7 +85,12 @@ const SideNav = ({
       <div className="  h-8 mb-12 relative lg:visible invisible">
         <Button
           size={"icon"}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => {
+            setCollapsed(!collapsed);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("collapsed", JSON.stringify(!collapsed));
+            }
+          }}
           className=" absolute top-6 right-2 hover:cursor-pointer"
         >
           {collapsed ? (
