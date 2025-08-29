@@ -20,7 +20,7 @@ const Folders = () => {
       {isLoading || isFetching ? (
         <FolderLoader />
       ) : folders && folders?.length > 0 ? (
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 md:gap-6 lg:grid-cols-4 grid-cols-2 lg:gap-8 gap-4">
           {folders?.map((folder) => (
             <Card
               key={folder._id}
