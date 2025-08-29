@@ -47,9 +47,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Loading />
       ) : (
         <motion.main
-          // animate={{
-          //   marginLeft: !isMobile ? (collapsed ? "5rem" : "17.5rem") : "",
-          // }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className={`relative mb-24 md:mb-0 ${
             !isMobile && collapsed

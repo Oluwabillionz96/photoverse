@@ -7,6 +7,9 @@ import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
+import { useEffect, useState } from "react";
 
 export const navLinks = [
   {
@@ -20,7 +23,7 @@ export const navLinks = [
       color: string;
     }) => <IoHome className={className} size={size} color={color} />,
     label: "Home",
-    url: "/",
+    url: "/folders",
   },
   {
     icon: ({
@@ -57,7 +60,16 @@ const SideNav = ({
   collapsed: boolean;
   setCollapsed: (arg: boolean) => void;
 }) => {
+  const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathname = usePathname();
+  const [newNavLink, setNewNavLink] = useState(navLinks);
+
+  useEffect(() => {
+    const modifiedNavlink = newNavLink;
+    modifiedNavlink[0].url = `/${tab}`;
+    setNewNavLink(modifiedNavlink);
+  }, [tab, newNavLink]);
+
   const active = (url: string) => {
     return pathname.startsWith(`${url}/`) || pathname === url;
   };
@@ -84,7 +96,7 @@ const SideNav = ({
         </Button>
       </div>
       <nav>
-        {navLinks.map((nav, id) => {
+        {newNavLink.map((nav, id) => {
           const isActive = active(nav.url);
           return (
             <Link key={id} href={nav.url}>

@@ -1,7 +1,4 @@
-import {
-  changeModalStatus,
-  changeTab,
-} from "@/lib/slices/routingSlice";
+import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
 import { Rootstate } from "@/lib/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,16 +52,18 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
             <MdOutlinePhotoSizeSelectActual />
             Photos
           </button>
-          <button
-            className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
-            onClick={() => {
-              if (pathName === "/folders") {
-                setModalStatus("foldername");
-              }
-            }}
-          >
-            <FaPlus />
-          </button>{" "}
+          {pathName === "/folders" && (
+            <button
+              className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
+              onClick={() => {
+                if (pathName === "/folders") {
+                  setModalStatus("foldername");
+                }
+              }}
+            >
+              <FaPlus />
+            </button>
+          )}
           <button
             className={`flex flex-col justify-center items-center ${
               tab === "folders" && pathName === "/folders" && "text-blue-600"

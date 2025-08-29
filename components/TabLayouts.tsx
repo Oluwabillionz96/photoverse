@@ -5,16 +5,11 @@ import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import {
-  changeModalStatus,
-  changeTab,
-} from "@/lib/slices/routingSlice";
+import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
 import { usePathname } from "next/navigation";
 
 const TabLayouts = () => {
-  const { tab, modalStatus } = useSelector(
-    (state: Rootstate) => state.routing
-  );
+  const { tab, modalStatus } = useSelector((state: Rootstate) => state.routing);
 
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
@@ -76,17 +71,19 @@ const TabLayouts = () => {
           changeValue={setValues}
           className="w-32"
         />
-        <Button
-          variant={"outline"}
-          disabled={modalStatus === "foldername"}
-          className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
-          onClick={() => {
-            setModalStatus("foldername");
-          }}
-        >
-          <FaPlus />
-          Create Folder
-        </Button>
+        {pathname === "/folders" && (
+          <Button
+            variant={"outline"}
+            disabled={modalStatus === "foldername"}
+            className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
+            onClick={() => {
+              setModalStatus("foldername");
+            }}
+          >
+            <FaPlus />
+            Create Folder
+          </Button>
+        )}
       </div>
     </div>
   );

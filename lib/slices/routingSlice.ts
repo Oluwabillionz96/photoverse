@@ -6,9 +6,6 @@ interface Routing {
 }
 
 const tab = typeof window !== "undefined" ? localStorage.getItem("tab") : null;
-// const [modalStatus, setModalStatus] = useState<
-//   "" | "preview" | "select" | "foldername"
-// >("");
 
 const initialState: Routing = {
   tab: tab ?? "folders",
