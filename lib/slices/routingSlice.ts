@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Routing {
   tab: string;
-  createFolder: boolean;
   files: File[];
+  modalStatus: "" | "preview" | "select" | "foldername";
 }
 
 const tab = typeof window !== "undefined" ? localStorage.getItem("tab") : null;
+// const [modalStatus, setModalStatus] = useState<
+//   "" | "preview" | "select" | "foldername"
+// >("");
 
 const initialState: Routing = {
   tab: tab ?? "folders",
-  createFolder: false,
   files: [],
+  modalStatus: "",
 };
 
 const routingSlice = createSlice({
@@ -21,12 +24,14 @@ const routingSlice = createSlice({
       state.tab = action.payload;
       localStorage.setItem("tab", action.payload);
     },
-    changeCreateFolder: (state, action: PayloadAction<boolean>) => {
-      state.createFolder = action.payload;
+    changeModalStatus: (
+      state,
+      action: PayloadAction<"" | "preview" | "select" | "foldername">
+    ) => {
+      state.modalStatus = action.payload;
     },
-    // changeFiles
   },
 });
 
-export const { changeTab, changeCreateFolder } = routingSlice.actions;
+export const { changeTab, changeModalStatus } = routingSlice.actions;
 export default routingSlice.reducer;

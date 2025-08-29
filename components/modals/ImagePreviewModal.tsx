@@ -5,25 +5,21 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 
 const ImagePreviewModal = ({
-  open,
-  setOpen,
   folderName,
   selectedImages,
   setSelectedImages,
-  setSelectPhoto,
   handleUpload,
   isLoading,
   createFolder,
+  setModalStatus,
 }: {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
   folderName: string;
   setSelectedImages: Dispatch<SetStateAction<File[]>>;
   selectedImages: File[];
-  setSelectPhoto: Dispatch<SetStateAction<boolean>>;
   handleUpload: () => void;
   isLoading: boolean;
   createFolder: () => void;
+  setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
   const [url, setUrl] = useState<string[]>([]);
 
@@ -42,20 +38,20 @@ const ImagePreviewModal = ({
   }, [selectedImages]);
 
   useEffect(() => {
-    setOpen(selectedImages.length > 0);
-    setSelectPhoto(selectedImages.length > 0);
-  }, [selectedImages, setOpen, setSelectPhoto]);
+    if (selectedImages.length < 1) {
+      setModalStatus("select");
+    }
+  }, [selectedImages, setModalStatus]);
 
   return (
     <div className="overflow-hidden">
       <Dialog
-        open={open}
+        open={true}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
-            setSelectPhoto(true);
+            setModalStatus("select");
             setSelectedImages([]);
           }
-          setOpen(isOpen);
         }}
       >
         <DialogContent className="sm:max-w-2xl">
@@ -107,8 +103,7 @@ const ImagePreviewModal = ({
             <Button
               variant="outline"
               onClick={() => {
-                setOpen(false);
-                setSelectPhoto(true);
+                setModalStatus("select");
                 setSelectedImages([]);
               }}
               className="disabled:opacity-50"

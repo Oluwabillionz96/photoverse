@@ -9,31 +9,29 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
 export default function CreateFolderModal({
-  open,
-  setOpen,
   value,
   setValue,
-  setSelectPhoto,
-}: {
-  open: boolean;
-  setOpen: (arg: boolean) => void;
+  setModalStatus,
+}: // modalStatus,
+{
   value: string;
   setValue: (arg: string) => void;
-  setSelectPhoto: Dispatch<SetStateAction<boolean>>;
+  setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
+  // modalStatus: "" | "preview" | "select" | "foldername";
 }) {
   return (
     <Dialog
-      open={open}
+      open={true}
       onOpenChange={(isOpen) => {
         if (!isOpen) {
           setValue("");
+          setModalStatus("");
         }
-        setOpen(isOpen);
       }}
     >
       <DialogContent className="sm:max-w-md">
@@ -60,8 +58,8 @@ export default function CreateFolderModal({
             disabled={!value.trim() || value.length < 3}
             className="sm:text-[1.1rem] text-sm hover:scale-105 bg-green-500 hover:bg-green-600"
             onClick={() => {
-              setSelectPhoto(true);
-              setOpen(false);
+              setModalStatus("select");
+              console.log("done");
             }}
           >
             <FaPlus /> Create

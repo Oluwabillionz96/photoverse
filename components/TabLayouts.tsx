@@ -5,25 +5,26 @@ import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import { changeCreateFolder, changeTab } from "@/lib/slices/routingSlice";
+import {
+  changeModalStatus,
+  changeTab,
+} from "@/lib/slices/routingSlice";
 import { usePathname } from "next/navigation";
-import CreateFolder from "./CreateFolder";
 
 const TabLayouts = () => {
-  const { tab, createFolder } = useSelector(
+  const { tab, modalStatus } = useSelector(
     (state: Rootstate) => state.routing
   );
+
   const dispatch = useDispatch();
+  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
+    dispatch(changeModalStatus(value));
+  };
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
   const [values, setValues] = useState("Recent");
-  const [folderName, setFolderName] = useState("");
   const pathname = usePathname();
   function setTab(value: "photos" | "folders") {
     dispatch(changeTab(value));
-  }
-
-  function setCreateFolder(value: boolean) {
-    dispatch(changeCreateFolder(value));
   }
 
   return (
@@ -77,21 +78,15 @@ const TabLayouts = () => {
         />
         <Button
           variant={"outline"}
-          disabled={createFolder}
+          disabled={modalStatus === "foldername"}
           className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
-          onClick={() => setCreateFolder(true)}
+          onClick={() => {
+            setModalStatus("foldername");
+          }}
         >
           <FaPlus />
           Create Folder
         </Button>
-        {createFolder && (
-          <CreateFolder
-            foldername={folderName}
-            setFoldername={setFolderName}
-            createFolder={createFolder}
-            setCreateFolder={setCreateFolder}
-          />
-        )}
       </div>
     </div>
   );

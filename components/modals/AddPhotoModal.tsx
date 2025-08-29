@@ -1,36 +1,28 @@
-import React, { Dispatch, SetStateAction} from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FolderOpen, Upload } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 // import { handleFileChange } from "@/lib/utils/handleInputChange";
 
 const AddPhotoModal = ({
-  open,
-  setOpen,
   folderName,
   folder,
-  setCreateFolder,
   handleUpload,
+  setModalStatus,
 }: {
-  open: boolean;
-  setOpen: (arg: boolean) => void;
   folderName: string;
   folder?: string[];
-  files: File[];
-  setFiles: Dispatch<SetStateAction<File[]>>;
-  setPhotoPreview: Dispatch<SetStateAction<boolean>>;
-  setCreateFolder: (arg: boolean) => void;
   handleUpload: () => void;
+  setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
   return (
     <>
       <Dialog
-        open={open}
+        open={true}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
-            setCreateFolder(true);
+            setModalStatus("foldername");
           }
-          setOpen(isOpen);
+          // setOpen(isOpen);
         }}
       >
         <DialogContent className="sm:max-w-md">
@@ -82,7 +74,6 @@ const AddPhotoModal = ({
           </div>
         </DialogContent>
       </Dialog>
-
     </>
   );
 };

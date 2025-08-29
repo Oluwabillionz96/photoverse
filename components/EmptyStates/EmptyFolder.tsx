@@ -1,13 +1,17 @@
 import { FolderIcon, FolderPlusIcon, ImageIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import { useDispatch} from "react-redux";
+import { changeModalStatus } from "@/lib/slices/routingSlice";
 
 const EmptyFolder = ({
-  setCreateFolder,
   setTab,
 }: {
-  setCreateFolder: (arg: boolean) => void;
   setTab: (arg: string) => void;
 }) => {
+  const dispatch = useDispatch();
+  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
+    dispatch(changeModalStatus(value));
+  };
   return (
     <>
       {
@@ -31,7 +35,7 @@ const EmptyFolder = ({
             <Button
               className={`flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 transition-all duration-200 hover:scale-105 hover:shadow-lg w-full md:w-auto`}
               onClick={() => {
-                setCreateFolder(true);
+                setModalStatus("foldername");
               }}
             >
               <>

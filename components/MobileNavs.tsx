@@ -1,8 +1,10 @@
-import { changeCreateFolder, changeTab } from "@/lib/slices/routingSlice";
+import {
+  changeModalStatus,
+  changeTab,
+} from "@/lib/slices/routingSlice";
 import { Rootstate } from "@/lib/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
 import { FaFolder, FaPlus, FaRegStar, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,12 +13,11 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathName = usePathname();
   const dispatch = useDispatch();
+  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
+    dispatch(changeModalStatus(value));
+  };
   function setTab(value: "folders" | "photos") {
     dispatch(changeTab(value));
-  }
-
-  function setCreateFolder(value: boolean) {
-    dispatch(changeCreateFolder(value));
   }
 
   return (
@@ -56,7 +57,11 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           </button>
           <button
             className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
-            onClick={() => setCreateFolder(true)}
+            onClick={() => {
+              if (pathName === "/folders") {
+                setModalStatus("foldername");
+              }
+            }}
           >
             <FaPlus />
           </button>{" "}

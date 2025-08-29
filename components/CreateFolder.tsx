@@ -12,17 +12,19 @@ import toast from "react-hot-toast";
 const CreateFolder = ({
   foldername,
   setFoldername,
-  createFolder,
-  setCreateFolder,
+//   createFolder,
+//   setCreateFolder,
+  modalStatus,
+  setModalStatus,
 }: {
   foldername: string;
   setFoldername: Dispatch<SetStateAction<string>>;
-  createFolder: boolean;
-  setCreateFolder: (arg: boolean) => void;
+//   createFolder: boolean;
+//   setCreateFolder: (arg: boolean) => void;
+  modalStatus: "" | "preview" | "select" | "foldername";
+  setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
-  const [selectPhoto, setSelectPhoto] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
-  const [photoPreview, setPhotoPreview] = useState<boolean>(files.length > 1);
   const [createNewFolder, { isLoading: isCreatingFolder }] =
     useCreateFolderMutation();
   const [uploadPhotos, { isLoading: isUploadingPhoto }] =
@@ -84,19 +86,15 @@ const CreateFolder = ({
         const id = response.data.id;
         setLoading(true);
         const url = await UploadToCloudinary();
-          await handlePhotosUploads(url, id);
+        await handlePhotosUploads(url, id);
         setFoldername("");
-        setCreateFolder(false);
         setFiles([]);
-        setPhotoPreview(false);
-        setSelectPhoto(false);
+        setModalStatus("");
         toast.success("folder created successfully");
       } catch (error) {
         console.error(error);
       } finally {
-        setPhotoPreview(false);
-          setSelectPhoto(false);
-          setLoading(false)
+        setLoading(false);
       }
     } else if ("error" in response) {
       const error = response.error as {
@@ -116,35 +114,32 @@ const CreateFolder = ({
 
   return (
     <>
-      <CreateFolderModal
-        open={createFolder}
-        setOpen={setCreateFolder}
-        value={foldername}
-        setValue={setFoldername}
-        setSelectPhoto={setSelectPhoto}
-      />
-      <AddPhotoModal
-        setCreateFolder={setCreateFolder}
-        open={selectPhoto}
-        setOpen={setSelectPhoto}
-        folderName={foldername}
-        files={files}
-        setFiles={setFiles}
-        setPhotoPreview={setPhotoPreview}
-        handleUpload={handleUpload}
-      />
+      {modalStatus === "foldername" && (
+        <CreateFolderModal
+          setModalStatus={setModalStatus}
+          value={foldername}
+          setValue={setFoldername}
+        />
+      )}
+      {modalStatus === "select" && (
+        <AddPhotoModal
+          setModalStatus={setModalStatus}
+          folderName={foldername}
+          handleUpload={handleUpload}
+        />
+      )}
 
-      <ImagePreviewModal
-        isLoading={loading}
-        setSelectPhoto={setSelectPhoto}
-        open={photoPreview}
-        setOpen={setPhotoPreview}
-        folderName={foldername}
-        setSelectedImages={setFiles}
-        selectedImages={files}
-        handleUpload={handleUpload}
-        createFolder={CreateFolder}
-      />
+      {modalStatus === "preview" && (
+        <ImagePreviewModal
+          setModalStatus={setModalStatus}
+          isLoading={loading}
+          folderName={foldername}
+          setSelectedImages={setFiles}
+          selectedImages={files}
+          handleUpload={handleUpload}
+          createFolder={CreateFolder}
+        />
+      )}
       <input
         type="file"
         className="hidden"
@@ -153,8 +148,7 @@ const CreateFolder = ({
         ref={fileInput}
         onChange={(e) => {
           handleFileChange(e, files, setFiles);
-          setSelectPhoto(false);
-          setPhotoPreview(true);
+          setModalStatus("preview");
         }}
       />
     </>
