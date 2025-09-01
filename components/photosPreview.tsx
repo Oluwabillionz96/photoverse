@@ -107,8 +107,16 @@ const PhotosPreview = ({
             <span className="hidden md:inline">Clear</span>
             <span className="inline md:hidden">Clear All</span>
           </Button>
+          {files.length < 10 && (
+            <Button
+              onClick={() => ref.current?.click()}
+              className="bg-blue-500   hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
+            >
+              Add more photos
+            </Button>
+          )}
           <Button
-            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="md:flex items-center gap-2 bg-green-500 hidden hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={files.length < 1 || isLoading}
             onClick={async () => {
               await UploadToCloudinary();
@@ -117,14 +125,6 @@ const PhotosPreview = ({
             <UploadIcon className={`w-4 h-4 `} />
             Upload file{files.length > 1 && "s"}
           </Button>
-          {files.length < 10 && (
-            <Button
-              onClick={() => ref.current?.click()}
-              className="bg-blue-500  hidden md:block hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
-            >
-              Add more photos
-            </Button>
-          )}
         </div>
       </div>
       <div>
@@ -172,10 +172,14 @@ const PhotosPreview = ({
         </div>
         {files.length < 10 && (
           <Button
-            onClick={() => ref.current?.click()}
-            className="bg-blue-500 mt-4 w-full md:hidden"
+            className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
+            disabled={files.length < 1 || isLoading}
+            onClick={async () => {
+              await UploadToCloudinary();
+            }}
           >
-            Add more photos
+            <UploadIcon className={`w-4 h-4 `} />
+            Upload file{files.length > 1 && "s"}
           </Button>
         )}
       </div>
