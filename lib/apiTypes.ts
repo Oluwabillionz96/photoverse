@@ -7,10 +7,8 @@ export interface GetFolderResponse {
 }
 
 export interface GetPhotoResponse {
-  photos: {
     _id: string;
     link: string;
     size: number;
     uploadedAt: string;
-  }[];
 }

@@ -43,7 +43,7 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
           <button
             className={`flex flex-col justify-center items-center text-black text-xl  ${
-              tab === "photos" && pathName === "/photos" && "text-blue-600"
+              tab === "photos" && pathName === "/photos" ? "text-blue-600" : ""
             }`}
             onClick={() => {
               setTab("photos");
@@ -66,7 +66,9 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           )}
           <button
             className={`flex flex-col justify-center items-center ${
-              tab === "folders" && pathName === "/folders" && "text-blue-600"
+              tab === "folders" && pathName === "/folders"
+                ? "text-blue-600"
+                : ""
             } text-xl`}
             onClick={() => {
               setTab("folders");

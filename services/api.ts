@@ -49,7 +49,7 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
-    getPhotos: builder.query<GetPhotoResponse, void>({
+    getPhotos: builder.query<GetPhotoResponse[], void>({
       query: () => "photos",
       providesTags: ["photos"],
     }),
@@ -72,6 +72,9 @@ export const PhotoverseAPI = createApi({
         body: formData,
       }),
     }),
+    getFolderPhotos: builder.query<GetPhotoResponse[], { foldername: string }>({
+      query: ({ foldername }) => `photos/${foldername}`,
+    }),
   }),
 });
 
@@ -84,4 +87,5 @@ export const {
   useGetPhotosQuery,
   useCreateFolderMutation,
   useGetFoldersQuery,
+  useGetFolderPhotosQuery,
 } = PhotoverseAPI;

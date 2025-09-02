@@ -37,9 +37,7 @@ const TabLayouts = () => {
           }}
         >
           <MdOutlinePhotoSizeSelectActual
-            className={`${
-              tab !== "photos" && pathname === `/${tab}` && "text-blue-500"
-            }`}
+            className={`${pathname === `/${tab}` ? "text-blue-500" : ""}`}
           />
           Photos
         </Button>
@@ -57,7 +55,7 @@ const TabLayouts = () => {
         >
           <FaFolder
             className={`${
-              tab !== "folders" && pathname === `/${tab}` && "text-blue-500"
+              tab !== "folders" && pathname === `/${tab}` ? "text-blue-500" : ""
             }`}
           />
           Folders

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ChangeEvent, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-const cloudinaryLoader = ({
+export const cloudinaryLoader = ({
   src,
   width,
   quality,
@@ -30,7 +30,7 @@ const Photos = () => {
     fileInput.current?.click();
   }
   const { data, isLoading, isFetching } = useGetPhotosQuery(undefined);
-  const photos = data?.photos;
+  const photos = data;
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
