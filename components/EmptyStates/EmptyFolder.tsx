@@ -3,12 +3,14 @@ import { FolderIcon, FolderPlusIcon, ImageIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { changeModalStatus } from "@/lib/slices/routingSlice";
+import { useRouter } from "next/navigation";
 
-const EmptyFolder = ({ setTab }: { setTab: (arg: string) => void }) => {
+const EmptyFolder = () => {
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
     dispatch(changeModalStatus(value));
   };
+  const router = useRouter();
   return (
     <>
       {
@@ -44,7 +46,7 @@ const EmptyFolder = ({ setTab }: { setTab: (arg: string) => void }) => {
               variant="outline"
               className="flex items-center justify-center space-x-2 bg-transparent transition-all w-full md:w-auto duration-200 hover:scale-105 hover:shadow-md"
               onClick={() => {
-                setTab("photos");
+                router.push("photos");
               }}
             >
               <ImageIcon className={`w-4 h-4 `} />

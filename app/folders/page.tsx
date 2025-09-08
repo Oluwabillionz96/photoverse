@@ -2,16 +2,10 @@
 import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import { Card, CardContent } from "@/components/ui/card";
-import { changeTab } from "@/lib/slices/routingSlice";
 import { useGetFoldersQuery } from "@/services/api";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
 
 const Folders = () => {
-  const dispatch = useDispatch();
-  const setTab = (value: string) => {
-    dispatch(changeTab(value));
-  };
   const { data, isLoading, isFetching } = useGetFoldersQuery(undefined);
   const folders = data?.folder;
 
@@ -51,7 +45,7 @@ const Folders = () => {
           ))}
         </div>
       ) : (
-        <EmptyFolder setTab={setTab} />
+        <EmptyFolder />
       )}
     </section>
   );

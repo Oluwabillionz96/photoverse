@@ -2,10 +2,8 @@
 import EmptyPhotos from "@/components/EmptyStates/EmptyPhotos";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
-import { changeTab } from "@/lib/slices/routingSlice";
 import { useGetPhotosQuery } from "@/services/api";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
 
 export const cloudinaryLoader = ({
   src,
@@ -20,14 +18,9 @@ export const cloudinaryLoader = ({
 };
 
 const Photos = () => {
-  const dispatch = useDispatch();
-  const setTab = (value: string) => {
-    dispatch(changeTab(value));
-  };
   const { files, setFiles, ref, openFileDialog } = useInputContext();
   const { data, isLoading, isFetching } = useGetPhotosQuery(undefined);
   const photos = data;
-
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
@@ -54,7 +47,6 @@ const Photos = () => {
           </div>
         ) : (
           <EmptyPhotos
-            setTab={setTab}
             handleUpload={openFileDialog}
             files={files}
             setFiles={setFiles}

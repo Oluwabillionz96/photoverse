@@ -30,5 +30,5 @@ const routingSlice = createSlice({
   },
 });
 
-export const { changeTab, changeModalStatus } = routingSlice.actions;
+export const { changeModalStatus } = routingSlice.actions;
 export default routingSlice.reducer;

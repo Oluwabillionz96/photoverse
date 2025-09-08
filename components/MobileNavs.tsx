@@ -1,31 +1,21 @@
 "use client";
 import useInputContext from "@/hooks/useInputContext";
-import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
-import { Rootstate } from "@/lib/store";
+import { changeModalStatus } from "@/lib/slices/routingSlice";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { FaFolder, FaPlus, FaRegStar, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
-  const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathName = usePathname();
   const params = useParams();
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
     dispatch(changeModalStatus(value));
   };
-  function setTab(value: "folders" | "photos") {
-    dispatch(changeTab(value));
-  }
 
   const router = useRouter();
-
-  useEffect(() => {
-    router.push(`/${tab}`);
-  }, [tab]);
 
   const { ref, openFileDialog } = useInputContext();
 
@@ -58,7 +48,7 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
               pathName.startsWith("/photos") ? "text-blue-600" : ""
             }`}
             onClick={() => {
-              setTab("photos");
+              router.push("/photos");
             }}
           >
             <MdOutlinePhotoSizeSelectActual />
@@ -82,12 +72,10 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 
           <button
             className={`flex flex-col justify-center items-center ${
-              tab === "folders" && pathName.startsWith("/folders")
-                ? "text-blue-600"
-                : ""
+              pathName.startsWith("/folders") ? "text-blue-600" : ""
             } text-xl`}
             onClick={() => {
-              setTab("folders");
+              router.push("/folders");
             }}
           >
             <FaFolder />

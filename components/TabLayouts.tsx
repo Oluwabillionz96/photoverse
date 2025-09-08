@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
+import { changeModalStatus } from "@/lib/slices/routingSlice";
 import { usePathname, useRouter } from "next/navigation";
 
 const TabLayouts = () => {
-  const { tab, modalStatus } = useSelector((state: Rootstate) => state.routing);
+  const { modalStatus } = useSelector((state: Rootstate) => state.routing);
 
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
@@ -20,15 +20,12 @@ const TabLayouts = () => {
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
   const [values, setValues] = useState("Recent");
   const pathname = usePathname();
-  function setTab(value: "photos" | "folders") {
-    dispatch(changeTab(value));
-  }
 
   const router = useRouter();
 
-  useEffect(() => {
-    router.push(`/${tab}`);
-  }, [tab]);
+  // useEffect(() => {
+  //   router.push(`/${tab}`);
+  // }, [tab]);
 
   return (
     <div className="md:flex  justify-between items-center px-4 my-4 hidden">
@@ -41,7 +38,7 @@ const TabLayouts = () => {
               : ""
           }`}
           onClick={() => {
-            setTab("photos");
+            router.push("/photos");
           }}
         >
           <MdOutlinePhotoSizeSelectActual
@@ -53,12 +50,12 @@ const TabLayouts = () => {
         <Button
           variant={"outline"}
           className={`w-[8.6rem] h-[2.6rem] hover:transition hover:duration-500 flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
-            tab === "folders" && pathname === `/${tab}`
+            pathname === `/folders`
               ? "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
               : ""
           }`}
           onClick={() => {
-            setTab("folders");
+            router.push("/folders");
           }}
         >
           <FaFolder

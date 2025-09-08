@@ -4,21 +4,21 @@ import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
 import { RefObject } from "react";
+import { useRouter } from "next/navigation";
 
 const EmptyPhotos = ({
-  setTab,
   handleUpload,
   files,
   setFiles,
   ref,
 }: {
-  setTab: (arg: string) => void;
   handleUpload: (arg: RefObject<HTMLInputElement | null>) => void;
   files: File[];
   ref: RefObject<HTMLInputElement | null>;
   setFiles: (arg: File[]) => void;
 }) => {
   const isMobile = useScreenSize();
+  const router = useRouter();
   return (
     <>
       {files.length > 0 ? (
@@ -62,7 +62,7 @@ const EmptyPhotos = ({
                 bg-transparent
              transition-all w-full md:w-auto duration-200 hover:scale-105 hover:shadow-md`}
               onClick={() => {
-                setTab("folders");
+                router.push("/folders");
               }}
             >
               <>
