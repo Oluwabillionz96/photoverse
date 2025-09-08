@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -59,7 +60,6 @@ export default function CreateFolderModal({
             className="sm:text-[1.1rem] text-sm hover:scale-105 bg-green-500 hover:bg-green-600"
             onClick={() => {
               setModalStatus("select");
-              console.log("done");
             }}
           >
             <FaPlus /> Create

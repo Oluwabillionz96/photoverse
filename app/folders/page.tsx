@@ -14,7 +14,6 @@ const Folders = () => {
   };
   const { data, isLoading, isFetching } = useGetFoldersQuery(undefined);
   const folders = data?.folder;
-  console.log(data);
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">

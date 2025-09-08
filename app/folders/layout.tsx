@@ -20,14 +20,14 @@ const Layout = ({
   return (
     <>
       <TabLayouts />
-      {modalStatus !== "" && (
+      {modalStatus !== "" ? (
         <CreateFolder
           foldername={foldername}
           setFoldername={setFoldername}
           modalStatus={modalStatus}
           setModalStatus={setModalStatus}
         />
-      )}
+      ) : null}
       {children}
     </>
   );

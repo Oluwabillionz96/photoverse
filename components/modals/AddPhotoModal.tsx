@@ -1,3 +1,4 @@
+"use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FolderOpen, Upload } from "lucide-react";
 import { Card, CardContent } from "../ui/card";

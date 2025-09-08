@@ -1,17 +1,21 @@
+"use client";
 import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUploadPhotosMutation } from "@/services/api";
+import toast from "react-hot-toast";
 
 const PhotosPreview = ({
   files,
   setFiles,
   ref,
+  folder,
 }: {
   files: File[];
   setFiles: (arg: File[]) => void;
   ref: RefObject<HTMLInputElement | null>;
+  folder?: string;
 }) => {
   const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
 
@@ -20,12 +24,12 @@ const PhotosPreview = ({
       photos: files.map((item, index) => ({
         link: urls[index],
         size: item.size,
+        folder,
       })),
     };
 
-    const response = await uploadPhotos(payload);
+    await uploadPhotos(payload);
     setFiles([]);
-    console.log(response);
     if (ref.current) ref.current.value = "";
     return;
   }
@@ -51,8 +55,6 @@ const PhotosPreview = ({
 
       const data = await response.json();
       url.push(data.secure_url);
-
-      console.log({ data: data.secure_url, url, index });
     }
 
     handlePhotosUploads(url);
@@ -175,7 +177,11 @@ const PhotosPreview = ({
             className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
             disabled={files.length < 1 || isLoading}
             onClick={async () => {
-              await UploadToCloudinary();
+              if (folder) {
+                await UploadToCloudinary();
+              } else {
+                toast.error("No folder provided");
+              }
             }}
           >
             <UploadIcon className={`w-4 h-4 `} />

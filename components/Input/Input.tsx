@@ -1,3 +1,4 @@
+"use client";
 import { Info } from "lucide-react";
 import { ChangeEvent } from "react";
 

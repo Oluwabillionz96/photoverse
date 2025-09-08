@@ -71,6 +71,7 @@ export const PhotoverseAPI = createApi({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["photos", "folders"],
     }),
     getFolderPhotos: builder.query<GetPhotoResponse[], { foldername: string }>({
       query: ({ foldername }) => `photos/${foldername}`,

@@ -51,7 +51,6 @@ const LoginForm = ({
         authenticate({ token: response?.data?.token })
       );
     } else if ("error" in response) {
-      console.log(response);
       const error = response.error as {
         status?: number | string;
         data?: { message: string };

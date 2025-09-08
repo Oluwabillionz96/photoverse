@@ -1,7 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
@@ -11,6 +16,13 @@ import { Rootstate } from "@/lib/store";
 import { getUser, refreshAccessToken } from "@/lib/slices/authSlice";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import MobileNavs from "./MobileNavs";
+import {
+  handleFileChange,
+  openFileDialog,
+} from "@/lib/utils/handleInputChange";
+import { InputContext } from "@/hooks/useInputContext";
+
+
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -32,6 +44,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     password: "",
     confirmedPassword: "",
   });
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (token) {
@@ -40,7 +54,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       dispatch(refreshAccessToken());
     }
   }, [token, dispatch]);
-
 
   return (
     <>
@@ -63,19 +76,38 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               setRegisterInfo={setRegisterInfo}
             />
           )}
-          <motion.header className={`bg-[#141414]`}>
-            <Link href={"/"}>
-              <Image
-                width={100}
-                height={100}
-                src={"/photoverse-logo.png"}
-                alt="logo"
-                className="block mx-auto"
-              />
-            </Link>
-          </motion.header>
-          <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-          <MobileNavs>{children}</MobileNavs>
+          <InputContext
+            value={{
+              ref: fileInput,
+              openFileDialog: openFileDialog,
+              files: files,
+              setFiles: setFiles,
+            }}
+          >
+            <motion.header className={`bg-[#141414]`}>
+              <Link href={"/"}>
+                <Image
+                  width={100}
+                  height={100}
+                  src={"/photoverse-logo.png"}
+                  alt="logo"
+                  className="block mx-auto"
+                />
+              </Link>
+            </motion.header>
+            <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
+            <MobileNavs>{children}</MobileNavs>
+            <input
+              type="file"
+              className="hidden"
+              ref={fileInput}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                handleFileChange(e, files, setFiles);
+              }}
+              accept="image/*"
+              multiple
+            />
+          </InputContext>
         </motion.main>
       )}
     </>

@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 import toast from "react-hot-toast";
 
 export const handleFileChange = (
@@ -38,4 +38,8 @@ export const handleFileChange = (
 
   setFiles((prev) => [...prev, ...uniqueNewFiles]);
   e.target.value = "";
+};
+
+export const openFileDialog = (ref: RefObject<HTMLInputElement | null>) => {
+  ref.current?.click();
 };

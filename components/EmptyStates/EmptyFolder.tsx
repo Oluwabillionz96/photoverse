@@ -1,13 +1,10 @@
+"use client";
 import { FolderIcon, FolderPlusIcon, ImageIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { changeModalStatus } from "@/lib/slices/routingSlice";
 
-const EmptyFolder = ({
-  setTab,
-}: {
-  setTab: (arg: string) => void;
-}) => {
+const EmptyFolder = ({ setTab }: { setTab: (arg: string) => void }) => {
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
     dispatch(changeModalStatus(value));

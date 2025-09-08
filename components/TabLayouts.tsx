@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import DropDown from "./dropDown";
@@ -6,7 +8,7 @@ import { FaFolder, FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const TabLayouts = () => {
   const { tab, modalStatus } = useSelector((state: Rootstate) => state.routing);
@@ -22,22 +24,28 @@ const TabLayouts = () => {
     dispatch(changeTab(value));
   }
 
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push(`/${tab}`);
+  }, [tab]);
+
   return (
     <div className="md:flex  justify-between items-center px-4 my-4 hidden">
       <div className="flex justify-center  gap-8">
         <Button
           variant={"outline"}
           className={`w-[8.6rem] hover:transition hover:duration-500 h-[2.6rem] flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
-            tab === "photos" &&
-            pathname === `/${tab}` &&
-            "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
+            pathname === `/photos`
+              ? "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
+              : ""
           }`}
           onClick={() => {
             setTab("photos");
           }}
         >
           <MdOutlinePhotoSizeSelectActual
-            className={`${pathname === `/${tab}` ? "text-blue-500" : ""}`}
+            className={pathname !== `/photos` ? "text-blue-500" : ""}
           />
           Photos
         </Button>
@@ -45,18 +53,16 @@ const TabLayouts = () => {
         <Button
           variant={"outline"}
           className={`w-[8.6rem] h-[2.6rem] hover:transition hover:duration-500 flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
-            tab === "folders" &&
-            pathname === `/${tab}` &&
-            "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
+            tab === "folders" && pathname === `/${tab}`
+              ? "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
+              : ""
           }`}
           onClick={() => {
             setTab("folders");
           }}
         >
           <FaFolder
-            className={`${
-              tab !== "folders" && pathname === `/${tab}` ? "text-blue-500" : ""
-            }`}
+            className={pathname !== `/folders` ? "text-blue-500" : ""}
           />
           Folders
         </Button>
@@ -69,7 +75,7 @@ const TabLayouts = () => {
           changeValue={setValues}
           className="w-32"
         />
-        {pathname === "/folders" && (
+        {pathname === "/folders" ? (
           <Button
             variant={"outline"}
             disabled={modalStatus === "foldername"}
@@ -81,7 +87,7 @@ const TabLayouts = () => {
             <FaPlus />
             Create Folder
           </Button>
-        )}
+        ) : null}
       </div>
     </div>
   );

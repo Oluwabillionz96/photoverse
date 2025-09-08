@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import CreateFolderModal from "./modals/CreateFolderModal";
 import AddPhotoModal from "./modals/AddPhotoModal";
@@ -12,15 +13,15 @@ import toast from "react-hot-toast";
 const CreateFolder = ({
   foldername,
   setFoldername,
-//   createFolder,
-//   setCreateFolder,
+  //   createFolder,
+  //   setCreateFolder,
   modalStatus,
   setModalStatus,
 }: {
   foldername: string;
   setFoldername: Dispatch<SetStateAction<string>>;
-//   createFolder: boolean;
-//   setCreateFolder: (arg: boolean) => void;
+  //   createFolder: boolean;
+  //   setCreateFolder: (arg: boolean) => void;
   modalStatus: "" | "preview" | "select" | "foldername";
   setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
@@ -44,9 +45,8 @@ const CreateFolder = ({
       })),
     };
 
-    const response = await uploadPhotos(payload);
+   await uploadPhotos(payload);
     setFiles([]);
-    console.log(response);
     if (fileInput.current) fileInput.current.value = "";
     return;
   }
@@ -72,8 +72,6 @@ const CreateFolder = ({
 
       const data = await response.json();
       url.push(data.secure_url);
-
-      console.log({ data: data.secure_url, url, index });
     }
 
     return url;

@@ -1,7 +1,10 @@
+"use client";
+import useInputContext from "@/hooks/useInputContext";
 import { changeModalStatus, changeTab } from "@/lib/slices/routingSlice";
 import { Rootstate } from "@/lib/store";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { FaFolder, FaPlus, FaRegStar, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathName = usePathname();
+  const params = useParams();
   const dispatch = useDispatch();
   const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
     dispatch(changeModalStatus(value));
@@ -16,6 +20,14 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   function setTab(value: "folders" | "photos") {
     dispatch(changeTab(value));
   }
+
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push(`/${tab}`);
+  }, [tab]);
+
+  const { ref, openFileDialog } = useInputContext();
 
   return (
     <>
@@ -39,11 +51,11 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         </Link>
       </nav>
       {children}
-      {(pathName === "/folders" || pathName === "/photos") && (
+      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) && (
         <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
           <button
             className={`flex flex-col justify-center items-center text-black text-xl  ${
-              tab === "photos" && pathName === "/photos" ? "text-blue-600" : ""
+              pathName.startsWith("/photos") ? "text-blue-600" : ""
             }`}
             onClick={() => {
               setTab("photos");
@@ -52,21 +64,25 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
             <MdOutlinePhotoSizeSelectActual />
             Photos
           </button>
-          {pathName === "/folders" && (
-            <button
-              className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
-              onClick={() => {
-                if (pathName === "/folders") {
-                  setModalStatus("foldername");
-                }
-              }}
-            >
-              <FaPlus />
-            </button>
-          )}
+
+          <button
+            className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
+            onClick={() => {
+              if (pathName === "/folders") {
+                setModalStatus("foldername");
+              } else if (pathName === "/photos") {
+                openFileDialog(ref);
+              } else if (params.folderName) {
+                openFileDialog(ref);
+              }
+            }}
+          >
+            <FaPlus />
+          </button>
+
           <button
             className={`flex flex-col justify-center items-center ${
-              tab === "folders" && pathName === "/folders"
+              tab === "folders" && pathName.startsWith("/folders")
                 ? "text-blue-600"
                 : ""
             } text-xl`}

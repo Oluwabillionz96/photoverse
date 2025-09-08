@@ -64,7 +64,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
       toast.success(response?.data?.message);
       dispatch(authenticate({ token: response?.data?.token }));
     } else if ("error" in response) {
-      console.log(response);
       const error = response.error as {
         status?: number | string;
         data?: { message: string };
@@ -87,7 +86,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
     if ("data" in response) {
       toast.success(response?.data?.message);
     } else if ("error" in response) {
-      console.log(response);
       const error = response.error as {
         status?: number | string;
         data?: { message: string };

@@ -1,8 +1,5 @@
-import {
-  FolderIcon,
-  ImageIcon,
-  ImagePlusIcon,
-} from "lucide-react";
+"use client";
+import { FolderIcon, ImageIcon, ImagePlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
@@ -16,7 +13,7 @@ const EmptyPhotos = ({
   ref,
 }: {
   setTab: (arg: string) => void;
-  handleUpload: () => void;
+  handleUpload: (arg: RefObject<HTMLInputElement | null>) => void;
   files: File[];
   ref: RefObject<HTMLInputElement | null>;
   setFiles: (arg: File[]) => void;
@@ -51,7 +48,7 @@ const EmptyPhotos = ({
                  " bg-green-500 hover:bg-green-600"
              transition-all duration-200 hover:scale-105 hover:shadow-lg w-full md:w-auto`}
               onClick={() => {
-                handleUpload();
+                handleUpload(ref);
               }}
             >
               <>
@@ -74,7 +71,7 @@ const EmptyPhotos = ({
               </>
             </Button>
           </div>
-          {!isMobile && (
+          {!isMobile ? (
             <div className="md:mt-8 mt-12 md:p-4 p-6 bg-gray-50 md:rounded-xl rounded-2xl md:max-w-sm max-w-md md:w-full w-auto animate-in slide-in-from-bottom-4  hover:bg-gray-100 transition-colors duration-300">
               <h3 className="font-semibold text-gray-900 mb-2 md:text-sm text-base">
                 Quick tip
@@ -84,7 +81,7 @@ const EmptyPhotos = ({
                 upload button to browse your device.
               </p>
             </div>
-          )}
+          ) : null}
         </div>
       )}
     </>
