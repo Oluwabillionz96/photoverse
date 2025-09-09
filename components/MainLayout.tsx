@@ -1,12 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ChangeEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
@@ -21,8 +16,7 @@ import {
   openFileDialog,
 } from "@/lib/utils/handleInputChange";
 import { InputContext } from "@/hooks/useInputContext";
-
-
+import { ModalContext } from "@/hooks/useModalContext";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -46,6 +40,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   });
   const fileInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [modalStatus, setModalStatus] = useState<
+    "" | "preview" | "select" | "foldername"
+  >("");
 
   useEffect(() => {
     if (token) {
@@ -62,9 +59,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       ) : (
         <motion.main
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`relative mb-24 md:mb-0 ${
-            !isMobile && collapsed
-              ? "ml-[5rem]"
+          className={`relative ${files.length < 1 ? "mb-24" : "mb-0"} md:mb-0 ${
+            isMobile
+              ? "ml-0"
+              : collapsed
+              ? "md:ml-[5rem]"
               : "md:ml-[9rem] lg:ml-[17.5rem]"
           }`}
         >
@@ -76,38 +75,42 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               setRegisterInfo={setRegisterInfo}
             />
           )}
-          <InputContext
-            value={{
-              ref: fileInput,
-              openFileDialog: openFileDialog,
-              files: files,
-              setFiles: setFiles,
-            }}
+          <ModalContext
+            value={{ modalStatus, changeModalStatus: setModalStatus }}
           >
-            <motion.header className={`bg-[#141414]`}>
-              <Link href={"/"}>
-                <Image
-                  width={100}
-                  height={100}
-                  src={"/photoverse-logo.png"}
-                  alt="logo"
-                  className="block mx-auto"
-                />
-              </Link>
-            </motion.header>
-            <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-            <MobileNavs>{children}</MobileNavs>
-            <input
-              type="file"
-              className="hidden"
-              ref={fileInput}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                handleFileChange(e, files, setFiles);
+            <InputContext
+              value={{
+                ref: fileInput,
+                openFileDialog: openFileDialog,
+                files: files,
+                setFiles: setFiles,
               }}
-              accept="image/*"
-              multiple
-            />
-          </InputContext>
+            >
+              <motion.header className={`bg-[#141414]`}>
+                <Link href={"/"}>
+                  <Image
+                    width={100}
+                    height={100}
+                    src={"/photoverse-logo.png"}
+                    alt="logo"
+                    className="block mx-auto"
+                  />
+                </Link>
+              </motion.header>
+              <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
+              <MobileNavs>{children}</MobileNavs>
+              <input
+                type="file"
+                className="hidden"
+                ref={fileInput}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  handleFileChange(e, files, setFiles);
+                }}
+                accept="image/*"
+                multiple
+              />
+            </InputContext>
+          </ModalContext>
         </motion.main>
       )}
     </>

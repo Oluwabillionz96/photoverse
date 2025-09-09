@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ArrowLeft, Check, XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 const ImagePreviewModal = ({
   folderName,
@@ -79,7 +80,7 @@ const ImagePreviewModal = ({
                 transition={{ duration: 0.5 }}
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-blue-300 transition-all duration-200 ">
-                  <img
+                  <Image
                     src={url[index]}
                     alt={image.name || "Uploaded image preview"}
                     className="w-full h-full object-cover hover:cursor-pointer transition-transform duration-200"

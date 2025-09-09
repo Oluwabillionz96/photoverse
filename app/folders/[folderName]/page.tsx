@@ -2,10 +2,12 @@
 
 import { cloudinaryLoader } from "@/app/photos/page";
 import PhotosPreview from "@/components/photosPreview";
+import { Button } from "@/components/ui/button";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetFolderPhotosQuery } from "@/services/api";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Folder = () => {
   const params = useParams();
@@ -17,9 +19,22 @@ const Folder = () => {
   });
   const { files, setFiles, ref } = useInputContext();
   const photos = data;
+  const { back } = useRouter();
   return (
-    <section className=" pt-5 mx-2 h-fit md:py-20">
+    <section className="mx-2 h-fit md:py-4">
       <>
+        {files.length < 1 && (
+          <div>
+            <Button
+              onClick={() => {
+                back();
+              }}
+              className="w-fit h-fit bg-blue-500 mb-4 hover:bg-blue-600"
+            >
+              <FaArrowLeft />
+            </Button>
+          </div>
+        )}
         {files.length > 0 ? (
           <PhotosPreview
             files={files}

@@ -5,6 +5,7 @@ import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUploadPhotosMutation } from "@/services/api";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const PhotosPreview = ({
   files,
@@ -149,12 +150,13 @@ const PhotosPreview = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-blue-300 transition-all duration-200 ">
-                  <img
+                <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-blue-300 transition-all duration-200 relative ">
+                  <Image
                     src={preview[index]}
                     alt={files[index].name || "Uploaded image preview"}
                     className="w-full h-full object-cover hover:cursor-pointer transition-transform duration-200"
                     loading="lazy"
+                    fill
                   />
                 </div>
                 <button

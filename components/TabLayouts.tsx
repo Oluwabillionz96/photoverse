@@ -5,27 +5,16 @@ import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Rootstate } from "@/lib/store";
-import { changeModalStatus } from "@/lib/slices/routingSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import useModalContext from "@/hooks/useModalContext";
 
 const TabLayouts = () => {
-  const { modalStatus } = useSelector((state: Rootstate) => state.routing);
-
-  const dispatch = useDispatch();
-  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
-    dispatch(changeModalStatus(value));
-  };
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
   const [values, setValues] = useState("Recent");
   const pathname = usePathname();
-
+  const params = useParams();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   router.push(`/${tab}`);
-  // }, [tab]);
+  const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
 
   return (
     <div className="md:flex  justify-between items-center px-4 my-4 hidden">
@@ -33,7 +22,7 @@ const TabLayouts = () => {
         <Button
           variant={"outline"}
           className={`w-[8.6rem] hover:transition hover:duration-500 h-[2.6rem] flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
-            pathname === `/photos`
+            pathname.startsWith(`/photos`)
               ? "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
               : ""
           }`}
@@ -42,7 +31,7 @@ const TabLayouts = () => {
           }}
         >
           <MdOutlinePhotoSizeSelectActual
-            className={pathname !== `/photos` ? "text-blue-500" : ""}
+            className={!pathname.startsWith("/photos") ? "text-blue-500" : ""}
           />
           Photos
         </Button>
@@ -50,7 +39,7 @@ const TabLayouts = () => {
         <Button
           variant={"outline"}
           className={`w-[8.6rem] h-[2.6rem] hover:transition hover:duration-500 flex items-center  hover:bg-white hover:scale-105 hover:rotate-1 hover:border-blue-500 hover:text-blue-500 hover:border justify-center gap-4 rounded-[5px] hover:cursor-pointer ${
-            pathname === `/folders`
+            pathname.startsWith(`/folders`)
               ? "bg-blue-500 hover:bg-blue-500 hover:text-white hover:border-none  text-white border-0"
               : ""
           }`}
@@ -59,7 +48,7 @@ const TabLayouts = () => {
           }}
         >
           <FaFolder
-            className={pathname !== `/folders` ? "text-blue-500" : ""}
+            className={!pathname.startsWith(`/folders`) ? "text-blue-500" : ""}
           />
           Folders
         </Button>
@@ -72,19 +61,21 @@ const TabLayouts = () => {
           changeValue={setValues}
           className="w-32"
         />
-        {pathname === "/folders" ? (
-          <Button
-            variant={"outline"}
-            disabled={modalStatus === "foldername"}
-            className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
-            onClick={() => {
-              setModalStatus("foldername");
-            }}
-          >
-            <FaPlus />
-            Create Folder
-          </Button>
-        ) : null}
+        <Button
+          variant={"outline"}
+          disabled={modalStatus === "foldername"}
+          className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
+          onClick={() => {
+            setModalStatus("foldername");
+          }}
+        >
+          <FaPlus />
+          {pathname === "/folders"
+            ? "Create Folder"
+            : params.folderName
+            ? "Add photo"
+            : ""}
+        </Button>
       </div>
     </div>
   );

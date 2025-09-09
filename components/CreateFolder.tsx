@@ -13,15 +13,11 @@ import toast from "react-hot-toast";
 const CreateFolder = ({
   foldername,
   setFoldername,
-  //   createFolder,
-  //   setCreateFolder,
   modalStatus,
   setModalStatus,
 }: {
   foldername: string;
   setFoldername: Dispatch<SetStateAction<string>>;
-  //   createFolder: boolean;
-  //   setCreateFolder: (arg: boolean) => void;
   modalStatus: "" | "preview" | "select" | "foldername";
   setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {

@@ -1,16 +1,12 @@
 "use client";
 import { FolderIcon, FolderPlusIcon, ImageIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { useDispatch } from "react-redux";
-import { changeModalStatus } from "@/lib/slices/routingSlice";
 import { useRouter } from "next/navigation";
+import useModalContext from "@/hooks/useModalContext";
 
 const EmptyFolder = () => {
-  const dispatch = useDispatch();
-  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
-    dispatch(changeModalStatus(value));
-  };
   const router = useRouter();
+  const { changeModalStatus: setModalStatus } = useModalContext();
   return (
     <>
       {

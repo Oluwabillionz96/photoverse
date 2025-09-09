@@ -7,47 +7,32 @@ import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
-import { Rootstate } from "@/lib/store";
-import { useEffect, useState } from "react";
+
+interface Icon {
+  className: string;
+  size: number;
+  color: string;
+}
 
 export const navLinks = [
   {
-    icon: ({
-      className,
-      size,
-      color,
-    }: {
-      className: string;
-      size: number;
-      color: string;
-    }) => <IoHome className={className} size={size} color={color} />,
+    icon: ({ className, size, color }: Icon) => (
+      <IoHome className={className} size={size} color={color} />
+    ),
     label: "Home",
-    url: "/folders",
+    url: "/",
   },
   {
-    icon: ({
-      className,
-      size,
-      color,
-    }: {
-      className: string;
-      size: number;
-      color: string;
-    }) => <FaRegStar className={className} size={size} color={color} />,
+    icon: ({ className, size, color }: Icon) => (
+      <FaRegStar className={className} size={size} color={color} />
+    ),
     label: "Favourites",
     url: "/favourites",
   },
   {
-    icon: ({
-      className,
-      size,
-      color,
-    }: {
-      className: string;
-      size: number;
-      color: string;
-    }) => <FaTrashAlt className={className} size={size} color={color} />,
+    icon: ({ className, size, color }: Icon) => (
+      <FaTrashAlt className={className} size={size} color={color} />
+    ),
     label: "Trash",
     url: "/trash",
   },
@@ -60,17 +45,12 @@ const SideNav = ({
   collapsed: boolean;
   setCollapsed: (arg: boolean) => void;
 }) => {
-  const { tab } = useSelector((state: Rootstate) => state.routing);
   const pathname = usePathname();
-  const [newNavLink, setNewNavLink] = useState(navLinks);
-
-  useEffect(() => {
-    const modifiedNavlink = newNavLink;
-    modifiedNavlink[0].url = `/${tab}`;
-    setNewNavLink(modifiedNavlink);
-  }, [tab, newNavLink]);
 
   const active = (url: string) => {
+    if (url === "/") {
+      return pathname.startsWith("/folders") || pathname.startsWith("/photos");
+    }
     return pathname.startsWith(`${url}/`) || pathname === url;
   };
   return (
@@ -82,7 +62,7 @@ const SideNav = ({
           : "md:w-[9rem] lg:w-[17.5rem] px-[0.5rem]"
       }`}
     >
-      <div className="  h-8 mb-12 relative lg:visible invisible">
+      <div className="  h-8 my-6 flex justify-end relative lg:visible invisible">
         <Button
           size={"icon"}
           onClick={() => {
@@ -91,17 +71,13 @@ const SideNav = ({
               localStorage.setItem("collapsed", JSON.stringify(!collapsed));
             }
           }}
-          className=" absolute top-6 right-2 hover:cursor-pointer"
+          className="hover:cursor-pointer font-bold"
         >
-          {collapsed ? (
-            <GoSidebarCollapse size={30} color="white" />
-          ) : (
-            <GoSidebarExpand size={30} color="white" />
-          )}
+          {collapsed ? <GoSidebarCollapse /> : <GoSidebarExpand />}
         </Button>
       </div>
       <nav>
-        {newNavLink.map((nav, id) => {
+        {navLinks.map((nav, id) => {
           const isActive = active(nav.url);
           return (
             <Link key={id} href={nav.url}>

@@ -1,23 +1,18 @@
 "use client";
 import useInputContext from "@/hooks/useInputContext";
-import { changeModalStatus } from "@/lib/slices/routingSlice";
+import useModalContext from "@/hooks/useModalContext";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { FaFolder, FaPlus, FaRegStar, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
-import { useDispatch } from "react-redux";
 
 const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const pathName = usePathname();
   const params = useParams();
-  const dispatch = useDispatch();
-  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
-    dispatch(changeModalStatus(value));
-  };
-
+  const { changeModalStatus: setModalStatus } = useModalContext();
   const router = useRouter();
 
-  const { ref, openFileDialog } = useInputContext();
+  const { ref, openFileDialog, files } = useInputContext();
 
   return (
     <>
@@ -41,48 +36,49 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
         </Link>
       </nav>
       {children}
-      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
-          <button
-            className={`flex flex-col justify-center items-center text-black text-xl  ${
-              pathName.startsWith("/photos") ? "text-blue-600" : ""
-            }`}
-            onClick={() => {
-              router.push("/photos");
-            }}
-          >
-            <MdOutlinePhotoSizeSelectActual />
-            Photos
-          </button>
+      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) &&
+        files.length < 1 && (
+          <nav className="fixed bottom-0 left-0 right-0 bg-gray-200/50 flex justify-between items-center px-4 py-4 md:hidden">
+            <button
+              className={`flex flex-col justify-center items-center text-black text-xl  ${
+                pathName.startsWith("/photos") ? "text-blue-600" : ""
+              }`}
+              onClick={() => {
+                router.push("/photos");
+              }}
+            >
+              <MdOutlinePhotoSizeSelectActual />
+              Photos
+            </button>
 
-          <button
-            className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
-            onClick={() => {
-              if (pathName === "/folders") {
-                setModalStatus("foldername");
-              } else if (pathName === "/photos") {
-                openFileDialog(ref);
-              } else if (params.folderName) {
-                openFileDialog(ref);
-              }
-            }}
-          >
-            <FaPlus />
-          </button>
+            <button
+              className="flex justify-center items-center text-2xl p-4 bg-black text-white rounded-full "
+              onClick={() => {
+                if (pathName === "/folders") {
+                  setModalStatus("foldername");
+                } else if (pathName === "/photos") {
+                  openFileDialog(ref);
+                } else if (params.folderName) {
+                  openFileDialog(ref);
+                }
+              }}
+            >
+              <FaPlus />
+            </button>
 
-          <button
-            className={`flex flex-col justify-center items-center ${
-              pathName.startsWith("/folders") ? "text-blue-600" : ""
-            } text-xl`}
-            onClick={() => {
-              router.push("/folders");
-            }}
-          >
-            <FaFolder />
-            Folders
-          </button>
-        </nav>
-      )}
+            <button
+              className={`flex flex-col justify-center items-center ${
+                pathName.startsWith("/folders") ? "text-blue-600" : ""
+              } text-xl`}
+              onClick={() => {
+                router.push("/folders");
+              }}
+            >
+              <FaFolder />
+              Folders
+            </button>
+          </nav>
+        )}
     </>
   );
 };

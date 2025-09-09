@@ -1,10 +1,8 @@
 "use client";
 import CreateFolder from "@/components/CreateFolder";
 import TabLayouts from "@/components/TabLayouts";
-import { changeModalStatus } from "@/lib/slices/routingSlice";
-import { Rootstate } from "@/lib/store";
+import useModalContext from "@/hooks/useModalContext";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 const Layout = ({
   children,
@@ -12,11 +10,7 @@ const Layout = ({
   children: React.ReactNode;
 }>) => {
   const [foldername, setFoldername] = useState("");
-  const dispatch = useDispatch();
-  const { modalStatus } = useSelector((state: Rootstate) => state.routing);
-  const setModalStatus = (value: "" | "preview" | "select" | "foldername") => {
-    dispatch(changeModalStatus(value));
-  };
+  const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
   return (
     <>
       <TabLayouts />
