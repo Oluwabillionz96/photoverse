@@ -3,6 +3,7 @@ import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useGetFoldersQuery } from "@/services/api";
+import Image from "next/image";
 import Link from "next/link";
 
 const Folders = () => {
@@ -21,13 +22,14 @@ const Folders = () => {
               className="group cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-[1.02]"
             >
               <Link href={`/folders/${folder?.name}`}>
-                <CardContent className="p-4">
-                  <div className="relative mb-3">
-                    <img
+                <CardContent className="p-2">
+                  <div className="relative mb-3 h-20 md:h-28 lg:h-32 xl:h-36">
+                    <Image
                       src={"/folderThumbnail.png"}
                       alt={"thumbnail"}
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      fill
                     />
                   </div>
 

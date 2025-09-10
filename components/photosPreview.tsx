@@ -4,14 +4,14 @@ import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUploadPhotosMutation } from "@/services/api";
-import toast from "react-hot-toast";
 import Image from "next/image";
+import Spinner from "./loaders/Spinner";
 
 const PhotosPreview = ({
   files,
   setFiles,
   ref,
-  folder,
+  folder = "General",
 }: {
   files: File[];
   setFiles: (arg: File[]) => void;
@@ -125,8 +125,8 @@ const PhotosPreview = ({
               await UploadToCloudinary();
             }}
           >
-            <UploadIcon className={`w-4 h-4 `} />
-            Upload file{files.length > 1 && "s"}
+            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
+            {isLoading ? "Uploading" : "Upload"}file{files.length > 1 && "s"}
           </Button>
         </div>
       </div>
@@ -179,15 +179,11 @@ const PhotosPreview = ({
             className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
             disabled={files.length < 1 || isLoading}
             onClick={async () => {
-              if (folder) {
-                await UploadToCloudinary();
-              } else {
-                toast.error("No folder provided");
-              }
+              await UploadToCloudinary();
             }}
           >
-            <UploadIcon className={`w-4 h-4 `} />
-            Upload file{files.length > 1 && "s"}
+            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
+            {isLoading ? "Uploading" : "Upload"}file{files.length > 1 && "s"}
           </Button>
         )}
       </div>

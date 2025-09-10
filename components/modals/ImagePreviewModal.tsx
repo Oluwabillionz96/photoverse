@@ -5,6 +5,7 @@ import { ArrowLeft, Check, XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import Spinner from "../loaders/Spinner";
 
 const ImagePreviewModal = ({
   folderName,
@@ -59,7 +60,9 @@ const ImagePreviewModal = ({
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              Preview Images for &quot;{folderName}&quot;
+              <p className="mt-4 md:mt-0">
+                Preview Images for &quot;{folderName}&quot;
+              </p>
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -85,6 +88,7 @@ const ImagePreviewModal = ({
                     alt={image.name || "Uploaded image preview"}
                     className="w-full h-full object-cover hover:cursor-pointer transition-transform duration-200"
                     loading="lazy"
+                    fill
                   />
                 </div>
                 <button
@@ -128,7 +132,7 @@ const ImagePreviewModal = ({
                 className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
                 disabled={selectedImages.length === 0 || isLoading}
               >
-                <Check className="w-4 h-4 mr-2" />
+                {isLoading ? <Spinner /> : <Check className="w-4 h-4 mr-2" />}
                 {isLoading ? "Creating..." : "Create Folder"}
               </Button>
             </div>

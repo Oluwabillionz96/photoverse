@@ -12,6 +12,7 @@ import { validateLoginInfo } from "@/lib/utils/Validation";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { authenticate } from "@/lib/slices/authSlice";
+import Spinner from "../loaders/Spinner";
 
 const LoginForm = ({
   loginInfo,
@@ -26,12 +27,11 @@ const LoginForm = ({
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
 }) => {
-  const [login] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const [loginError, setLoginError] = useState({
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -39,17 +39,13 @@ const LoginForm = ({
   }, [setLoginInfo]);
 
   const handleLogin = async () => {
-    setLoading(true);
-
     const payload = { email: loginInfo.email, password: loginInfo.password };
 
     const response = await login(payload);
 
     if ("data" in response) {
       toast.success(response?.data?.message);
-      dispatch(
-        authenticate({ token: response?.data?.token })
-      );
+      dispatch(authenticate({ token: response?.data?.token }));
     } else if ("error" in response) {
       const error = response.error as {
         status?: number | string;
@@ -64,7 +60,6 @@ const LoginForm = ({
 
       toast.error(message);
     }
-    setLoading(false);
     return;
   };
 
@@ -141,10 +136,13 @@ const LoginForm = ({
         </div>
         <button
           type="submit"
-          className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
-          disabled={!loginInfo.email.trim() || !loginInfo.password.trim()}
+          className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
+          disabled={
+            !loginInfo.email.trim() || !loginInfo.password.trim() || isLoading
+          }
         >
-          {loading ? "Logging in..." : "Login"}
+          {isLoading && <Spinner />}
+          {isLoading ? "Logging in..." : "Login"}
         </button>
       </form>
       <MotionConfig transition={{ duration: 0.5, ease: "easeIn", delay: 1.2 }}>

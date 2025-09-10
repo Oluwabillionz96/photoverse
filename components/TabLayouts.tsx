@@ -7,6 +7,7 @@ import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import useModalContext from "@/hooks/useModalContext";
+import useInputContext from "@/hooks/useInputContext";
 
 const TabLayouts = () => {
   const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
@@ -14,6 +15,7 @@ const TabLayouts = () => {
   const pathname = usePathname();
   const params = useParams();
   const router = useRouter();
+  const { ref, openFileDialog } = useInputContext();
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
 
   return (
@@ -66,13 +68,17 @@ const TabLayouts = () => {
           disabled={modalStatus === "foldername"}
           className="w-[8.6rem] h-[2.6rem] flex items-center disabled:cursor-not-allowed justify-center gap-2"
           onClick={() => {
+            if (params.folderName || pathname === "/photos") {
+              openFileDialog(ref);
+              return;
+            }
             setModalStatus("foldername");
           }}
         >
           <FaPlus />
           {pathname === "/folders"
             ? "Create Folder"
-            : params.folderName
+            : params.folderName || pathname === "/photos"
             ? "Add photo"
             : ""}
         </Button>

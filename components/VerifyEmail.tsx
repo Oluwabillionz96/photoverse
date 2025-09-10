@@ -12,13 +12,15 @@ import { useResendOTPMutation, useVerifyEmailMutation } from "@/services/api";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { authenticate } from "@/lib/slices/authSlice";
+import Spinner from "./loaders/Spinner";
 
 const VerifyEmail = ({ email }: { email: string }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
-  const [loading, setLoading] = useState(false);
+
   const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-  const [verify] = useVerifyEmailMutation();
-  const [resend] = useResendOTPMutation();
+  const [verify, { isLoading: isVerifying }] = useVerifyEmailMutation();
+  const [resend, { isLoading: isResending }] = useResendOTPMutation();
+  const loading = isVerifying || isResending;
   const [resendCode, setResendCode] = useState(60);
   const dispatch = useDispatch();
 
@@ -54,8 +56,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
   }
 
   const verifyOTP = async () => {
-    setLoading(true);
-
     const payload = { email: email, otp: inputValue.join("") };
 
     const response = await verify(payload);
@@ -77,7 +77,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
 
       toast.error(message);
     }
-    setLoading(false);
     return;
   };
 
@@ -159,7 +158,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
         ))}
       </div>
       <Button
-        className="w-9/10 h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
+        className="w-9/10 h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
         disabled={
           inputValue.join("").length !== 6 ||
           !inputValue.join("").trim() ||
@@ -167,6 +166,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
         }
         onClick={verifyOTP}
       >
+        {loading ? <Spinner /> : ""}
         {loading ? "Confirming..." : "Confirm"}
       </Button>
       {resendCode !== 0 ? (
@@ -174,8 +174,12 @@ const VerifyEmail = ({ email }: { email: string }) => {
           Resend Code in {resendCode} seconds
         </p>
       ) : (
-        <button onClick={resendOTP} className="text-blue-500 text-[1.1rem]">
-          Resend Code
+        <button
+          onClick={resendOTP}
+          disabled={loading}
+          className="text-blue-500 text-[1.1rem] disabled:opacity-50"
+        >
+          {isResending ? "Resending code" : "Resend Code"}
         </button>
       )}
     </motion.div>
