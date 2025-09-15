@@ -1,6 +1,7 @@
 "use client";
 
 import { cloudinaryLoader } from "@/app/photos/page";
+import PhotoLoder from "@/components/loaders/PhotoLoder";
 import PhotosPreview from "@/components/photosPreview";
 import { Button } from "@/components/ui/button";
 import useInputContext from "@/hooks/useInputContext";
@@ -43,7 +44,7 @@ const Folder = () => {
             folder={foldername?.replaceAll("%20", " ") ?? ""}
           />
         ) : isLoading || isFetching ? (
-          <p>Loading...</p>
+          <PhotoLoder />
         ) : photos && photos.length > 0 ? (
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
             {photos.map((item) => (

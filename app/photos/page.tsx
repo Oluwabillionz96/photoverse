@@ -1,5 +1,6 @@
 "use client";
 import EmptyPhotos from "@/components/EmptyStates/EmptyPhotos";
+import PhotoLoder from "@/components/loaders/PhotoLoder";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
@@ -28,7 +29,7 @@ const Photos = () => {
         {files.length > 0 ? (
           <PhotosPreview files={files} setFiles={setFiles} ref={ref} />
         ) : isLoading || isFetching ? (
-          <p>Loading...</p>
+          <PhotoLoder />
         ) : photos && photos.length > 0 ? (
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
             {photos.map((item) => (

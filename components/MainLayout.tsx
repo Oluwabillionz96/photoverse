@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(true);
   useEffect(() => {
     setCollapsed(isCollapsed);
-  }, []);
+  }, [isCollapsed]);
   const isMobile = useScreenSize();
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
   const { authenticated, loading, token } = useSelector(
