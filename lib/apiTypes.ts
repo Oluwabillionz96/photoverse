@@ -4,14 +4,19 @@ export interface Folder {
   createdAt: string;
 }
 
+export interface Photo {
+  _id: string;
+  link: string;
+  size: number;
+  uploadedAt: string;
+}
+
 export interface GetFolderResponse {
   folders: Folder[];
   totalPages: number;
 }
 
 export interface GetPhotoResponse {
-  _id: string;
-  link: string;
-  size: number;
-  uploadedAt: string;
+  photos: Photo[];
+  totalPages: number;
 }

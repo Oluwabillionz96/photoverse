@@ -12,7 +12,9 @@ const Folders = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
+  const [currentPage, setCurrentPage] = useState(
+    Number.parseInt(searchParams.get("page") || "1")
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

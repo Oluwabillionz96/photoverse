@@ -1,27 +1,31 @@
 "use client";
 import EmptyPhotos from "@/components/EmptyStates/EmptyPhotos";
+import ImageGrid from "@/components/ImageGrid";
 import PhotoLoder from "@/components/loaders/PhotoLoder";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
-import Image from "next/image";
-
-export const cloudinaryLoader = ({
-  src,
-  width,
-  quality,
-}: {
-  src: string;
-  width: number;
-  quality?: number;
-}) => {
-  return `${src}?w=${width}&q=${quality || 75}`;
-};
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Photos = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(
+    Number.parseInt(searchParams.get("page") || "1")
+  );
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", currentPage.toString());
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [router, pathname, currentPage]);
+
   const { files, setFiles, ref, openFileDialog } = useInputContext();
-  const { data, isLoading, isFetching } = useGetPhotosQuery(undefined);
-  const photos = data;
+  const { data, isLoading, isFetching } = useGetPhotosQuery({
+    page: currentPage,
+  });
+  const photos = data?.photos;
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
@@ -31,21 +35,7 @@ const Photos = () => {
         ) : isLoading || isFetching ? (
           <PhotoLoder />
         ) : photos && photos.length > 0 ? (
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-            {photos.map((item) => (
-              <div key={item._id} className="relative aspect-square">
-                <Image
-                  src={item?.link}
-                  alt="photo"
-                  fill
-                  loading="lazy"
-                  className="object-cover object-top"
-                  sizes="33vw"
-                  loader={cloudinaryLoader}
-                />
-              </div>
-            ))}
-          </div>
+          <ImageGrid photos={photos} />
         ) : (
           <EmptyPhotos
             handleUpload={openFileDialog}
