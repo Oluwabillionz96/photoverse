@@ -5,10 +5,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useGetFoldersQuery } from "@/services/api";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Folders = () => {
-  const { data, isLoading, isFetching } = useGetFoldersQuery(undefined);
-  const folders = data?.folder;
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", currentPage.toString());
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [pathname, router, currentPage]);
+
+  const { data, isLoading, isFetching } = useGetFoldersQuery({
+    page: currentPage,
+  });
+  const folders = data?.folders;
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">

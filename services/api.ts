@@ -61,8 +61,8 @@ export const PhotoverseAPI = createApi({
       }),
       invalidatesTags: ["folders"],
     }),
-    getFolders: builder.query<GetFolderResponse, void>({
-      query: () => "folders",
+    getFolders: builder.query<GetFolderResponse, { page: string | number }>({
+      query: ({ page }) => `folders?limit=12&page=${page}`,
       providesTags: ["folders"],
     }),
     uploadPhotos: builder.mutation({
