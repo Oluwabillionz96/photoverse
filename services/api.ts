@@ -76,6 +76,13 @@ export const PhotoverseAPI = createApi({
     getFolderPhotos: builder.query<GetPhotoResponse, { foldername: string }>({
       query: ({ foldername }) => `photos/${foldername}`,
     }),
+    toggleFavourite: builder.mutation({
+      query: (body) => ({
+        url: "photos/favourite",
+        method: "PUT",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -89,4 +96,5 @@ export const {
   useCreateFolderMutation,
   useGetFoldersQuery,
   useGetFolderPhotosQuery,
+  useToggleFavouriteMutation,
 } = PhotoverseAPI;

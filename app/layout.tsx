@@ -33,12 +33,14 @@ export default function RootLayout({
       >
         <AppProvider>
           <Layout>
-            <ToastManager />
             {children}
+            <ToastManager />
           </Layout>
           <Toaster
             position="top-center"
-            containerStyle={{ zIndex: 99999999999 }}
+            containerStyle={{
+              zIndex: 99999999999999,
+            }}
             toastOptions={{
               success: {
                 style: {

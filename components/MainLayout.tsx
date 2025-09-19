@@ -86,7 +86,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 setFiles: setFiles,
               }}
             >
-              <motion.header className={`bg-[#141414]`}>
+              <motion.header className={`bg-[#141414] relative`}>
                 <Link href={"/"}>
                   <Image
                     width={100}

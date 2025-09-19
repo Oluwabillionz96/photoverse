@@ -8,7 +8,9 @@ export interface Photo {
   _id: string;
   link: string;
   size: number;
+  folder: string;
   uploadedAt: string;
+  isFavourite: boolean;
 }
 
 export interface GetFolderResponse {

@@ -1,6 +1,6 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageModal } from "./ImageModal";
 
 export const cloudinaryLoader = ({
@@ -19,6 +19,19 @@ const ImageGrid = ({ photos }: { photos: Photo[] }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
     null
   );
+  const [disable, setDisable] = useState<"left" | "right" | "">("");
+
+  useEffect(() => {
+    if (selectedPhotoIndex === photos.length - 1) {
+      setDisable("right");
+      return;
+    }
+    if (selectedPhotoIndex === 0) {
+      setDisable("left");
+      return;
+    }
+    setDisable("");
+  }, [disable, photos.length, selectedPhotoIndex]);
 
   const openModal = (index: number) => {
     setSelectedPhotoIndex(index);
@@ -29,22 +42,22 @@ const ImageGrid = ({ photos }: { photos: Photo[] }) => {
   };
 
   const goToNext = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length);
+    if (
+      selectedPhotoIndex !== null &&
+      selectedPhotoIndex !== photos.length - 1
+    ) {
+      setSelectedPhotoIndex(selectedPhotoIndex + 1);
     }
   };
 
   const goToPrevious = () => {
-    if (selectedPhotoIndex !== null) {
-      setSelectedPhotoIndex(
-        selectedPhotoIndex === 0 ? photos.length - 1 : selectedPhotoIndex - 1
-      );
+    if (selectedPhotoIndex !== null && selectedPhotoIndex !== 0) {
+      setSelectedPhotoIndex(selectedPhotoIndex - 1);
     }
   };
 
   return (
     <>
-      {" "}
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
         {photos.map((item, index) => (
           <div
@@ -71,8 +84,8 @@ const ImageGrid = ({ photos }: { photos: Photo[] }) => {
           onClose={closeModal}
           onNext={goToNext}
           onPrevious={goToPrevious}
-          currentIndex={selectedPhotoIndex}
           totalCount={photos.length}
+          disable={disable}
         />
       )}
     </>
