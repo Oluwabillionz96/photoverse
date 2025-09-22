@@ -29,7 +29,7 @@ interface ImageModalProps {
   onNext: () => void;
   onPrevious: () => void;
   disable: "left" | "right" | "";
-  totalCount: number;
+  side: "left" | "right" | "";
 }
 
 export function ImageModal({
@@ -39,10 +39,9 @@ export function ImageModal({
   onNext,
   onPrevious,
   disable,
-  totalCount,
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
-  const [side, setSide] = useState<"" | "right" | "left">("");
+  // const [side, setSide] = useState<"" | "right" | "left">("");
   const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
 
   async function toggleIsFavourite() {
@@ -74,11 +73,11 @@ export function ImageModal({
   const handler = useSwipeable({
     onSwipedRight: () => {
       onPrevious();
-      setSide("right");
+      // setSide("right");
     },
     onSwipedLeft: () => {
       onNext();
-      setSide("left");
+      // setSide("left");
     },
     onTap: () => setShowOptions(!showOptions),
   });
@@ -122,7 +121,7 @@ export function ImageModal({
             <Button
               onClick={() => {
                 onClose();
-                setSide("");
+                // setSide("");
               }}
               className="  p-2 bg-transparent hover:bg-transparent text-white "
             >
@@ -151,9 +150,9 @@ export function ImageModal({
         >
           <motion.div
             className="relative max-w-full max-h-full mx-2 md:mx-0"
-            initial={{ x: side === "right" ? -500 : 500, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: side === "right" ? 500 : -500, opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             key={photo._id}
           >
@@ -186,7 +185,7 @@ export function ImageModal({
           <button
             onClick={() => {
               onPrevious();
-              setSide("right");
+              // setSide("right");
             }}
             className=" translate-y-1/2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer  p-3 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
             disabled={disable === "left"}
@@ -196,7 +195,7 @@ export function ImageModal({
           <button
             onClick={() => {
               onNext();
-              setSide("left");
+              // setSide("left");
             }}
             className=" translate-y-1/2  p-3 bg-black/50 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed  text-white rounded-full hover:bg-black/70 transition-colors"
             disabled={disable === "right"}

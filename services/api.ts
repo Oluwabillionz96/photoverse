@@ -1,5 +1,5 @@
 import baseUrl from "@/baseUrl";
-import { GetFolderResponse, GetPhotoResponse } from "@/lib/apiTypes";
+import { GetFolderResponse, GetPhotoResponse, Photo } from "@/lib/apiTypes";
 import { Rootstate } from "@/lib/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -75,6 +75,11 @@ export const PhotoverseAPI = createApi({
     }),
     getFolderPhotos: builder.query<GetPhotoResponse, { foldername: string }>({
       query: ({ foldername }) => `photos/${foldername}`,
+      providesTags: ["photos"],
+    }),
+    getOnePhoto: builder.query<Photo, { id: string }>({
+      query: ({ id }) => `photos/one/${id}`,
+      providesTags: ["photos"],
     }),
     toggleFavourite: builder.mutation({
       query: (body) => ({
@@ -82,6 +87,7 @@ export const PhotoverseAPI = createApi({
         method: "PUT",
         body,
       }),
+      invalidatesTags: ["photos"],
     }),
   }),
 });
@@ -96,5 +102,6 @@ export const {
   useCreateFolderMutation,
   useGetFoldersQuery,
   useGetFolderPhotosQuery,
+  useGetOnePhotoQuery,
   useToggleFavouriteMutation,
 } = PhotoverseAPI;

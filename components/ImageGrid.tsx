@@ -1,7 +1,9 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ImageModal } from "./ImageModal";
+import { useEffect } from "react";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { updatePhotoId } from "@/lib/slices/photoSlice";
 
 export const cloudinaryLoader = ({
   src,
@@ -16,54 +18,21 @@ export const cloudinaryLoader = ({
 };
 
 const ImageGrid = ({ photos }: { photos: Photo[] }) => {
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
-    null
-  );
-  const [disable, setDisable] = useState<"left" | "right" | "">("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (selectedPhotoIndex === photos.length - 1) {
-      setDisable("right");
-      return;
-    }
-    if (selectedPhotoIndex === 0) {
-      setDisable("left");
-      return;
-    }
-    setDisable("");
-  }, [disable, photos.length, selectedPhotoIndex]);
-
-  const openModal = (index: number) => {
-    setSelectedPhotoIndex(index);
-  };
-
-  const closeModal = () => {
-    setSelectedPhotoIndex(null);
-  };
-
-  const goToNext = () => {
-    if (
-      selectedPhotoIndex !== null &&
-      selectedPhotoIndex !== photos.length - 1
-    ) {
-      setSelectedPhotoIndex(selectedPhotoIndex + 1);
-    }
-  };
-
-  const goToPrevious = () => {
-    if (selectedPhotoIndex !== null && selectedPhotoIndex !== 0) {
-      setSelectedPhotoIndex(selectedPhotoIndex - 1);
-    }
-  };
+    const imageIds = photos?.map((item) => item._id);
+    dispatch(updatePhotoId(imageIds));
+  }, [dispatch, photos]);
 
   return (
     <>
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-        {photos.map((item, index) => (
-          <div
+        {photos.map((item) => (
+          <Link
             key={item._id}
             className="relative aspect-square"
-            onClick={() => openModal(index)}
+            href={`/photos/${item._id}`}
           >
             <Image
               src={item?.link}
@@ -74,20 +43,9 @@ const ImageGrid = ({ photos }: { photos: Photo[] }) => {
               sizes="33vw"
               loader={cloudinaryLoader}
             />
-          </div>
+          </Link>
         ))}
       </div>
-      {selectedPhotoIndex !== null && (
-        <ImageModal
-          photo={photos[selectedPhotoIndex]}
-          isOpen={true}
-          onClose={closeModal}
-          onNext={goToNext}
-          onPrevious={goToPrevious}
-          totalCount={photos.length}
-          disable={disable}
-        />
-      )}
     </>
   );
 };

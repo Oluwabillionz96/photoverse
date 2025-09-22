@@ -19,6 +19,7 @@ const PhotosPreview = ({
   folder?: string;
 }) => {
   const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
+  const [loading, setLoading] = useState(false);
 
   async function handlePhotosUploads(urls: string[]) {
     const payload = {
@@ -32,6 +33,7 @@ const PhotosPreview = ({
     await uploadPhotos(payload);
     setFiles([]);
     if (ref.current) ref.current.value = "";
+    setLoading(false);
     return;
   }
 
@@ -39,6 +41,7 @@ const PhotosPreview = ({
     const presetKey = "photoverse_test";
     const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
     const url = [];
+    setLoading(true);
 
     for (let index = files.length - 1; index > -1; index--) {
       const formData = new FormData();
@@ -57,7 +60,6 @@ const PhotosPreview = ({
       const data = await response.json();
       url.push(data.secure_url);
     }
-
     handlePhotosUploads(url);
   }
 
@@ -120,13 +122,18 @@ const PhotosPreview = ({
           )}
           <Button
             className="md:flex items-center gap-2 bg-green-500 hidden hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={files.length < 1 || isLoading}
+            disabled={files.length < 1 || isLoading || loading}
             onClick={async () => {
               await UploadToCloudinary();
             }}
           >
-            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
-            {isLoading ? "Uploading" : "Upload"}file{files.length > 1 && "s"}
+            {isLoading || loading ? (
+              <Spinner />
+            ) : (
+              <UploadIcon className={`w-4 h-4 `} />
+            )}
+            {isLoading || loading ? "Uploading" : "Upload"}file
+            {files.length > 1 && "s"}
           </Button>
         </div>
       </div>
@@ -177,13 +184,18 @@ const PhotosPreview = ({
         {files.length < 10 && (
           <Button
             className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
-            disabled={files.length < 1 || isLoading}
+            disabled={files.length < 1 || isLoading || loading}
             onClick={async () => {
               await UploadToCloudinary();
             }}
           >
-            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
-            {isLoading ? "Uploading" : "Upload"}file{files.length > 1 && "s"}
+            {isLoading || loading ? (
+              <Spinner />
+            ) : (
+              <UploadIcon className={`w-4 h-4 `} />
+            )}
+            {isLoading || loading ? "Uploading " : "Upload "}file
+            {files.length > 1 && "s"}
           </Button>
         )}
       </div>
