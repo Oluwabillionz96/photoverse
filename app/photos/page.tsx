@@ -2,6 +2,7 @@
 import EmptyPhotos from "@/components/EmptyStates/EmptyPhotos";
 import ImageGrid from "@/components/ImageGrid";
 import PhotoLoder from "@/components/loaders/PhotoLoder";
+import Pagination from "@/components/Pagination";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
@@ -35,7 +36,15 @@ const Photos = () => {
         ) : isLoading || isFetching ? (
           <PhotoLoder />
         ) : photos && photos.length > 0 ? (
-          <ImageGrid photos={photos} />
+          <>
+            {" "}
+            <ImageGrid photos={photos} route="photos" />
+            <Pagination
+              totalPages={data?.totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </>
         ) : (
           <EmptyPhotos
             handleUpload={openFileDialog}

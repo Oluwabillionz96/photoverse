@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { updatePhotoId } from "@/lib/slices/photoSlice";
+import { FaStar } from "react-icons/fa";
 
 export const cloudinaryLoader = ({
   src,
@@ -17,7 +18,7 @@ export const cloudinaryLoader = ({
   return `${src}?w=${width}&q=${quality || 75}`;
 };
 
-const ImageGrid = ({ photos }: { photos: Photo[] }) => {
+const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,8 +33,13 @@ const ImageGrid = ({ photos }: { photos: Photo[] }) => {
           <Link
             key={item._id}
             className="relative aspect-square"
-            href={`/photos/${item._id}`}
+            href={`/${route}/${item._id}`}
           >
+            {item.isFavourite && (
+              <div className="absolute top-2 right-2 text-white  z-50">
+                <FaStar />
+              </div>
+            )}
             <Image
               src={item?.link}
               alt="photo"

@@ -7,6 +7,18 @@ import { useUploadPhotosMutation } from "@/services/api";
 import Image from "next/image";
 import Spinner from "./loaders/Spinner";
 
+export function formatFileSize(bytes: number) {
+  if (bytes === 0) return "0 bytes";
+
+  const units = ["Bytes", "KB", "MB", "GB"];
+  const k = 1024;
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return ` ${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${
+    units[i]
+  }`;
+}
+
 const PhotosPreview = ({
   files,
   setFiles,
@@ -61,18 +73,6 @@ const PhotosPreview = ({
       url.push(data.secure_url);
     }
     handlePhotosUploads(url);
-  }
-
-  function formatFileSize(bytes: number) {
-    if (bytes === 0) return "0 bytes";
-
-    const units = ["Bytes", "KB", "MB", "GB"];
-    const k = 1024;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return ` ${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${
-      units[i]
-    }`;
   }
 
   const [preview, setPreview] = useState<string[]>([]);

@@ -18,7 +18,7 @@ export const PhotoverseAPI = createApi({
       return headers;
     },
   }),
-  tagTypes: ["folders", "photos"],
+  tagTypes: ["folders", "photos", "favourite"],
 
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -87,7 +87,11 @@ export const PhotoverseAPI = createApi({
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["photos"],
+      invalidatesTags: ["photos", "favourite"],
+    }),
+    getFavourite: builder.query<GetPhotoResponse, { page: string | number }>({
+      query: ({ page }) => `photos/favourite?limit=60&page=${page}`,
+      providesTags: ["favourite"],
     }),
   }),
 });
@@ -104,4 +108,5 @@ export const {
   useGetFolderPhotosQuery,
   useGetOnePhotoQuery,
   useToggleFavouriteMutation,
+  useGetFavouriteQuery,
 } = PhotoverseAPI;

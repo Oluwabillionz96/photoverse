@@ -2,7 +2,7 @@
 
 import ImageGrid from "@/components/ImageGrid";
 import PhotoLoder from "@/components/loaders/PhotoLoder";
-import PhotosPreview from "@/components/photosPreview";
+import PhotosPreview, { formatFileSize } from "@/components/photosPreview";
 import { Button } from "@/components/ui/button";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetFolderPhotosQuery } from "@/services/api";
@@ -19,20 +19,39 @@ const Folder = () => {
   });
   const { files, setFiles, ref } = useInputContext();
   const photos = data?.photos;
-  const { back } = useRouter();
+  const { push } = useRouter();
+  const size = photos
+    ? photos
+        .map((item) => item.size)
+        .reduce((initial, current) => {
+          return initial + current;
+        }, 0)
+    : 0;
+
   return (
     <section className="mx-2 h-fit md:py-4">
       <>
         {files.length < 1 && (
-          <div>
+          <div className="flex mb-4 items-start">
             <Button
               onClick={() => {
-                back();
+                push("/folders");
               }}
-              className="w-fit h-fit bg-blue-500 mb-4 hover:bg-blue-600"
+              className="w-fit h-fit bg-transparent hover:bg-transparent text-black"
             >
               <FaArrowLeft />
             </Button>
+            <div>
+              <p className="text-xl font-semibold">
+                {foldername?.replaceAll("%20", " ")}
+              </p>
+              <p className="text-sm">
+                {isLoading || isFetching
+                  ? "Calculating..."
+                  : photos &&
+                    `${photos?.length} Items •  ${formatFileSize(size)}`}
+              </p>
+            </div>
           </div>
         )}
         {files.length > 0 ? (
@@ -45,7 +64,7 @@ const Folder = () => {
         ) : isLoading || isFetching ? (
           <PhotoLoder />
         ) : photos && photos.length > 0 ? (
-          <ImageGrid photos={photos} />
+          <ImageGrid photos={photos} route={`folders/${foldername}`} />
         ) : photos && photos.length < 1 ? (
           "This folder is empty"
         ) : (

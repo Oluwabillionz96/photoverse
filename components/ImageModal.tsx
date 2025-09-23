@@ -29,7 +29,6 @@ interface ImageModalProps {
   onNext: () => void;
   onPrevious: () => void;
   disable: "left" | "right" | "";
-  side: "left" | "right" | "";
 }
 
 export function ImageModal({
@@ -42,7 +41,7 @@ export function ImageModal({
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
   // const [side, setSide] = useState<"" | "right" | "left">("");
-  const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
+  const [toggleFavourite] = useToggleFavouriteMutation();
 
   async function toggleIsFavourite() {
     const payload = {
