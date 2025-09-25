@@ -12,8 +12,8 @@ const PhotoDisplay = ({ route }: { route: string }) => {
     : params.photoId;
   const router = useRouter();
   const { photoIds } = useSelector((state: Rootstate) => state.photo);
-    const { data, isLoading } = useGetOnePhotoQuery({ id: photoId ?? "" });
-    
+  const { data, isLoading } = useGetOnePhotoQuery({ id: photoId ?? "" });
+
   const [index, setIndex] = useState<number>(
     photoIds.findIndex((item) => item === data?._id)
   );
@@ -34,28 +34,23 @@ const PhotoDisplay = ({ route }: { route: string }) => {
 
   return (
     <div>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : data && Object.keys(data).length > 0 ? (
-        <ImageModal
-          photo={data}
-          isOpen={true}
-          onClose={() => router.push(`/${route}`)}
-          onNext={() => {
-            if (index < photoIds.length && photoIds[index + 1] !== undefined) {
-              router.push(`/photos/${photoIds[index + 1]}`);
-            }
-          }}
-          onPrevious={() => {
-            if (index > 0 && photoIds[index - 1] !== undefined) {
-              router.push(`/photos/${photoIds[index - 1]}`);
-            }
-          }}
-          disable={disable}
-        />
-      ) : (
-        ""
-      )}
+      <ImageModal
+        loading={isLoading}
+        photo={data}
+        isOpen={true}
+        onClose={() => router.push(`/${route}`)}
+        onNext={() => {
+          if (index < photoIds.length && photoIds[index + 1] !== undefined) {
+            router.push(`/photos/${photoIds[index + 1]}`);
+          }
+        }}
+        onPrevious={() => {
+          if (index > 0 && photoIds[index - 1] !== undefined) {
+            router.push(`/photos/${photoIds[index - 1]}`);
+          }
+        }}
+        disable={disable}
+      />
     </div>
   );
 };

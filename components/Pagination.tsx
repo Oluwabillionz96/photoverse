@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "./ui/button";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 const Pagination = ({
   totalPages,
@@ -10,19 +11,23 @@ const Pagination = ({
   setCurrentPage: Dispatch<SetStateAction<number>>;
   currentPage: number;
 }) => {
+  if (totalPages <= 1) return null;
   return (
     <div className="flex w-full overflow-hidden justify-center my-2 gap-3">
-      {Array.from({ length: totalPages }, (_, index) => (
-        <Button
-          key={index}
-          className={`p-4 rounded-full bg-black/10  hover:bg-black/10 ${
-            currentPage === index + 1 ? "text-white bg-blue-500" : "text-black"
-          }`}
-          onClick={() => setCurrentPage(index + 1)}
-        >
-          {index + 1}
-        </Button>
-      ))}
+      <Button
+        onClick={() => setCurrentPage(currentPage - 1)}
+        className="disabled:opacity-50"
+        disabled={currentPage === 1}
+      >
+        <FaAngleLeft />
+      </Button>
+      <Button
+        onClick={() => setCurrentPage(currentPage + 1)}
+        className="disabled:opacity-50"
+        disabled={currentPage === totalPages}
+      >
+        <FaAngleRight />
+      </Button>
     </div>
   );
 };

@@ -87,7 +87,7 @@ export const PhotoverseAPI = createApi({
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["photos", "favourite"],
+      invalidatesTags: ["photos"],
     }),
     getFavourite: builder.query<GetPhotoResponse, { page: string | number }>({
       query: ({ page }) => `photos/favourite?limit=60&page=${page}`,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaRegStar, FaTrashAlt } from "react-icons/fa";
+import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,7 +24,7 @@ export const navLinks = [
   },
   {
     icon: ({ className, size, color }: Icon) => (
-      <FaRegStar className={className} size={size} color={color} />
+      <FaRegHeart className={className} size={size} color={color} />
     ),
     label: "Favourites",
     url: "/favourites",

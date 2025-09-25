@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
-import DropDown from "./dropDown";
+// import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import useModalContext from "@/hooks/useModalContext";
 import useInputContext from "@/hooks/useInputContext";
 
 const TabLayouts = () => {
-  const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
-  const [values, setValues] = useState("Recent");
+  // const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
+  // const [values, setValues] = useState("Recent");
   const pathname = usePathname();
   const params = useParams();
   const router = useRouter();
@@ -56,13 +56,13 @@ const TabLayouts = () => {
         </Button>
       </div>
       <div className="flex items-center justify-center gap-6 relative">
-        <DropDown
+        {/* <DropDown
           trigger={values}
           items={filterValues}
           initialValue={values}
           changeValue={setValues}
           className="w-32"
-        />
+        /> */}
         <Button
           variant={"outline"}
           disabled={modalStatus === "foldername"}

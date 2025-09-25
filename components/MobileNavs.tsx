@@ -3,7 +3,7 @@ import useInputContext from "@/hooks/useInputContext";
 import useModalContext from "@/hooks/useModalContext";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { FaFolder, FaPlus, FaRegStar, FaTrashAlt } from "react-icons/fa";
+import { FaFolder, FaPlus, FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 
 const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
@@ -21,7 +21,7 @@ const MobileNavs = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           <Link href={"/favourites"}>
             <button className="border w-[8.6rem] h-[2.6rem] flex items-center justify-center gap-4 rounded-[5px] border-gray-500">
               <span className="text-blue-500">
-                <FaRegStar />
+                <FaRegHeart />
               </span>
               Favourites
             </button>

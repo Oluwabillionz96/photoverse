@@ -7,13 +7,13 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "./ImageGrid";
 import { Button } from "./ui/button";
-import { FaRegStar, FaRegTrashAlt } from "react-icons/fa";
-import { FaStar } from "react-icons/fa6";
+import { FaHeart, FaRegHeart,  FaRegTrashAlt } from "react-icons/fa";
 import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import { useToggleFavouriteMutation } from "@/services/api";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 // interface Photo {
 //   id: number;
@@ -23,12 +23,13 @@ import toast from "react-hot-toast";
 // }
 
 interface ImageModalProps {
-  photo: Photo;
+  photo: Photo | undefined;
   isOpen: boolean;
   onClose: () => void;
   onNext: () => void;
   onPrevious: () => void;
   disable: "left" | "right" | "";
+  loading: boolean;
 }
 
 export function ImageModal({
@@ -38,16 +39,17 @@ export function ImageModal({
   onNext,
   onPrevious,
   disable,
+  loading,
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
   // const [side, setSide] = useState<"" | "right" | "left">("");
-  const [toggleFavourite] = useToggleFavouriteMutation();
+  const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
 
   async function toggleIsFavourite() {
     const payload = {
-      id: photo._id,
-      isFavourite: !photo.isFavourite,
-      folder: photo.folder,
+      id: photo?._id,
+      isFavourite: !photo?.isFavourite,
+      folder: photo?.folder,
     };
 
     const response = await toggleFavourite(payload);
@@ -120,7 +122,6 @@ export function ImageModal({
             <Button
               onClick={() => {
                 onClose();
-                // setSide("");
               }}
               className="  p-2 bg-transparent hover:bg-transparent text-white "
             >
@@ -143,38 +144,64 @@ export function ImageModal({
         {/* Navigation Buttons */}
 
         {/* Image Container */}
-        <div
-          className="relative w-full h-full flex items-center justify-center"
-          {...handler}
-        >
-          <motion.div
-            className="relative max-w-full max-h-full mx-2 md:mx-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            key={photo._id}
+        {loading || isLoading ? (
+          <div className=" w-full h-full grid place-items-center">
+            <motion.div
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 0.5,
+                repeat: Infinity,
+                repeatType: "loop",
+              }}
+              className=" w-32 h-32 border-8 rounded-full border-b-blue-500 border-l-blue-500 border-t-green-500 border-r-green-500"
+            ></motion.div>
+          </div>
+        ) : (
+          <div
+            className="relative w-full h-full flex items-center justify-center"
+            {...handler}
           >
-            <Image
-              src={photo.link || "/placeholder.svg"}
-              alt={"Image"}
-              width={1200}
-              height={800}
-              className="min-w-full max-h-[80vh] object-contain"
-              priority
-              loader={cloudinaryLoader}
-              loading="eager"
-            />
-          </motion.div>
-        </div>
+            <motion.div
+              className="relative max-w-full max-h-full mx-2 md:mx-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              key={photo?._id}
+            >
+              <Image
+                src={photo?.link || "/placeholder.svg"}
+                alt={"Image"}
+                width={1200}
+                height={800}
+                className="min-w-full max-h-[80vh] object-contain"
+                priority
+                loader={cloudinaryLoader}
+                loading="eager"
+              />
+            </motion.div>
+          </div>
+        )}
 
         {/* Image Info */}
         {showOptions && (
           <div className="absolute bottom-0 left-0 right-0 z-20">
             <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-between md:hidden">
-              <GrDownload />
+              <Link href={photo?.link || ""} download={true}>
+                <GrDownload />
+              </Link>
+
               <button className="bg-transparent" onClick={toggleIsFavourite}>
-                {photo.isFavourite ? <FaStar /> : <FaRegStar />}
+                {photo?.isFavourite ? (
+                  <span className="text-pink-500">
+                    <FaHeart />
+                  </span>
+                ) : (
+                  <span className="text-white">
+                    <FaRegHeart />
+                  </span>
+                )}
               </button>
               <FaRegTrashAlt />
             </div>

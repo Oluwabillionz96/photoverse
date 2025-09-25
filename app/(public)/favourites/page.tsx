@@ -1,13 +1,12 @@
 "use client";
 
+import EmptyFavourite from "@/components/EmptyStates/EmptyFavourite";
 import ImageGrid from "@/components/ImageGrid";
 import PhotoLoder from "@/components/loaders/PhotoLoder";
 import Pagination from "@/components/Pagination";
-import { Button } from "@/components/ui/button";
 import { useGetFavouriteQuery } from "@/services/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 
 const FavouritesPage = () => {
   const pathname = usePathname();
@@ -25,22 +24,10 @@ const FavouritesPage = () => {
   const photos = data?.photos;
   return (
     <section className="px-2">
-      <div className="flex items-center my-4  text-xl">
-        <Button
-          onClick={() => {
-            router.back();
-          }}
-          className="w-fit h-fit text-black bg-transparent hover:bg-transparent flex items-center justify-center"
-        >
-          <FaArrowLeft />
-        </Button>
-        <p className="">Favourites</p>
-      </div>
       {isLoading || isFetching ? (
         <PhotoLoder />
       ) : photos && photos.length > 0 ? (
         <>
-          {" "}
           <ImageGrid photos={photos} route="photos" />
           <Pagination
             setCurrentPage={setCurrentPage}
@@ -49,7 +36,7 @@ const FavouritesPage = () => {
           />
         </>
       ) : (
-        <p>You&apos;ve got no favourites</p>
+        <EmptyFavourite />
       )}
     </section>
   );

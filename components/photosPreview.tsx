@@ -132,7 +132,7 @@ const PhotosPreview = ({
             ) : (
               <UploadIcon className={`w-4 h-4 `} />
             )}
-            {isLoading || loading ? "Uploading" : "Upload"}file
+            {isLoading || loading ? "Uploading " : "Upload "}file
             {files.length > 1 && "s"}
           </Button>
         </div>
