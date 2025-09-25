@@ -7,7 +7,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "./ImageGrid";
 import { Button } from "./ui/button";
-import { FaHeart, FaRegHeart,  FaRegTrashAlt } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
@@ -134,7 +134,7 @@ export function ImageModal({
             </Button>
             <Button
               onClick={onClose}
-              className="  p-2 bg-transparent hover:bg-transparent text-white "
+              className="  p-2 bg-transparent hover:bg-transparent text-white invisible"
             >
               <BsThreeDotsVertical />
             </Button>
@@ -186,11 +186,17 @@ export function ImageModal({
 
         {/* Image Info */}
         {showOptions && (
-          <div className="absolute bottom-0 left-0 right-0 z-20">
-            <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-between md:hidden">
-              <Link href={photo?.link || ""} download={true}>
+          <div className="absolute bottom-0 md:bottom-16 left-0 right-0 z-20">
+            <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-between md:justify-center md:gap-6 md:w-[50vw] md:mx-auto">
+              <a
+                href={
+                  photo?.link?.replace("/upload/", "/upload/fl_attachment/") ||
+                  ""
+                }
+                download
+              >
                 <GrDownload />
-              </Link>
+              </a>
 
               <button className="bg-transparent" onClick={toggleIsFavourite}>
                 {photo?.isFavourite ? (
@@ -203,7 +209,7 @@ export function ImageModal({
                   </span>
                 )}
               </button>
-              <FaRegTrashAlt />
+              {/* <FaRegTrashAlt /> */}
             </div>
           </div>
         )}

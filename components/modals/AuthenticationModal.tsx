@@ -52,7 +52,6 @@ const AuthenticationModal = ({
     return () => clearTimeout(timer);
   }, []);
 
-
   return (
     <>
       {!mounted ? (

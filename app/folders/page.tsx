@@ -32,7 +32,7 @@ const Folders = () => {
   const { authenticated } = useSelector((state: Rootstate) => state.auth);
 
   if (!authenticated) {
-    return <EmptyFolder />;
+    return <FolderLoader />;
   }
 
   return (

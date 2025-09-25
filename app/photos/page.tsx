@@ -1,7 +1,7 @@
 "use client";
 import EmptyPhotos from "@/components/EmptyStates/EmptyPhotos";
 import ImageGrid from "@/components/ImageGrid";
-import PhotoLoder from "@/components/loaders/PhotoLoder";
+import PhotoLoader from "@/components/loaders/PhotoLoader";
 import Pagination from "@/components/Pagination";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
@@ -32,14 +32,7 @@ const Photos = () => {
   const { authenticated } = useSelector((state: Rootstate) => state.auth);
 
   if (!authenticated) {
-    return (
-      <EmptyPhotos
-        handleUpload={openFileDialog}
-        files={files}
-        setFiles={setFiles}
-        ref={ref}
-      />
-    );
+    return <PhotoLoader />;
   }
 
   return (
@@ -48,7 +41,7 @@ const Photos = () => {
         {files.length > 0 ? (
           <PhotosPreview files={files} setFiles={setFiles} ref={ref} />
         ) : isLoading || isFetching ? (
-          <PhotoLoder />
+          <PhotoLoader />
         ) : photos && photos.length > 0 ? (
           <>
             {" "}

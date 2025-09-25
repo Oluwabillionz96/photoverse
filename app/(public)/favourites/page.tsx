@@ -2,7 +2,7 @@
 
 import EmptyFavourite from "@/components/EmptyStates/EmptyFavourite";
 import ImageGrid from "@/components/ImageGrid";
-import PhotoLoder from "@/components/loaders/PhotoLoder";
+import PhotoLoder from "@/components/loaders/PhotoLoader";
 import Pagination from "@/components/Pagination";
 import { useGetFavouriteQuery } from "@/services/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

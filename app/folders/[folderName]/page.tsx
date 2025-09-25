@@ -1,7 +1,7 @@
 "use client";
 
 import ImageGrid from "@/components/ImageGrid";
-import PhotoLoder from "@/components/loaders/PhotoLoder";
+import PhotoLoder from "@/components/loaders/PhotoLoader";
 import PhotosPreview, { formatFileSize } from "@/components/photosPreview";
 import { Button } from "@/components/ui/button";
 import useInputContext from "@/hooks/useInputContext";
