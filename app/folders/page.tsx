@@ -3,11 +3,13 @@ import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import Pagination from "@/components/Pagination";
 import { Card, CardContent } from "@/components/ui/card";
+import { Rootstate } from "@/lib/store";
 import { useGetFoldersQuery } from "@/services/api";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Folders = () => {
   const router = useRouter();
@@ -27,6 +29,11 @@ const Folders = () => {
     page: currentPage,
   });
   const folders = data?.folders;
+  const { authenticated } = useSelector((state: Rootstate) => state.auth);
+
+  if (!authenticated) {
+    return <EmptyFolder />;
+  }
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">

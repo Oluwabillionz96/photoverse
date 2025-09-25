@@ -28,6 +28,13 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    logout: builder.mutation({
+      query: (body) => ({
+        url: "auth/logout",
+        method: "POST",
+        body,
+      }),
+    }),
     register: builder.mutation({
       query: (body) => ({
         url: "auth/register",
@@ -99,6 +106,7 @@ export const PhotoverseAPI = createApi({
 export const {
   useUploadPhotosMutation,
   useLoginMutation,
+  useLogoutMutation,
   useRegisterMutation,
   useVerifyEmailMutation,
   useResendOTPMutation,
