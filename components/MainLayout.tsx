@@ -8,7 +8,11 @@ import useScreenSize from "@/hooks/useScreenSize";
 import AuthenticationModal, { Loading } from "./modals/AuthenticationModal";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import { getUser, refreshAccessToken } from "@/lib/slices/authSlice";
+import {
+  getUser,
+  logUserOut,
+  refreshAccessToken,
+} from "@/lib/slices/authSlice";
 import useAppDispatch from "@/hooks/useAppDispatch";
 import MobileNavs from "./MobileNavs";
 import {
@@ -17,6 +21,16 @@ import {
 } from "@/lib/utils/handleInputChange";
 import { InputContext } from "@/hooks/useInputContext";
 import { ModalContext } from "@/hooks/useModalContext";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useLogoutMutation } from "@/services/api";
+import toast from "react-hot-toast";
+import { FaUser } from "react-icons/fa";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -29,7 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const isMobile = useScreenSize();
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
-  const { authenticated, loading, token } = useSelector(
+  const { authenticated, loading, token, refreshToken } = useSelector(
     (state: Rootstate) => state.auth
   );
   const dispatch = useAppDispatch();
@@ -43,6 +57,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [modalStatus, setModalStatus] = useState<
     "" | "preview" | "select" | "foldername"
   >("");
+  const [logout, { isLoading }] = useLogoutMutation();
 
   useEffect(() => {
     if (token) {
@@ -51,6 +66,29 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       dispatch(refreshAccessToken());
     }
   }, [token, dispatch]);
+
+  async function Logout() {
+    const payload = { token: refreshToken };
+
+    const response = await logout(payload);
+    if ("data" in response) {
+      dispatch(logUserOut(false));
+      toast.success(response.data?.message);
+    } else if ("error" in response) {
+      const error = response.error as {
+        status?: number | string;
+        data?: { error: string };
+      };
+
+      const message =
+        error?.data?.error ||
+        (error?.status === "FETCH_ERROR"
+          ? "Network error. Please check your connection."
+          : "An unexpected error occurred.");
+
+      toast.error(message);
+    }
+  }
 
   return (
     <>
@@ -86,7 +124,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 setFiles: setFiles,
               }}
             >
-              <motion.header className={`bg-[#141414] relative`}>
+              <motion.header
+                className={`bg-[#141414] relative flex justify-around items-center`}
+              >
                 <Link href={"/"}>
                   <Image
                     width={100}
@@ -96,6 +136,24 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     className="block mx-auto"
                   />
                 </Link>
+
+                <div className="md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex items-center justify-center gap-2 text-black"
+                      >
+                        <FaUser />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-16" align="end">
+                      <DropdownMenuItem onClick={Logout}>
+                        Log out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </motion.header>
               <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
               <MobileNavs>{children}</MobileNavs>
