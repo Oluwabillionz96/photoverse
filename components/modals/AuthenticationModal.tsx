@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Forms from "../Form/Forms";
 import VerifyEmail from "../VerifyEmail";
 import Image from "next/image";
@@ -29,18 +29,24 @@ const AuthenticationModal = ({
   setLoginInfo,
   registerInfo,
   setRegisterInfo,
+  mode,
+  setOpenModal,
 }: {
   loginInfo: LoginInfo;
   setLoginInfo: (arg: LoginInfo) => void;
   registerInfo: RegisterInfo;
   setRegisterInfo: (arg: RegisterInfo) => void;
+  mode?: "login" | "register";
+  setOpenModal?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [viewPassword, setViewPassword] = useState({
     loginPassword: false,
     registerPassword: false,
     confirmPassword: false,
   });
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(
+    mode ? (mode === "login" ? true : false) : true
+  );
   const [isCreated, setIsCreated] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -71,6 +77,8 @@ const AuthenticationModal = ({
                 setViewPassword={setViewPassword}
                 key={"auth-form"}
                 setIsCreated={setIsCreated}
+                mode={mode}
+                setOpenModal={setOpenModal}
               />
             ) : (
               <VerifyEmail

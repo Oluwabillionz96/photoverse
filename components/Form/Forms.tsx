@@ -3,6 +3,9 @@ import { LoginInfo, RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion, MotionConfig, AnimatePresence } from "framer-motion";
 import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
+import { X } from "lucide-react";
+import { Button } from "../ui/button";
+import { Dispatch, SetStateAction } from "react";
 
 const Forms = ({
   isLogin,
@@ -14,6 +17,8 @@ const Forms = ({
   viewPassword,
   setViewPassword,
   setIsCreated,
+  mode,
+  setOpenModal,
 }: {
   isLogin: boolean;
   setIsLogin: (arg: boolean) => void;
@@ -24,6 +29,8 @@ const Forms = ({
   viewPassword: ViewPassword;
   setViewPassword: (arg: ViewPassword) => void;
   setIsCreated: (arg: boolean) => void;
+  mode?: "login" | "register";
+  setOpenModal?: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (
     <motion.div
@@ -31,8 +38,17 @@ const Forms = ({
       animate={{ y: 0 }}
       exit={{ y: -600 }}
       transition={{ duration: 0.5, ease: "easeIn" }}
-      className="bg-white lg:w-[30%] md:w-[60%] w-9/10  md:h-fit flex flex-col justify-center items-center gap-6 py-8 rounded-xl overflow-hidden"
+      className="bg-white lg:w-[30%] md:w-[60%] w-9/10  md:h-fit flex flex-col justify-center relative items-center gap-6 py-8 rounded-xl overflow-hidden"
     >
+      {mode && setOpenModal !== undefined && (
+        <Button
+          className="absolute top-2 rounded-full right-2"
+          variant={"ghost"}
+          onClick={() => setOpenModal(false)}
+        >
+          <X />
+        </Button>
+      )}
       <motion.h2
         initial={{ x: 0 }}
         animate={{
@@ -79,7 +95,7 @@ const Forms = ({
         </MotionConfig>
       </motion.div>
       <AnimatePresence mode="wait">
-        {isLogin ? (
+        {isLogin || mode === "login" ? (
           <LoginForm
             key={"login"}
             loginInfo={loginInfo}
@@ -95,8 +111,8 @@ const Forms = ({
             setRegisterInfo={setRegisterInfo}
             viewPassword={viewPassword}
             setViewPassword={setViewPassword}
-              setIsLogin={setIsLogin}
-              setIsCreated={setIsCreated}
+            setIsLogin={setIsLogin}
+            setIsCreated={setIsCreated}
           />
         )}
       </AnimatePresence>

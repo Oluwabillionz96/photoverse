@@ -31,6 +31,7 @@ import {
 import { useLogoutMutation } from "@/services/api";
 import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
+import { redirect, usePathname } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -57,6 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [modalStatus, setModalStatus] = useState<
     "" | "preview" | "select" | "foldername"
   >("");
+  const pathname = usePathname();
   const [logout, { isLoading }] = useLogoutMutation();
 
   useEffect(() => {
@@ -95,81 +97,94 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {loading || isLoading ? (
         <Loading />
       ) : (
-        <motion.main
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`relative ${files.length < 1 ? "mb-24" : "mb-0"} md:mb-0 ${
-            isMobile
-              ? "ml-0"
-              : collapsed
-              ? "md:ml-[5rem]"
-              : "md:ml-[9rem] lg:ml-[17.5rem]"
-          }`}
-        >
-          {!authenticated && (
-            <AuthenticationModal
-              loginInfo={loginInfo}
-              setLoginInfo={setLoginInfo}
-              registerInfo={registerInfo}
-              setRegisterInfo={setRegisterInfo}
-            />
-          )}
-          <ModalContext
-            value={{ modalStatus, changeModalStatus: setModalStatus }}
-          >
-            <InputContext
-              value={{
-                ref: fileInput,
-                openFileDialog: openFileDialog,
-                files: files,
-                setFiles: setFiles,
-              }}
+        <>
+          {pathname === "/" ? (
+            <>{children}</>
+          ) : (
+            <motion.main
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className={`relative ${
+                files.length < 1 ? "mb-24" : "mb-0"
+              } md:mb-0 ${
+                isMobile
+                  ? "ml-0"
+                  : collapsed
+                  ? "md:ml-[5rem]"
+                  : "md:ml-[9rem] lg:ml-[17.5rem]"
+              }`}
             >
-              <motion.header
-                className={`bg-[#141414] relative flex justify-around items-center`}
+              {!authenticated && (
+                <AuthenticationModal
+                  loginInfo={loginInfo}
+                  setLoginInfo={setLoginInfo}
+                  registerInfo={registerInfo}
+                  setRegisterInfo={setRegisterInfo}
+                />
+              )}
+              <ModalContext
+                value={{ modalStatus, changeModalStatus: setModalStatus }}
               >
-                <Link href={"/"}>
-                  <Image
-                    width={100}
-                    height={100}
-                    src={"/photoverse-logo.png"}
-                    alt="logo"
-                    className="block mx-auto"
-                  />
-                </Link>
+                <InputContext
+                  value={{
+                    ref: fileInput,
+                    openFileDialog: openFileDialog,
+                    files: files,
+                    setFiles: setFiles,
+                  }}
+                >
+                  <motion.header
+                    className={`bg-[#141414] relative flex justify-around items-center`}
+                  >
+                    <Link href={"/"}>
+                      <Image
+                        width={100}
+                        height={100}
+                        src={"/photoverse-logo.png"}
+                        alt="logo"
+                        className="block mx-auto"
+                      />
+                    </Link>
 
-                <div className="md:hidden">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex items-center justify-center gap-2 text-black"
-                      >
-                        <FaUser />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-16" align="end">
-                      <DropdownMenuItem onClick={Logout}>
-                        Log out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </motion.header>
-              <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-              <MobileNavs>{children}</MobileNavs>
-              <input
-                type="file"
-                className="hidden"
-                ref={fileInput}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                  handleFileChange(e, files, setFiles);
-                }}
-                accept="image/*"
-                multiple
-              />
-            </InputContext>
-          </ModalContext>
-        </motion.main>
+                    <div className="md:hidden">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="flex items-center justify-center gap-2 text-black"
+                          >
+                            <FaUser />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-16" align="end">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              Logout();
+                              redirect("/");
+                            }}
+                          >
+                            Log out
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </motion.header>
+                  <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
+                  <MobileNavs>{children}</MobileNavs>
+                  <input
+                    type="file"
+                    className="hidden"
+                    ref={fileInput}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                      handleFileChange(e, files, setFiles);
+                    }}
+                    accept="image/*"
+                    multiple
+                  />
+                </InputContext>
+              </ModalContext>
+            </motion.main>
+          )}
+        </>
       )}
     </>
   );

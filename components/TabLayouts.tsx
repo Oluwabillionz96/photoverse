@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 // import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { redirect, useParams, usePathname, useRouter } from "next/navigation";
 import useModalContext from "@/hooks/useModalContext";
 import useInputContext from "@/hooks/useInputContext";
 import {
@@ -139,7 +139,14 @@ const TabLayouts = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-16" align="end">
-                <DropdownMenuItem onClick={Logout}>Log out</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    Logout();
+                    redirect("/");
+                  }}
+                >
+                  Log out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
