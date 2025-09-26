@@ -1,7 +1,8 @@
-import { Loading } from "@/components/modals/AuthenticationModal"
+"use client";
+import { Loading } from "@/components/modals/AuthenticationModal";
 
 const LoadingState = () => {
-    return <Loading />
-}
+  return <Loading />;
+};
 
-export default LoadingState
+export default LoadingState;
