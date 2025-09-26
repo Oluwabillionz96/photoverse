@@ -8,7 +8,7 @@ export interface Photo {
   _id: string;
   link: string;
   size: number;
-  folder: string;
+  folder: Folder;
   uploadedAt: string;
   isFavourite: boolean;
 }

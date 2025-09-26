@@ -41,7 +41,7 @@ const CreateFolder = ({
       })),
     };
 
-   await uploadPhotos(payload);
+    await uploadPhotos(payload);
     setFiles([]);
     if (fileInput.current) fileInput.current.value = "";
     return;
@@ -77,7 +77,7 @@ const CreateFolder = ({
     const response = await createNewFolder({ name: foldername });
     if ("data" in response) {
       try {
-        const id = response.data.id;
+        const id = response.data.name;
         setLoading(true);
         const url = await UploadToCloudinary();
         await handlePhotosUploads(url, id);
