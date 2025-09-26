@@ -92,7 +92,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      {loading ? (
+      {loading || isLoading ? (
         <Loading />
       ) : (
         <motion.main
