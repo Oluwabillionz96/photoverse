@@ -7,13 +7,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "./ImageGrid";
 import { Button } from "./ui/button";
-import { FaHeart, FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import { useToggleFavouriteMutation } from "@/services/api";
 import toast from "react-hot-toast";
-import Link from "next/link";
 
 // interface Photo {
 //   id: number;
