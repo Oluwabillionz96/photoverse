@@ -7,7 +7,12 @@ import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { Rootstate } from "@/lib/store";
 import { useGetPhotosQuery } from "@/services/api";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -32,6 +37,7 @@ const Photos = () => {
   const { authenticated } = useSelector((state: Rootstate) => state.auth);
 
   if (!authenticated) {
+    redirect("/");
     return <PhotoLoader />;
   }
 
