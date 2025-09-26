@@ -33,11 +33,12 @@ const PhotosPreview = ({
   const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
   const [loading, setLoading] = useState(false);
 
-  async function handlePhotosUploads(urls: string[]) {
+  async function handlePhotosUploads(urls: string[], public_id: string[]) {
     const payload = {
       photos: files.map((item, index) => ({
         link: urls[index],
         size: item.size,
+        public_id: public_id[index],
         folder,
       })),
     };
@@ -53,6 +54,7 @@ const PhotosPreview = ({
     const presetKey = "photoverse_test";
     const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
     const url = [];
+    const public_ids = [];
     setLoading(true);
 
     for (let index = files.length - 1; index > -1; index--) {
@@ -71,8 +73,9 @@ const PhotosPreview = ({
 
       const data = await response.json();
       url.push(data.secure_url);
+      public_ids.push(data.public_id);
     }
-    handlePhotosUploads(url);
+    handlePhotosUploads(url, public_ids);
   }
 
   const [preview, setPreview] = useState<string[]>([]);

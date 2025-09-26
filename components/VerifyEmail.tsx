@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { authenticate } from "@/lib/slices/authSlice";
 import Spinner from "./loaders/Spinner";
+import { usePathname, useRouter } from "next/navigation";
 
 const VerifyEmail = ({ email }: { email: string }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
@@ -23,6 +24,8 @@ const VerifyEmail = ({ email }: { email: string }) => {
   const loading = isVerifying || isResending;
   const [resendCode, setResendCode] = useState(60);
   const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (resendCode <= 0) return;
@@ -63,6 +66,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
     if ("data" in response) {
       toast.success(response?.data?.message);
       dispatch(authenticate({ token: response?.data?.token }));
+      if (pathname === "/") {
+        router.push("/folders");
+      }
     } else if ("error" in response) {
       const error = response.error as {
         status?: number | string;

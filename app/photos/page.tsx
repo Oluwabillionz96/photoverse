@@ -5,16 +5,9 @@ import PhotoLoader from "@/components/loaders/PhotoLoader";
 import Pagination from "@/components/Pagination";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
-import { Rootstate } from "@/lib/store";
 import { useGetPhotosQuery } from "@/services/api";
-import {
-  redirect,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 const Photos = () => {
   const pathname = usePathname();
@@ -34,12 +27,6 @@ const Photos = () => {
     page: currentPage,
   });
   const photos = data?.photos;
-  const { authenticated } = useSelector((state: Rootstate) => state.auth);
-
-  if (!authenticated) {
-    redirect("/");
-    return <PhotoLoader />;
-  }
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">

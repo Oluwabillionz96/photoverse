@@ -6,6 +6,7 @@ import RegistrationForm from "./RegistrationForm";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
 const Forms = ({
   isLogin,
@@ -32,6 +33,7 @@ const Forms = ({
   mode?: "login" | "register";
   setOpenModal?: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const router = useRouter();
   return (
     <motion.div
       initial={{ y: -600 }}
@@ -40,15 +42,16 @@ const Forms = ({
       transition={{ duration: 0.5, ease: "easeIn" }}
       className="bg-white lg:w-[30%] md:w-[60%] w-9/10  md:h-fit flex flex-col justify-center relative items-center gap-6 py-8 rounded-xl overflow-hidden"
     >
-      {mode && setOpenModal !== undefined && (
-        <Button
-          className="absolute top-2 rounded-full right-2"
-          variant={"ghost"}
-          onClick={() => setOpenModal(false)}
-        >
-          <X />
-        </Button>
-      )}
+      <Button
+        className="absolute top-2 rounded-full right-2"
+        variant={"ghost"}
+        onClick={() =>
+          setOpenModal !== undefined ? setOpenModal(false) : router.push("/")
+        }
+      >
+        <X />
+      </Button>
+
       <motion.h2
         initial={{ x: 0 }}
         animate={{

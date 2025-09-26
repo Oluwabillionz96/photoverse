@@ -7,7 +7,7 @@ import { Rootstate } from "@/lib/store";
 import { useGetFoldersQuery } from "@/services/api";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -32,7 +32,6 @@ const Folders = () => {
   const { authenticated } = useSelector((state: Rootstate) => state.auth);
 
   if (!authenticated) {
-    redirect("/")
     return <FolderLoader />;
   }
 

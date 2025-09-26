@@ -32,11 +32,16 @@ const CreateFolder = ({
     fileInput.current?.click();
   }
 
-  async function handlePhotosUploads(urls: string[], folder: string) {
+  async function handlePhotosUploads(
+    urls: string[],
+    folder: string,
+    public_id: string[]
+  ) {
     const payload = {
       photos: files.map((item, index) => ({
         link: urls[index],
         size: item.size,
+        public_id: public_id[index],
         folder,
       })),
     };
@@ -51,6 +56,7 @@ const CreateFolder = ({
     const presetKey = "photoverse_test";
     const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
     const url = [];
+    const public_id = [];
 
     for (let index = files.length - 1; index > -1; index--) {
       const formData = new FormData();
@@ -68,9 +74,10 @@ const CreateFolder = ({
 
       const data = await response.json();
       url.push(data.secure_url);
+      public_id.push(data.public_id);
     }
 
-    return url;
+    return { url, public_id };
   }
 
   async function CreateFolder() {
@@ -79,8 +86,8 @@ const CreateFolder = ({
       try {
         const id = response.data.name;
         setLoading(true);
-        const url = await UploadToCloudinary();
-        await handlePhotosUploads(url, id);
+        const { url, public_id } = await UploadToCloudinary();
+        await handlePhotosUploads(url, id, public_id);
         setFoldername("");
         setFiles([]);
         setModalStatus("");

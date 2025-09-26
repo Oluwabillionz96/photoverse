@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { authenticate } from "@/lib/slices/authSlice";
 import Spinner from "../loaders/Spinner";
+import { usePathname, useRouter } from "next/navigation";
 
 const LoginForm = ({
   loginInfo,
@@ -32,7 +33,9 @@ const LoginForm = ({
     email: "",
     password: "",
   });
+  const router = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   useEffect(() => {
     setLoginInfo({ email: "", password: "" });
@@ -46,6 +49,9 @@ const LoginForm = ({
     if ("data" in response) {
       toast.success(response?.data?.message);
       dispatch(authenticate({ token: response?.data?.token }));
+      if (pathname === "/") {
+        router.push("/folders");
+      }
     } else if ("error" in response) {
       const error = response.error as {
         status?: number | string;
@@ -153,7 +159,7 @@ const LoginForm = ({
           className="font-semibold"
         >
           <Link href={"/"} className="text-blue-500">
-            Forgot Password?
+            {/* Forgot Password? */}
           </Link>
         </motion.p>
         <motion.p
@@ -162,7 +168,7 @@ const LoginForm = ({
           exit={{ opacity: [1, 0.5, 0] }}
           className="md:hidden"
         >
-          {"Don't have an account?"}
+          {"Don't have an account? "}
           <span
             className="text-blue-500 font-semibold"
             onClick={() => {

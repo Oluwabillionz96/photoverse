@@ -189,11 +189,12 @@ const RegistrationForm = ({
         transition={{ duration: 0.5, ease: "easeIn", delay: 1.2 }}
         className="text-center"
       >
-        Already have an account?{" "}
+        Already have an account?
         <span
           className="text-blue-500 font-semibold"
           onClick={() => setIsLogin(true)}
         >
+          {" "}
           Sign in
         </span>
       </motion.p>

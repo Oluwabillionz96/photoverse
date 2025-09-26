@@ -1,20 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Rootstate } from "@/lib/store";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useSelector } from "react-redux";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { authenticated } = useSelector((state: Rootstate) => state.auth);
-
-  if (!authenticated) {
-    redirect("/");
-  }
 
   const currentPath = pathname.startsWith("/favourites")
     ? "Favourites"
