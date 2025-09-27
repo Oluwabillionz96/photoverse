@@ -59,11 +59,11 @@ const RegistrationForm = ({
     } else if ("error" in response) {
       const error = response.error as {
         status?: number | string;
-        data?: { message: string };
+        data?: { error: string };
       };
 
       const message =
-        error?.data?.message ||
+        error?.data?.error ||
         (error?.status === "FETCH_ERROR"
           ? "Network error. Please check your connection."
           : "An unexpected error occurred.");
