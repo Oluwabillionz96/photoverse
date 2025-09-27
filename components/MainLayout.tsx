@@ -101,9 +101,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {pathname === "/" ? (
             <>{children}</>
           ) : (
-            <motion.main
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className={`relative ${
+            <main
+              className={`relative transition-all duration-500 ease-in-out ${
                 files.length < 1 ? "mb-24" : "mb-0"
               } md:mb-0 ${
                 isMobile
@@ -182,7 +181,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   />
                 </InputContext>
               </ModalContext>
-            </motion.main>
+            </main>
           )}
         </>
       )}

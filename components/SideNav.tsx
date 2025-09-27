@@ -54,9 +54,8 @@ const SideNav = ({
     return pathname.startsWith(`${url}/`) || pathname === url;
   };
   return (
-    <motion.aside
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`hidden md:block bg-black fixed top-0 bottom-0 left-0 ${
+    <aside
+      className={`hidden transition-all duration-500 ease-in-out md:block bg-black fixed top-0 bottom-0 left-0 ${
         collapsed
           ? "w-[5rem] px-[0.2rem]"
           : "md:w-[9rem] lg:w-[17.5rem] px-[0.5rem]"
@@ -124,7 +123,7 @@ const SideNav = ({
           );
         })}
       </nav>
-    </motion.aside>
+    </aside>
   );
 };
 
