@@ -32,8 +32,12 @@ import { useLogoutMutation } from "@/services/api";
 import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { redirect, usePathname } from "next/navigation";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  useEffect(() => {
+    sdk.actions.ready()
+  }, []);
   const isCollapsed =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("collapsed") || "true")
