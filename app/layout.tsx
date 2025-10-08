@@ -16,46 +16,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata: Metadata = {
-//   title: "Photoverse",
-//   description:
-//     "Photoverse is your online photo gallery—upload, organize, and access your photos anytime while freeing up storage space on your device.",
-//   icons: {
-//     icon: "/photoverse-logo.png",
-//     shortcut: "/photoverse-logo.png",
-//     apple: "/photoverse-logo.png",
-//   },
-// };
-
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Photoverse",
-    description:
-      "Photoverse is your online photo gallery—upload, organize, and access your photos anytime while freeing up storage space on your device.",
-    icons: {
-      icon: "/photoverse-logo.png",
-      shortcut: "/photoverse-logo.png",
-      apple: "/photoverse-logo.png",
-    },
-    other: {
-      "fc:miniapp": JSON.stringify({
-        version: "next",
-        imageUrl: "https://photoverse-eight.vercel.app/photoverse-logo.png",
-        button: {
-          title: `Launch Photoverse`,
-          action: {
-            type: "launch_miniapp",
-            name: "Photoverse",
-            url: "https://photoverse-eight.vercel.app",
-            splashImageUrl:
-              "https://photoverse-eight.vercel.app/photoverse-logo.png",
-            splashBackgroundColor: "#000000",
-          },
-        },
-      }),
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: "Photoverse",
+  description:
+    "Photoverse is your online photo gallery—upload, organize, and access your photos anytime while freeing up storage space on your device.",
+  icons: {
+    icon: "/photoverse-logo.png",
+    shortcut: "/photoverse-logo.png",
+    apple: "/photoverse-logo.png",
+  },
+};
 
 export default function RootLayout({
   children,
