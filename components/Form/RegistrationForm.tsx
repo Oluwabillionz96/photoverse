@@ -2,7 +2,13 @@
 // import baseUrl from "@/baseUrl";
 import { RegisterInfo, ViewPassword } from "@/lib/types";
 import { motion } from "framer-motion";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
@@ -18,6 +24,7 @@ const RegistrationForm = ({
   setViewPassword,
   setIsLogin,
   setIsCreated,
+  setMode,
 }: {
   registerInfo: RegisterInfo;
   setRegisterInfo: (arg: RegisterInfo) => void;
@@ -25,6 +32,7 @@ const RegistrationForm = ({
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
   setIsCreated: (arg: boolean) => void;
+  setMode?: Dispatch<SetStateAction<"login" | "register">>;
 }) => {
   const [loading, setLoading] = useState(false);
   const [registerError, setRegisterError] = useState({
@@ -192,7 +200,10 @@ const RegistrationForm = ({
         Already have an account?
         <span
           className="text-blue-500 font-semibold"
-          onClick={() => setIsLogin(true)}
+          onClick={() => {
+            setIsLogin(true);
+            if (setMode !== undefined) setMode("login");
+          }}
         >
           {" "}
           Sign in

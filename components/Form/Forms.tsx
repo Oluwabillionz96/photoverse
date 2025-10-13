@@ -20,6 +20,7 @@ const Forms = ({
   setIsCreated,
   mode,
   setOpenModal,
+  setMode,
 }: {
   isLogin: boolean;
   setIsLogin: (arg: boolean) => void;
@@ -32,6 +33,7 @@ const Forms = ({
   setIsCreated: (arg: boolean) => void;
   mode?: "login" | "register";
   setOpenModal?: Dispatch<SetStateAction<boolean>>;
+  setMode?: Dispatch<SetStateAction<"login" | "register">>;
 }) => {
   const router = useRouter();
   return (
@@ -78,6 +80,7 @@ const Forms = ({
             }`}
             onClick={() => {
               setIsLogin(true);
+              if (setMode !== undefined) setMode("login");
             }}
           >
             Login
@@ -88,6 +91,7 @@ const Forms = ({
             }}
             onClick={() => {
               setIsLogin(false);
+              if (setMode !== undefined) setMode("register");
             }}
             className={`h-10 flex-1/2 rounded-tr-sm  md:block rounded-br-sm font-semibold hover:cursor-pointer text-xl ${
               !isLogin ? " bg-blue-500 text-white" : "bg-[#EAEAEB]"
@@ -106,6 +110,7 @@ const Forms = ({
             viewPassword={viewPassword}
             setViewPassword={setViewPassword}
             setIsLogin={setIsLogin}
+            setMode={setMode}
           />
         ) : (
           <RegistrationForm
@@ -116,6 +121,7 @@ const Forms = ({
             setViewPassword={setViewPassword}
             setIsLogin={setIsLogin}
             setIsCreated={setIsCreated}
+            setMode={setMode}
           />
         )}
       </AnimatePresence>

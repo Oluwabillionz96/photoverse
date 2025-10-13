@@ -32,6 +32,7 @@ export default function Home() {
           setRegisterInfo={setRegisterInfo}
           mode={mode}
           setOpenModal={setOpenModal}
+          setMode={setMode}
         />
       )}
       <LandingPage setOpenModal={setOpenModal} setMode={setMode} />

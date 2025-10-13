@@ -4,7 +4,13 @@ import { LoginInfo, ViewPassword } from "@/lib/types";
 import { useLoginMutation } from "@/services/api";
 import { motion, MotionConfig } from "framer-motion";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
@@ -21,12 +27,14 @@ const LoginForm = ({
   viewPassword,
   setViewPassword,
   setIsLogin,
+  setMode,
 }: {
   loginInfo: LoginInfo;
   setLoginInfo: (arg: LoginInfo) => void;
   viewPassword: ViewPassword;
   setViewPassword: (arg: ViewPassword) => void;
   setIsLogin: (arg: boolean) => void;
+  setMode?: Dispatch<SetStateAction<"login" | "register">>;
 }) => {
   const [login, { isLoading }] = useLoginMutation();
   const [loginError, setLoginError] = useState({
@@ -59,7 +67,7 @@ const LoginForm = ({
       };
 
       const message =
-        error?.data?.error||
+        error?.data?.error ||
         (error?.status === "FETCH_ERROR"
           ? "Network error. Please check your connection."
           : "An unexpected error occurred.");
@@ -173,6 +181,7 @@ const LoginForm = ({
             className="text-blue-500 font-semibold"
             onClick={() => {
               setIsLogin(false);
+              if (setMode !== undefined) setMode("register");
             }}
           >
             Sign up

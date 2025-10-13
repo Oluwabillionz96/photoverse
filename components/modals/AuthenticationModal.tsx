@@ -31,6 +31,7 @@ const AuthenticationModal = ({
   setRegisterInfo,
   mode,
   setOpenModal,
+  setMode,
 }: {
   loginInfo: LoginInfo;
   setLoginInfo: (arg: LoginInfo) => void;
@@ -38,6 +39,7 @@ const AuthenticationModal = ({
   setRegisterInfo: (arg: RegisterInfo) => void;
   mode?: "login" | "register";
   setOpenModal?: Dispatch<SetStateAction<boolean>>;
+  setMode?: Dispatch<SetStateAction<"login" | "register">>;
 }) => {
   const [viewPassword, setViewPassword] = useState({
     loginPassword: false,
@@ -79,6 +81,7 @@ const AuthenticationModal = ({
                 setIsCreated={setIsCreated}
                 mode={mode}
                 setOpenModal={setOpenModal}
+                setMode={setMode}
               />
             ) : (
               <VerifyEmail
