@@ -105,11 +105,12 @@ const PhotosPreview = ({
         <div className="flex gap-4 my-4">
           <Button
             variant="outline"
-            className="flex items-center gap-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200 bg-transparent"
+            className="flex items-center gap-2 hover:bg-red-50 hover:border-red-200 disabled:cursor-not-allowed hover:text-red-600 transition-all duration-200 bg-transparent disabled:opacity-50"
             onClick={() => {
               setFiles([]);
               if (ref.current) ref.current.value = "";
             }}
+            disabled={loading || isLoading}
           >
             <TrashIcon className="w-4 h-4" />
             <span className="hidden md:inline">Clear</span>
@@ -119,6 +120,7 @@ const PhotosPreview = ({
             <Button
               onClick={() => ref.current?.click()}
               className="bg-blue-500   hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
+              disabled={isLoading || loading}
             >
               Add more photos
             </Button>
@@ -175,7 +177,7 @@ const PhotosPreview = ({
                     newFiles.splice(index, 1);
                     setFiles([...newFiles]);
                   }}
-                  // disabled={isUploading}
+                  disabled={isLoading || loading}
                   className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
                 >
                   <XIcon className="w-3 h-3 text-white" />
