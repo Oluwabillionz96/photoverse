@@ -2,14 +2,14 @@
 import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import Pagination from "@/components/Pagination";
-import { Card, CardContent } from "@/components/ui/card";
 import { Rootstate } from "@/lib/store";
-import { useGetFoldersQuery } from "@/services/api";
-import Image from "next/image";
-import Link from "next/link";
+import { useGetFoldersQuery, useRenameFolderMutation } from "@/services/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import FolderCard from "@/components/FolderCard";
+import RenameFolderModal from "@/components/modals/RenameFolderModal";
+import toast from "react-hot-toast";
 
 const Folders = () => {
   const router = useRouter();
@@ -18,6 +18,31 @@ const Folders = () => {
   const [currentPage, setCurrentPage] = useState(
     Number.parseInt(searchParams.get("page") || "1")
   );
+  const [isRenameModalOpen, setIsRenamModalOpen] = useState(false);
+  const [folderId, setFolderId] = useState("");
+  const [renameFolder, { isLoading: isRenaming }] = useRenameFolderMutation();
+
+  async function handleRenameFolder(folderId: string, foldername: string) {
+    const payload = { id: folderId, foldername: foldername };
+    const response = await renameFolder(payload);
+    if ("data" in response) {
+      toast.success(response?.data?.message);
+    } else if ("error" in response) {
+      const error = response.error as {
+        status?: number | string;
+        data?: { error: string };
+      };
+
+      const message =
+        error?.data?.error ||
+        (error?.status === "FETCH_ERROR"
+          ? "Network error. Please check your connection."
+          : "An unexpected error occurred.");
+
+      toast.error(message);
+    }
+    setIsRenamModalOpen(false);
+  }
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -44,35 +69,23 @@ const Folders = () => {
           {" "}
           <div className="grid md:grid-cols-3 md:gap-6 lg:grid-cols-4 grid-cols-2 lg:gap-8 gap-4">
             {folders?.map((folder) => (
-              <Card
+              <FolderCard
                 key={folder._id}
-                className="group cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-[1.02]"
-              >
-                <Link href={`/folders/${folder?.name}`}>
-                  <CardContent className="p-2">
-                    <div className="relative mb-3 h-20 md:h-28 lg:h-32 xl:h-36">
-                      <Image
-                        src={"/folderThumbnail.png"}
-                        alt={"thumbnail"}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        fill
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <h3
-                        className="font-medium text-sm md:text-base truncate"
-                        title={folder.name}
-                      >
-                        {folder.name}
-                      </h3>
-                    </div>
-                  </CardContent>
-                </Link>
-              </Card>
+                folder={folder}
+                openRenameModal={() => {
+                  setIsRenamModalOpen(true);
+                  setFolderId(folder._id);
+                }}
+              />
             ))}
           </div>
+          <RenameFolderModal
+            isOpen={isRenameModalOpen}
+            setIsOpen={setIsRenamModalOpen}
+            folderId={folderId}
+            handleRename={handleRenameFolder}
+            loading={isRenaming}
+          />
           <Pagination
             totalPages={data?.totalPages}
             setCurrentPage={setCurrentPage}

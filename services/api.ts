@@ -100,6 +100,14 @@ export const PhotoverseAPI = createApi({
       query: ({ page }) => `photos/favourite?limit=60&page=${page}`,
       providesTags: ["favourite"],
     }),
+    renameFolder: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `folders/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["folders"],
+    }),
   }),
 });
 
@@ -117,4 +125,5 @@ export const {
   useGetOnePhotoQuery,
   useToggleFavouriteMutation,
   useGetFavouriteQuery,
+  useRenameFolderMutation,
 } = PhotoverseAPI;

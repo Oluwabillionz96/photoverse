@@ -122,7 +122,7 @@ export function ImageModal({
               onClick={() => {
                 onClose();
               }}
-              className="  p-2 bg-transparent hover:bg-transparent text-white "
+              className="  p-2 bg-transparent hover:bg-transparent text-white focus:outline focus:outline-white border-0 rounded-full "
             >
               <div className="lg:hidden">
                 <ArrowLeft className="w-8 h-8" />
@@ -186,7 +186,7 @@ export function ImageModal({
         {/* Image Info */}
         {showOptions && (
           <div className="absolute bottom-0 md:bottom-16 left-0 right-0 z-20">
-            <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-between md:justify-center md:gap-6 md:w-[50vw] md:mx-auto">
+            <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-center  md:justify-center gap-6 md:w-[50vw] md:mx-auto">
               <a
                 href={
                   photo?.link?.replace("/upload/", "/upload/fl_attachment/") ||
