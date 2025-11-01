@@ -11,6 +11,7 @@ import {
 import { FaHeart} from "react-icons/fa";
 // import ContextModal from "./modals/ContextModal";
 import { Rootstate } from "@/lib/store";
+import ContextModal from "./modals/ContextModal";
 
 export const cloudinaryLoader = ({
   src,
@@ -36,18 +37,18 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     }
   }
 
-  // function handleSelectAll() {
-  //   if (selectedPhotosIds.length !== photos.length) {
-  //     const toBeIncluded = photos
-  //       .filter((item) => !selectedPhotosIds.includes(item._id))
-  //       .map((item) => item._id);
-  //     console.log(toBeIncluded);
-  //     dispatch(updateSelectedPhotosIds(toBeIncluded));
-  //   } else if (selectedPhotosIds.length === photos.length) {
-  //     const ids = photos.map((item) => item._id);
-  //     dispatch(removeSelectedPhoto(ids));
-  //   }
-  // }
+  function handleSelectAll() {
+    if (selectedPhotosIds.length !== photos.length) {
+      const toBeIncluded = photos
+        .filter((item) => !selectedPhotosIds.includes(item._id))
+        .map((item) => item._id);
+      console.log(toBeIncluded);
+      dispatch(updateSelectedPhotosIds(toBeIncluded));
+    } else if (selectedPhotosIds.length === photos.length) {
+      const ids = photos.map((item) => item._id);
+      dispatch(removeSelectedPhoto(ids));
+    }
+  }
 
   useEffect(() => {
     const imageIds = photos?.map((item) => item._id);
@@ -74,7 +75,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
               </div>
             )}
 
-            {/* <ContextModal
+            <ContextModal
               handleSelectImage={(e: MouseEvent) => {
                 e.stopPropagation();
                 handleImageSelection(item);
@@ -87,7 +88,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 e.stopPropagation();
                 handleSelectAll();
               }}
-            > */}
+            >
             <Image
               src={item?.link}
               alt="photo"
@@ -97,7 +98,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
               sizes="33vw"
               loader={cloudinaryLoader}
             />
-            {/* </ContextModal> */}
+            </ContextModal>
             {selectedPhotosIds.length > 0 && (
               <input
                 type="checkbox"

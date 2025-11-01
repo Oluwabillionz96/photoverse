@@ -11,6 +11,7 @@ import {
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
+import Image from "next/image";
 // import { useRenameFolderMutation } from "@/services/api";
 
 const FolderCard = ({
@@ -46,25 +47,28 @@ const FolderCard = ({
                 >
                   Open
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e: MouseEvent) => {
-                    e.preventDefault();
-                    openRenameModal();
-                    setOpenSideModal(false);
-                  }}
-                >
-                  Rename
-                </DropdownMenuItem>
-                {/* <DropdownMenuItem>Share</DropdownMenuItem> */}
-                {/* <DropdownMenuItem className="text-destructive">
-                  Delete
-                </DropdownMenuItem> */}
+                {folder.name.toLowerCase() !== "general" && (
+                  <DropdownMenuItem
+                    onClick={(e: MouseEvent) => {
+                      e.preventDefault();
+                      openRenameModal();
+                      setOpenSideModal(false);
+                    }}
+                  >
+                    Rename
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          <div className="flex h-full items-center justify-center">
-            <div className="relative"></div>
+          <div className="flex h-full items-center justify-center relative z-20">
+            <Image
+              src={"/folder_thumbnail.png"}
+              width={200}
+              height={200}
+              alt="Folder Thumbnail"
+            />
           </div>
         </div>
 
