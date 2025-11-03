@@ -4,7 +4,7 @@ import LandingPage from "@/components/LandingPage";
 import AuthenticationModal from "@/components/modals/AuthenticationModal";
 import { Rootstate } from "@/lib/store";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function Home() {
@@ -18,9 +18,11 @@ export default function Home() {
   const [mode, setMode] = useState<"login" | "register">("register");
   const [openModal, setOpenModal] = useState(false);
 
-  if (authenticated) {
-    redirect("/folders");
-  }
+  useEffect(() => {
+    if (authenticated) {
+      redirect("/folders");
+    }
+  }, [authenticated]);
 
   return (
     <>

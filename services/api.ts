@@ -108,6 +108,14 @@ export const PhotoverseAPI = createApi({
       }),
       invalidatesTags: ["folders"],
     }),
+    movePhotoToTrash: builder.mutation({
+      query: (body) => ({
+        url: "photos/trash",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["folders", "photos"],
+    }),
   }),
 });
 
@@ -126,4 +134,5 @@ export const {
   useToggleFavouriteMutation,
   useGetFavouriteQuery,
   useRenameFolderMutation,
+  useMovePhotoToTrashMutation,
 } = PhotoverseAPI;

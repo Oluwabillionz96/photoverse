@@ -8,10 +8,11 @@ import {
   updatePhotoId,
   updateSelectedPhotosIds,
 } from "@/lib/slices/photoSlice";
-import { FaHeart} from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 // import ContextModal from "./modals/ContextModal";
 import { Rootstate } from "@/lib/store";
-import ContextModal from "./modals/ContextModal";
+// import ContextModal from "./modals/ContextModal";
+// import { useMovePhotoToTrashMutation } from "@/services/api";
 
 export const cloudinaryLoader = ({
   src,
@@ -28,6 +29,15 @@ export const cloudinaryLoader = ({
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
   const { selectedPhotosIds } = useSelector((state: Rootstate) => state.photo);
+  // const [moveToTrash] = useMovePhotoToTrashMutation();
+
+  // async function handleMoveToTrash() {
+  //   const payload = {
+  //     photos: selectedPhotosIds,
+  //   };
+
+  //   await moveToTrash(payload);
+  // }
 
   function handleImageSelection(item: Photo) {
     if (selectedPhotosIds.includes(item._id)) {
@@ -37,18 +47,18 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     }
   }
 
-  function handleSelectAll() {
-    if (selectedPhotosIds.length !== photos.length) {
-      const toBeIncluded = photos
-        .filter((item) => !selectedPhotosIds.includes(item._id))
-        .map((item) => item._id);
-      console.log(toBeIncluded);
-      dispatch(updateSelectedPhotosIds(toBeIncluded));
-    } else if (selectedPhotosIds.length === photos.length) {
-      const ids = photos.map((item) => item._id);
-      dispatch(removeSelectedPhoto(ids));
-    }
-  }
+  // function handleSelectAll() {
+  //   if (selectedPhotosIds.length !== photos.length) {
+  //     const toBeIncluded = photos
+  //       .filter((item) => !selectedPhotosIds.includes(item._id))
+  //       .map((item) => item._id);
+  //     console.log(toBeIncluded);
+  //     dispatch(updateSelectedPhotosIds(toBeIncluded));
+  //   } else if (selectedPhotosIds.length === photos.length) {
+  //     const ids = photos.map((item) => item._id);
+  //     dispatch(removeSelectedPhoto(ids));
+  //   }
+  // }
 
   useEffect(() => {
     const imageIds = photos?.map((item) => item._id);
@@ -75,11 +85,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
               </div>
             )}
 
-            <ContextModal
+            {/* <ContextModal
               handleSelectImage={(e: MouseEvent) => {
                 e.stopPropagation();
                 handleImageSelection(item);
               }}
+              handleMoveToTrash={handleMoveToTrash}
               removeFavOption={selectedPhotosIds.length > 1}
               isSelected={selectedPhotosIds?.includes(item._id)}
               canSelectAll={selectedPhotosIds.length > 0}
@@ -88,17 +99,17 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 e.stopPropagation();
                 handleSelectAll();
               }}
-            >
-            <Image
-              src={item?.link}
-              alt="photo"
-              fill
-              loading="lazy"
-              className="object-cover object-top"
-              sizes="33vw"
-              loader={cloudinaryLoader}
-            />
-            </ContextModal>
+            > */}
+              <Image
+                src={item?.link}
+                alt="photo"
+                fill
+                loading="lazy"
+                className="object-cover object-top"
+                sizes="33vw"
+                loader={cloudinaryLoader}
+              />
+            {/* </ContextModal> */}
             {selectedPhotosIds.length > 0 && (
               <input
                 type="checkbox"

@@ -23,6 +23,7 @@ export default function ContextModal({
   allIsSelected,
   handleAllSelection,
   removeFavOption,
+  handleMoveToTrash,
 }: {
   children: ReactNode;
   handleSelectImage: (arg: MouseEvent) => void;
@@ -31,6 +32,7 @@ export default function ContextModal({
   allIsSelected: boolean;
   handleAllSelection: (arg: MouseEvent) => void;
   removeFavOption: boolean;
+  handleMoveToTrash: () => void;
 }) {
   return (
     <ContextMenu>
@@ -63,7 +65,9 @@ export default function ContextModal({
           </>
         )}
         <ContextMenuSeparator />
-        <ContextMenuItem variant="destructive">Move To Trash</ContextMenuItem>
+        <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
+          Move To Trash
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem>Download Image</ContextMenuItem>
         {/* <ContextMenuSub>

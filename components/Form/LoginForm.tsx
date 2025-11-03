@@ -167,7 +167,7 @@ const LoginForm = ({
           className="font-semibold"
         >
           <Link href={"/"} className="text-blue-500">
-            {/* Forgot Password? */}
+            Forgot Password?
           </Link>
         </motion.p>
         <motion.p
