@@ -1,6 +1,6 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,9 +9,9 @@ import {
   updateSelectedPhotosIds,
 } from "@/lib/slices/photoSlice";
 import { FaHeart } from "react-icons/fa";
-// import ContextModal from "./modals/ContextModal";
 import { Rootstate } from "@/lib/store";
-// import ContextModal from "./modals/ContextModal";
+import ContextModal from "./modals/ContextModal";
+import useScreenSize from "@/hooks/useScreenSize";
 // import { useMovePhotoToTrashMutation } from "@/services/api";
 
 export const cloudinaryLoader = ({
@@ -29,6 +29,24 @@ export const cloudinaryLoader = ({
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
   const { selectedPhotosIds } = useSelector((state: Rootstate) => state.photo);
+  const isMobile = useScreenSize(1024);
+  // const [pressing, setpressing] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  function startPress(onlongpress?: () => void) {
+    // setpressing(true);
+    timerRef.current = setTimeout(() => {
+      onlongpress?.();
+    }, 200);
+  }
+
+  function endPress() {
+    // setpressing(false);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
+  }
   // const [moveToTrash] = useMovePhotoToTrashMutation();
 
   // async function handleMoveToTrash() {
@@ -78,6 +96,11 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 e.preventDefault();
               }
             }}
+            onContextMenu={(e) => {
+              if (selectedPhotosIds.length > 0 || isMobile) {
+                e.preventDefault();
+              }
+            }}
           >
             {item.isFavourite && (
               <div className="absolute top-2 right-2 text-pink-500  z-50">
@@ -85,21 +108,21 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
               </div>
             )}
 
-            {/* <ContextModal
+            <ContextModal
               handleSelectImage={(e: MouseEvent) => {
                 e.stopPropagation();
                 handleImageSelection(item);
               }}
-              handleMoveToTrash={handleMoveToTrash}
-              removeFavOption={selectedPhotosIds.length > 1}
+              // handleMoveToTrash={handleMoveToTrash}
+              // removeFavOption={selectedPhotosIds.length > 1}
               isSelected={selectedPhotosIds?.includes(item._id)}
-              canSelectAll={selectedPhotosIds.length > 0}
-              allIsSelected={selectedPhotosIds.length === photos.length}
-              handleAllSelection={(e: MouseEvent) => {
-                e.stopPropagation();
-                handleSelectAll();
-              }}
-            > */}
+              // canSelectAll={selectedPhotosIds.length > 0}
+              // allIsSelected={selectedPhotosIds.length === photos.length}
+              // handleAllSelection={(e: MouseEvent) => {
+              //   e.stopPropagation();
+              //   handleSelectAll();
+              // }}
+            >
               <Image
                 src={item?.link}
                 alt="photo"
@@ -108,8 +131,20 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 className="object-cover object-top"
                 sizes="33vw"
                 loader={cloudinaryLoader}
+                onContextMenu={(e) => {
+                  if (selectedPhotosIds.length > 0 || isMobile) {
+                    e.preventDefault();
+                  }
+                }}
+                onTouchStart={(e) => {
+                  // e.preventDefault();
+                  e.stopPropagation();
+                  startPress(() => handleImageSelection(item));
+                }}
+                onTouchCancel={endPress}
+                onTouchEnd={endPress}
               />
-            {/* </ContextModal> */}
+            </ContextModal>
             {selectedPhotosIds.length > 0 && (
               <input
                 type="checkbox"

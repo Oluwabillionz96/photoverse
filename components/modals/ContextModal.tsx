@@ -6,7 +6,7 @@ import {
   // ContextMenuLabel,
   // ContextMenuRadioGroup,
   // ContextMenuRadioItem,
-  ContextMenuSeparator,
+  // ContextMenuSeparator,
   // ContextMenuShortcut,
   // ContextMenuSub,
   // ContextMenuSubContent,
@@ -19,20 +19,20 @@ export default function ContextModal({
   children,
   handleSelectImage,
   isSelected,
-  canSelectAll,
-  allIsSelected,
-  handleAllSelection,
-  removeFavOption,
-  handleMoveToTrash,
-}: {
+}: // canSelectAll,
+// allIsSelected,
+// handleAllSelection,
+// removeFavOption,
+// handleMoveToTrash,
+{
   children: ReactNode;
   handleSelectImage: (arg: MouseEvent) => void;
   isSelected: boolean;
-  canSelectAll: boolean;
-  allIsSelected: boolean;
-  handleAllSelection: (arg: MouseEvent) => void;
-  removeFavOption: boolean;
-  handleMoveToTrash: () => void;
+  // canSelectAll: boolean;
+  // allIsSelected: boolean;
+  // handleAllSelection: (arg: MouseEvent) => void;
+  // removeFavOption: boolean;
+  // handleMoveToTrash: () => void;
 }) {
   return (
     <ContextMenu>
@@ -50,26 +50,26 @@ export default function ContextModal({
           {!isSelected ? "Select Image" : "Remove Selection"}
           {/* <ContextMenuShortcut>⌘R</ContextMenuShortcut> */}
         </ContextMenuItem>
-        {canSelectAll && (
+        {/* {canSelectAll && (
           <>
             <ContextMenuSeparator />
             <ContextMenuItem onClick={handleAllSelection}>
               {allIsSelected ? "Remove all selection" : "Select all"}
             </ContextMenuItem>
           </>
-        )}
-        {!removeFavOption && (
+        )} */}
+        {/* {!removeFavOption && (
           <>
             <ContextMenuSeparator />
             <ContextMenuItem>Mark as Favourite</ContextMenuItem>
           </>
-        )}
-        <ContextMenuSeparator />
+        )} */}
+        {/* <ContextMenuSeparator />
         <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
           Move To Trash
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem>Download Image</ContextMenuItem>
+        <ContextMenuItem>Download Image</ContextMenuItem> */}
         {/* <ContextMenuSub>
           <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
           <ContextMenuSubContent className="w-44">

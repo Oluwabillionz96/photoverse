@@ -37,7 +37,6 @@ const Photos = () => {
           <PhotoLoader />
         ) : photos && photos.length > 0 ? (
           <>
-            {" "}
             <ImageGrid photos={photos} route="photos" />
             <Pagination
               totalPages={data?.totalPages}

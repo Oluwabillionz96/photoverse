@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-const useScreenSize = () => {
+const useScreenSize = (maxSize: number = 768) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < maxSize);
     };
 
     checkScreenSize();
@@ -15,7 +15,7 @@ const useScreenSize = () => {
     window.addEventListener("resize", checkScreenSize);
 
     return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
+  }, [maxSize]);
 
   return isMobile;
 };
