@@ -12,14 +12,7 @@ import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import { useToggleFavouriteMutation } from "@/services/api";
-import toast from "react-hot-toast";
-
-// interface Photo {
-//   id: number;
-//   src: string;
-//   alt: string;
-//   title: string;
-// }
+import useToggleIsFavourite from "@/hooks/useToggleIsFavourite";
 
 interface ImageModalProps {
   photo: Photo | undefined;
@@ -42,33 +35,35 @@ export function ImageModal({
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
   // const [side, setSide] = useState<"" | "right" | "left">("");
-  const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
+  const [, { isLoading }] = useToggleFavouriteMutation();
 
-  async function toggleIsFavourite() {
-    const payload = {
-      id: photo?._id,
-      isFavourite: !photo?.isFavourite,
-      folder: photo?.folder,
-    };
+  // async function toggleIsFavourite(
+  //   photo: Record<string, string | boolean | undefined | Folder>[]
+  // ) {
+  //   const payload = {
+  //     data: photo,
+  //   };
 
-    const response = await toggleFavourite(payload);
-    if ("data" in response) {
-      toast.success(response.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
+  //   const response = await toggleFavourite(payload);
+  //   if ("data" in response) {
+  //     toast.success(response.data?.message);
+  //   } else if ("error" in response) {
+  //     const error = response.error as {
+  //       status?: number | string;
+  //       data?: { error: string };
+  //     };
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
+  //     const message =
+  //       error?.data?.error ||
+  //       (error?.status === "FETCH_ERROR"
+  //         ? "Network error. Please check your connection."
+  //         : "An unexpected error occurred.");
 
-      toast.error(message);
-    }
-  }
+  //     toast.error(message);
+  //   }
+  // }
+
+  const toggleIsFavourite = useToggleIsFavourite(useToggleFavouriteMutation);
 
   const handler = useSwipeable({
     onSwipedRight: () => {
@@ -197,7 +192,12 @@ export function ImageModal({
                 <GrDownload />
               </a>
 
-              <button className="bg-transparent" onClick={toggleIsFavourite}>
+              <button
+                className="bg-transparent"
+                onClick={() => {
+                  toggleIsFavourite([photo?._id]);
+                }}
+              >
                 {photo?.isFavourite ? (
                   <span className="text-pink-500">
                     <FaHeart />

@@ -91,7 +91,7 @@ export const PhotoverseAPI = createApi({
     toggleFavourite: builder.mutation({
       query: (body) => ({
         url: "photos/favourite",
-        method: "PUT",
+        method: "PATCH",
         body,
       }),
       invalidatesTags: ["photos"],
