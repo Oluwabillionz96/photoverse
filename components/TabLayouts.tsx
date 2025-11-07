@@ -1,5 +1,9 @@
 "use client";
-import { useLogoutMutation, useMovePhotoToTrashMutation, useToggleFavouriteMutation } from "@/services/api";
+import {
+  useLogoutMutation,
+  useMovePhotoToTrashMutation,
+  useToggleFavouriteMutation,
+} from "@/services/api";
 import { Loading } from "./modals/AuthenticationModal";
 import DesktopTabNavs from "./DesktopTabNavs";
 import FolderCreationAndSettingsButton from "./FolderCreationAndSettingsButton";
@@ -34,14 +38,14 @@ const TabLayouts = () => {
                 await moveToTrash(selectedPhotosIds);
                 dispatch(removeSelectedPhoto(selectedPhotosIds));
               }}
-              className="w-[8.6rem] h-[2.6rem] hover:cursor-pointer hover:bg-red-100 hover:border-red-300 group"
+              className="w-[8.6rem] h-[2.6rem] hover:cursor-pointer hover:bg-red-300 hover:border-red-500 group"
             >
-              <Trash2Icon className="group-hover:text-red-400" />
+              <Trash2Icon className="group-hover:text-red-500" />
               Move to trash
             </Button>
             <Button
               variant={"outline"}
-              className="w-fit h-[2.6rem] hover:cursor-pointer group  hover:border-pink-300 hover:bg-pink-100"
+              className="w-fit h-[2.6rem] hover:cursor-pointer group  hover:border-pink-500 hover:bg-pink-300"
               onClick={async () => {
                 await toggleIsFavourite(selectedPhotosIds);
                 dispatch(removeSelectedPhoto(selectedPhotosIds));
