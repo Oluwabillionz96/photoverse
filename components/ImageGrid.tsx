@@ -37,7 +37,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     // setpressing(true);
     timerRef.current = setTimeout(() => {
       onlongpress?.();
-    }, 200);
+    }, 100);
   }
 
   function endPress() {
