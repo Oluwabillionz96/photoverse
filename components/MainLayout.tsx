@@ -92,13 +92,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+
   return (
     <>
       {loading || isLoading ? (
         <Loading />
       ) : (
         <>
-          {pathname === "/" ? (
+          {pathname === "/" || pathname.startsWith("/auth")? (
             <>{children}</>
           ) : (
             <main
