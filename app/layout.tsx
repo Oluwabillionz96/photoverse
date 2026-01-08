@@ -36,6 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-scroll`}
+        suppressHydrationWarning={process.env.NODE_ENV === "production"}
       >
         <AppProvider>
           <Layout>
