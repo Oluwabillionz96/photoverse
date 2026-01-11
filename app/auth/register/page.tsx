@@ -4,11 +4,25 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import GoogleButton from "@/components/google-button";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 const RegistrationPage = () => {
+  const { control } = useForm({
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -47,114 +61,91 @@ const RegistrationPage = () => {
 
           {/* Signup Form */}
           <form onSubmit={() => {}} className="space-y-4">
-            <div className="space-y-2">
-              <Label
-                htmlFor="name"
-                className="text-sm font-medium text-foreground"
-              >
-                Full name
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                name="name"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+            <FieldGroup>
+              <Controller
+                name="username"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="username">Username</FieldLabel>
+                    <Input
+                      {...field}
+                      id="username"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="John Doe"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground"
-              >
-                Email address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
+              <Controller
                 name="email"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="email">Email Address</FieldLabel>
+                    <Input
+                      {...field}
+                      type="email"
+                      id="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="text-sm font-medium text-foreground"
-              >
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a strong password"
+              <Controller
                 name="password"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <Input
+                      {...field}
+                      type="password"
+                      id="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Create a strong password"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      At least 8 characters with a mix of letters and numbers
+                    </p>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                At least 8 characters with a mix of letters and numbers
-              </p>
-            </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="confirmPassword"
-                className="text-sm font-medium text-foreground"
-              >
-                Confirm password
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
+              <Controller
                 name="confirmPassword"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="confirmPassword">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      type="confirmPassword"
+                      id="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Confirm your password"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-            </div>
-
-            {/* Terms Checkbox */}
-            {/* <div className="flex items-start gap-3">
-              <input
-                id="terms"
-                type="checkbox"
-                checked={false}
-                onChange={()=>{}}
-                className="mt-1 w-4 h-4 rounded border-border cursor-pointer"
-              />
-              <label
-                htmlFor="terms"
-                className="text-xs text-muted-foreground cursor-pointer"
-              >
-                I agree to the{" "}
-                <Link
-                  href="/terms"
-                  className="text-primary hover:underline font-semibold"
-                >
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  href="/privacy"
-                  className="text-primary hover:underline font-semibold"
-                >
-                  Privacy Policy
-                </Link>
-              </label>
-            </div> */}
+            </FieldGroup>
 
             <Button
               type="submit"
