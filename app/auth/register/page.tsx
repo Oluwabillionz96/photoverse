@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import z from "zod";
 import { RegistrationData } from "@/lib/zod-schemas";
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import PasswordInput from "@/components/Input/password-input";
 
 const RegistrationPage = () => {
   const { control, handleSubmit } = useForm<z.infer<typeof RegistrationData>>({
@@ -86,7 +86,7 @@ const RegistrationPage = () => {
                       placeholder="John Doe"
                     />
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError className="text-xs" errors={[fieldState.error]} />
                     )}
                   </Field>
                 )}
@@ -106,7 +106,7 @@ const RegistrationPage = () => {
                       placeholder="you@example.com"
                     />
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError className="text-xs" errors={[fieldState.error]} />
                     )}
                   </Field>
                 )}
@@ -118,23 +118,19 @@ const RegistrationPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <div className="relative">
-                      <Input
-                        {...field}
-                        type="password"
-                        id="password"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Create a strong password"
-                      />
-                      {/* <FaRegEye className="absolute top-2 right-2" /> */}
-                      {/* <FaRegEyeSlash className="absolute top-2 right-2" /> */}
-                    </div>
+                    <PasswordInput
+                      field={field}
+                      fieldState={fieldState}
+                      id="password"
+                      placeholder="Create a strong password"
+                    />
 
-                    <p className="text-xs text-muted-foreground mt-1">
-                      At least 8 characters with a mix of letters and numbers
-                    </p>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                    {fieldState.invalid ? (
+                      <FieldError className="text-xs" errors={[fieldState.error]} />
+                    ) : (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        At least 8 characters with a mix of letters and numbers
+                      </p>
                     )}
                   </Field>
                 )}
@@ -148,15 +144,15 @@ const RegistrationPage = () => {
                     <FieldLabel htmlFor="confirmPassword">
                       Confirm Password
                     </FieldLabel>
-                    <Input
-                      {...field}
-                      type="password"
+
+                    <PasswordInput
+                      field={field}
+                      fieldState={fieldState}
                       id="confirmPassword"
-                      aria-invalid={fieldState.invalid}
                       placeholder="Confirm your password"
                     />
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError className="text-xs" errors={[fieldState.error]} />
                     )}
                   </Field>
                 )}
