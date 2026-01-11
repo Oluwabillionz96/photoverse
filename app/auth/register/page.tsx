@@ -7,15 +7,20 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import GoogleButton from "@/components/google-button";
 import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import z from "zod";
+import { RegistrationData } from "@/lib/zod-schemas";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const RegistrationPage = () => {
-  const { control } = useForm({
+  const { control, handleSubmit } = useForm<z.infer<typeof RegistrationData>>({
+    resolver: zodResolver(RegistrationData),
     defaultValues: {
       username: "",
       email: "",
@@ -23,6 +28,12 @@ const RegistrationPage = () => {
       confirmPassword: "",
     },
   });
+
+  const onSubmit = (data: z.infer<typeof RegistrationData>) => {
+    console.log(data);
+    return;
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -60,7 +71,7 @@ const RegistrationPage = () => {
           </div>
 
           {/* Signup Form */}
-          <form onSubmit={() => {}} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup>
               <Controller
                 name="username"
@@ -107,13 +118,18 @@ const RegistrationPage = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input
-                      {...field}
-                      type="password"
-                      id="password"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Create a strong password"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type="password"
+                        id="password"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Create a strong password"
+                      />
+                      {/* <FaRegEye className="absolute top-2 right-2" /> */}
+                      {/* <FaRegEyeSlash className="absolute top-2 right-2" /> */}
+                    </div>
+
                     <p className="text-xs text-muted-foreground mt-1">
                       At least 8 characters with a mix of letters and numbers
                     </p>
@@ -134,8 +150,8 @@ const RegistrationPage = () => {
                     </FieldLabel>
                     <Input
                       {...field}
-                      type="confirmPassword"
-                      id="password"
+                      type="password"
+                      id="confirmPassword"
                       aria-invalid={fieldState.invalid}
                       placeholder="Confirm your password"
                     />
