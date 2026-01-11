@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import GoogleButton from "@/components/google-button";
 
- const RegistrationPage = () => {
-
+const RegistrationPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -31,21 +31,7 @@ import { Card } from "@/components/ui/card";
 
         <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
           {/* Google Sign Up */}
-          <button
-            onClick={()=>{}}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-border rounded-lg hover:bg-secondary transition-colors duration-200 font-medium text-foreground"
-          >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-            </svg>
-            Sign up with Google
-          </button>
+          <GoogleButton handleClick={() => {}} text="Sign Up with Google" />
 
           {/* Divider */}
           <div className="relative">
@@ -60,7 +46,7 @@ import { Card } from "@/components/ui/card";
           </div>
 
           {/* Signup Form */}
-          <form onSubmit={()=>{}} className="space-y-4">
+          <form onSubmit={() => {}} className="space-y-4">
             <div className="space-y-2">
               <Label
                 htmlFor="name"
@@ -74,7 +60,7 @@ import { Card } from "@/components/ui/card";
                 placeholder="John Doe"
                 name="name"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -93,7 +79,7 @@ import { Card } from "@/components/ui/card";
                 placeholder="you@example.com"
                 name="email"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -112,7 +98,7 @@ import { Card } from "@/components/ui/card";
                 placeholder="Create a strong password"
                 name="password"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -134,7 +120,7 @@ import { Card } from "@/components/ui/card";
                 placeholder="Confirm your password"
                 name="confirmPassword"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -173,7 +159,7 @@ import { Card } from "@/components/ui/card";
             <Button
               type="submit"
               disabled={false}
-              className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              className="w-full h-11 cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
               {false ? "Creating account..." : "Create account"}
               {false && <ArrowRight className="w-4 h-4" />}
@@ -200,6 +186,6 @@ import { Card } from "@/components/ui/card";
       </div>
     </div>
   );
-}
+};
 
 export default RegistrationPage;
