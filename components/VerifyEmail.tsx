@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import {
   ChangeEvent,
   ClipboardEvent,
@@ -109,21 +108,12 @@ const VerifyEmail = ({ email }: { email: string }) => {
   };
 
   return (
-    <motion.div
-      initial={{ y: 600 }}
-      animate={{ y: 0 }}
-      exit={{ y: 600 }}
-      transition={{ duration: 0.5, ease: "easeIn" }}
-      className="bg-white lg:w-[30%] md:w-[60%] w-9/10  md:h-fit flex flex-col justify-center items-center gap-6 py-8 rounded-xl overflow-hidden"
-    >
-      <h2 className="md:text-3xl text-xl  font-semibold  md:w-fit mx-auto text-center">
-        Confirm Your Email
-      </h2>
+    <div className="bg-white w-full md:h-fit flex flex-col justify-center items-center gap-6 pt-8 rounded-xl overflow-hidden">
       <p className="text-center text-[1.15rem] md:w-9/10">
-        Please enter the 6-digit code that was sent to {email}
+        Enter Verification Code
       </p>
       <div
-        className="grid grid-cols-6 md:gap-4 gap-2 md:px-4 px-2 md:w-9/10"
+        className="grid grid-cols-6 md:gap-4 gap-2  md:w-9/10"
         onPaste={handlePaste}
       >
         {inputValue.map((item, index) => (
@@ -164,7 +154,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
         ))}
       </div>
       <Button
-        className="w-9/10 h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
+        className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
         disabled={
           inputValue.join("").length !== 6 ||
           !inputValue.join("").trim() ||
@@ -175,20 +165,24 @@ const VerifyEmail = ({ email }: { email: string }) => {
         {loading ? <Spinner /> : ""}
         {loading ? "Confirming..." : "Confirm"}
       </Button>
-      {resendCode !== 0 ? (
-        <p className="text-blue-500 text-[1.1rem]">
-          Resend Code in {resendCode} seconds
+      <div className="text-center space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Didn&apos;t receive the code?
         </p>
-      ) : (
         <button
           onClick={resendOTP}
-          disabled={loading}
-          className="text-blue-500 text-[1.1rem] disabled:opacity-50"
+          disabled={loading || resendCode > 0}
+          className="text-blue-500 hover:underline font-semibold text-sm disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
         >
-          {isResending ? "Resending code" : "Resend Code"}
+          {/* {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"} */}
+          {resendCode > 0
+            ? ` Resend Code in ${resendCode} seconds`
+            : isResending
+            ? "Resending code"
+            : "Resend Code"}
         </button>
-      )}
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

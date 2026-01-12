@@ -19,6 +19,8 @@ import { RegistrationData } from "@/lib/zod-schemas";
 import PasswordInput from "@/components/Input/password-input";
 import { authApi } from "@/services/auth";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { updateEmail } from "@/lib/slices/authSlice";
 
 const RegistrationPage = () => {
   const {
@@ -34,10 +36,13 @@ const RegistrationPage = () => {
     },
   });
 
+  const dispatch = useDispatch();
+
   const onSubmit = async (data: z.infer<typeof RegistrationData>) => {
     try {
       await authApi.register(data.email, data.password);
       toast.success("Registration successful! Check your email for OTP.");
+      dispatch(updateEmail(data.email))
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -82,28 +87,6 @@ const RegistrationPage = () => {
           {/* Signup Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup>
-              {/* <Controller
-                name="username"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="username">Username</FieldLabel>
-                    <Input
-                      {...field}
-                      id="username"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="John Doe"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError
-                        className="text-xs"
-                        errors={[fieldState.error]}
-                      />
-                    )}
-                  </Field>
-                )}
-              /> */}
-
               <Controller
                 name="email"
                 control={control}
@@ -183,7 +166,7 @@ const RegistrationPage = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-11 cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              className="w-full h-11 cursor-pointer bg-blue-500 hover:bg-blue-500/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
               {isLoading ? "Creating account..." : "Create account"}
               {isLoading && <ArrowRight className="w-4 h-4" />}
@@ -195,7 +178,7 @@ const RegistrationPage = () => {
             Already have an account?{" "}
             <Link
               href="/auth/login"
-              className="text-primary hover:underline font-semibold"
+              className="text-blue-500 hover:underline font-semibold"
             >
               Sign in
             </Link>

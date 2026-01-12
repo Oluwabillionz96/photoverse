@@ -80,6 +80,7 @@ const refreshToken =
 const authSlice = createSlice({
   name: "auth",
   initialState: {
+    email: "",
     authenticated: false,
     token,
     refreshToken,
@@ -103,6 +104,9 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("refresh");
       state.authenticated = action.payload;
+    },
+    updateEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -138,5 +142,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { authenticate, logUserOut } = authSlice.actions;
+export const { authenticate, logUserOut, updateEmail } = authSlice.actions;
 export default authSlice.reducer;

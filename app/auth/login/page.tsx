@@ -4,12 +4,28 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import GoogleButton from "@/components/google-button";
-import { FieldGroup } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { LoginData } from "@/lib/zod-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import PasswordInput from "@/components/Input/password-input";
 
 const LoginPage = () => {
+  const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
+    resolver: zodResolver(LoginData),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -47,56 +63,65 @@ const LoginPage = () => {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={() => {}} className="space-y-4">
-            <FieldGroup></FieldGroup>
-            <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground"
-              >
-                Email address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+          <form onSubmit={handleSubmit(()=>{})} className="space-y-4">
+            <FieldGroup>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="email">Email Address</FieldLabel>
+                    <Input
+                      {...field}
+                      type="email"
+                      id="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
+                    )}
+                  </Field>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label
-                  htmlFor="password"
-                  className="text-sm font-medium text-foreground"
-                >
-                  Password
-                </Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-primary hover:underline font-medium"
-                >
-                  Forgot?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={""}
-                onChange={() => {}}
-                required
-                className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
+              <Controller
+                name="password"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+
+                    <PasswordInput
+                      fieldState={fieldState}
+                      field={field}
+                      id="password"
+                      placeholder="••••••••"
+                    />
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs text-primary hover:underline font-medium"
+                    >
+                      Forgot password?
+                    </Link>
+                    {fieldState.invalid && (
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
+                    )}
+                  </Field>
+                )}
               />
-            </div>
+            </FieldGroup>
 
             <Button
               type="submit"
               disabled={false}
-              className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
               {false ? "Signing in..." : "Sign in"}
               {!false && <ArrowRight className="w-4 h-4" />}
@@ -107,8 +132,8 @@ const LoginPage = () => {
           <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link
-              href="/signup"
-              className="text-primary hover:underline font-semibold"
+              href="/auth/register"
+              className="text-blue-500 hover:underline font-semibold"
             >
               Sign up
             </Link>
@@ -116,12 +141,12 @@ const LoginPage = () => {
         </Card>
 
         {/* Trust Indicators */}
-        <div className="mt-8 text-center text-xs text-muted-foreground space-y-2">
+        {/* <div className="mt-8 text-center text-xs text-muted-foreground space-y-2">
           <p>🔒 Your data is encrypted and secure</p>
           <p>
             By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
