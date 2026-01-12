@@ -7,6 +7,7 @@ export const PhotoverseAPI = createApi({
   reducerPath: "phoverseAPI",
   baseQuery: fetchBaseQuery({
     baseUrl: `${baseUrl}`,
+    credentials: "include",
     prepareHeaders: (headers, { getState }) => {
       const { auth } = getState() as Rootstate;
       const token = auth.token;

@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import GoogleButton from "@/components/google-button";
+import { FieldGroup } from "@/components/ui/field";
 
 const LoginPage = () => {
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -31,21 +32,7 @@ const LoginPage = () => {
 
         <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
           {/* Google Sign In */}
-          <button
-            onClick={()=>{}}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-border rounded-lg hover:bg-secondary transition-colors duration-200 font-medium text-foreground"
-          >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-            </svg>
-            Continue with Google
-          </button>
+          <GoogleButton text="Continue with Google" handleClick={() => {}} />
 
           {/* Divider */}
           <div className="relative">
@@ -60,7 +47,8 @@ const LoginPage = () => {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={()=>{}} className="space-y-4">
+          <form onSubmit={() => {}} className="space-y-4">
+            <FieldGroup></FieldGroup>
             <div className="space-y-2">
               <Label
                 htmlFor="email"
@@ -73,7 +61,7 @@ const LoginPage = () => {
                 type="email"
                 placeholder="you@example.com"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -99,7 +87,7 @@ const LoginPage = () => {
                 type="password"
                 placeholder="••••••••"
                 value={""}
-                onChange={()=>{}}
+                onChange={() => {}}
                 required
                 className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-primary"
               />
@@ -137,6 +125,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default LoginPage;

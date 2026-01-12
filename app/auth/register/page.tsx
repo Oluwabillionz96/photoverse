@@ -17,21 +17,30 @@ import {
 import z from "zod";
 import { RegistrationData } from "@/lib/zod-schemas";
 import PasswordInput from "@/components/Input/password-input";
+import { authApi } from "@/services/auth";
+import toast from "react-hot-toast";
 
 const RegistrationPage = () => {
-  const { control, handleSubmit } = useForm<z.infer<typeof RegistrationData>>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isLoading },
+  } = useForm<z.infer<typeof RegistrationData>>({
     resolver: zodResolver(RegistrationData),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof RegistrationData>) => {
-    console.log(data);
-    return;
+  const onSubmit = async (data: z.infer<typeof RegistrationData>) => {
+    try {
+      await authApi.register(data.email, data.password);
+      toast.success("Registration successful! Check your email for OTP.");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -73,7 +82,7 @@ const RegistrationPage = () => {
           {/* Signup Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup>
-              <Controller
+              {/* <Controller
                 name="username"
                 control={control}
                 render={({ field, fieldState }) => (
@@ -86,11 +95,14 @@ const RegistrationPage = () => {
                       placeholder="John Doe"
                     />
                     {fieldState.invalid && (
-                      <FieldError className="text-xs" errors={[fieldState.error]} />
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
                     )}
                   </Field>
                 )}
-              />
+              /> */}
 
               <Controller
                 name="email"
@@ -106,7 +118,10 @@ const RegistrationPage = () => {
                       placeholder="you@example.com"
                     />
                     {fieldState.invalid && (
-                      <FieldError className="text-xs" errors={[fieldState.error]} />
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
                     )}
                   </Field>
                 )}
@@ -126,7 +141,10 @@ const RegistrationPage = () => {
                     />
 
                     {fieldState.invalid ? (
-                      <FieldError className="text-xs" errors={[fieldState.error]} />
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
                     ) : (
                       <p className="text-xs text-muted-foreground mt-1">
                         At least 8 characters with a mix of letters and numbers
@@ -152,7 +170,10 @@ const RegistrationPage = () => {
                       placeholder="Confirm your password"
                     />
                     {fieldState.invalid && (
-                      <FieldError className="text-xs" errors={[fieldState.error]} />
+                      <FieldError
+                        className="text-xs"
+                        errors={[fieldState.error]}
+                      />
                     )}
                   </Field>
                 )}
@@ -161,11 +182,11 @@ const RegistrationPage = () => {
 
             <Button
               type="submit"
-              disabled={false}
+              disabled={isLoading}
               className="w-full h-11 cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              {false ? "Creating account..." : "Create account"}
-              {false && <ArrowRight className="w-4 h-4" />}
+              {isLoading ? "Creating account..." : "Create account"}
+              {isLoading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 
