@@ -1,14 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import Link from "next/link";
 
-const CTASection = ({
-  setOpenModal,
-  setMode,
-}: {
-  setOpenModal: Dispatch<SetStateAction<boolean>>;
-  setMode: Dispatch<SetStateAction<"login" | "register">>;
-}) => {
+const CTASection = () => {
   return (
     <section id="free" className="py-20 sm:py-32 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,28 +19,21 @@ const CTASection = ({
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-500"
-              onClick={() => {
-                setOpenModal(true);
-                setMode("register");
-              }}
-            >
-              Sign Up Free
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-blue-600 bg-transparent hover:text-blue-500"
-              onClick={() => {
-                setOpenModal(true);
-                setMode("login");
-              }}
-            >
-              Try Now
-            </Button>
+            <Link href={"/auth/register"}>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-500">
+                Sign Up Free
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href={"/auth/login"}>
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-blue-600 bg-transparent hover:text-blue-500"
+              >
+                Try Now
+              </Button>
+            </Link>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-8 text-sm text-muted-foreground">

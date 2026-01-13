@@ -21,37 +21,31 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-// import { useLogoutMutation } from "@/services/api";
-// import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { redirect, usePathname } from "next/navigation";
 import { Loading } from "./loaders/Loading";
+import useLogout from "@/hooks/useLogout";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("collapsed") || "true")
       : true;
+  const { logout } = useLogout();
   const [collapsed, setCollapsed] = useState(true);
   useEffect(() => {
     setCollapsed(isCollapsed);
   }, [isCollapsed]);
   const isMobile = useScreenSize();
-  // const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+
   const { loading } = useSelector((state: Rootstate) => state.auth);
-  // const dispatch = useAppDispatch();
-  // const [registerInfo, setRegisterInfo] = useState({
-  //   email: "",
-  //   password: "",
-  //   confirmedPassword: "",
-  // });
+
   const fileInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [modalStatus, setModalStatus] = useState<
     "" | "preview" | "select" | "foldername"
   >("");
   const pathname = usePathname();
-
 
   return (
     <>
@@ -73,14 +67,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   : "md:ml-[9rem] lg:ml-[17.5rem]"
               }`}
             >
-              {/* {!authenticated && (
-                <AuthenticationModal
-                  loginInfo={loginInfo}
-                  setLoginInfo={setLoginInfo}
-                  registerInfo={registerInfo}
-                  setRegisterInfo={setRegisterInfo}
-                />
-              )} */}
               <ModalContext
                 value={{ modalStatus, changeModalStatus: setModalStatus }}
               >
@@ -118,7 +104,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         <DropdownMenuContent className="w-16" align="end">
                           <DropdownMenuItem
                             onClick={() => {
-                              // Logout();
+                              logout();
                               redirect("/");
                             }}
                           >

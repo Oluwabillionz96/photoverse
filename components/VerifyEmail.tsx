@@ -61,7 +61,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
     setIsVerifying(true);
     try {
       const response = await authApi.verifyOTP(email, inputValue.join(""));
-      console.log({ response });
       toast.success(response?.message);
       router.push("/folders");
     } catch (error: any) {

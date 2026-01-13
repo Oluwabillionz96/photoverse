@@ -17,6 +17,7 @@ import {
 import { IoSettingsSharp } from "react-icons/io5";
 
 import { Loading } from "./loaders/Loading";
+import useLogout from "@/hooks/useLogout";
 
 const TabLayouts = () => {
   const pathname = usePathname();
@@ -24,7 +25,7 @@ const TabLayouts = () => {
   const router = useRouter();
   const { ref, openFileDialog } = useInputContext();
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
-
+  const { logout } = useLogout();
   return (
     <>
       {false ? (
@@ -102,7 +103,7 @@ const TabLayouts = () => {
               <DropdownMenuContent className="w-16" align="end">
                 <DropdownMenuItem
                   onClick={() => {
-                    // Logout();
+                    logout();
                     redirect("/");
                   }}
                 >

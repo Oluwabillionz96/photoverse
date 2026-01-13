@@ -2,16 +2,18 @@ import { motion, MotionConfig } from "framer-motion";
 import { Dispatch, SetStateAction } from "react";
 import { IoIosClose } from "react-icons/io";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const AuthenticationMenu = ({
   setShowMenu,
-  onLoginClick,
-  onRegisterClick,
 }: {
   setShowMenu: Dispatch<SetStateAction<boolean>>;
-  onLoginClick: () => void;
-  onRegisterClick: () => void;
 }) => {
+  const router = useRouter();
+
+  const onLoginClick = () => router.push("/auth/login");
+  const onRegisterClick = () => router.push("/auth/register");
+
   return (
     <MotionConfig transition={{ duration: 0.5 }}>
       <motion.div

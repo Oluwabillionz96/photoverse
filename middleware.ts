@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedRoutes = ["/folders", "/photos"];
+const protectedRoutes = ["/folders", "/photos", "/favourites", "/trash"];
 
 export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   );
 
   if (isProtected && !accessToken) {
-    return NextResponse.redirect(new URL("/auth/register", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   if (accessToken && (pathname.startsWith("/auth") || pathname === "/")) {

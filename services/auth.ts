@@ -22,4 +22,8 @@ export const authApi = {
     });
     return response.data;
   },
+  async logout() {
+    const response = await axiosInstance.get("auth/logout");
+    return response.data;
+  },
 };
