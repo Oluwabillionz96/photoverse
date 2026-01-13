@@ -12,11 +12,15 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import { LoginData } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "@/components/Input/password-input";
+import { useState } from "react";
+import { authApi } from "@/services/auth";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
@@ -26,6 +30,22 @@ const LoginPage = () => {
       password: "",
     },
   });
+
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<z.infer<typeof LoginData>> = async (data) => {
+    setLoading(true);
+    try {
+      const response = await authApi.login(data.email, data.password);
+      toast.success(response.message);
+      router.push("/folders");
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+    } finally {
+      setLoading(loading);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -63,7 +83,7 @@ const LoginPage = () => {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit(()=>{})} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup>
               <Controller
                 name="email"
@@ -120,11 +140,11 @@ const LoginPage = () => {
 
             <Button
               type="submit"
-              disabled={false}
+              disabled={loading}
               className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              {false ? "Signing in..." : "Sign in"}
-              {!false && <ArrowRight className="w-4 h-4" />}
+              {loading ? "Signing in..." : "Sign in"}
+              {!loading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 

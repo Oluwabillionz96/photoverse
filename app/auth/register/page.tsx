@@ -21,6 +21,7 @@ import { authApi } from "@/services/auth";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 const RegistrationPage = () => {
   const {
@@ -37,14 +38,16 @@ const RegistrationPage = () => {
   });
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof RegistrationData>) => {
     try {
-      await authApi.register(data.email, data.password);
-      toast.success("Registration successful! Check your email for OTP.");
-      dispatch(updateEmail(data.email))
+      const response = await authApi.register(data.email, data.password);
+      toast.success(response?.message);
+      dispatch(updateEmail(data.email));
+      router.push("/auth/verify-email");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.response.data.error);
     }
   };
 

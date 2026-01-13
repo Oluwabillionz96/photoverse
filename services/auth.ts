@@ -15,4 +15,11 @@ export const authApi = {
     });
     return response.data;
   },
+  async login(email: string, password: string) {
+    const response = await axiosInstance.post("auth/login", {
+      email,
+      password,
+    });
+    return response;
+  },
 };

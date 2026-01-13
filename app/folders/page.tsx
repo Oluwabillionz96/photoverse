@@ -2,11 +2,11 @@
 import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import Pagination from "@/components/Pagination";
-import { Rootstate } from "@/lib/store";
+// import { Rootstate } from "@/lib/store";
 import { useGetFoldersQuery, useRenameFolderMutation } from "@/services/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import FolderCard from "@/components/FolderCard";
 import RenameFolderModal from "@/components/modals/RenameFolderModal";
 import toast from "react-hot-toast";
@@ -54,11 +54,11 @@ const Folders = () => {
     page: currentPage,
   });
   const folders = data?.folders;
-  const { authenticated } = useSelector((state: Rootstate) => state.auth);
+  // const { authenticated } = useSelector((state: Rootstate) => state.auth);
 
-  if (!authenticated) {
-    return <FolderLoader />;
-  }
+  // if (!authenticated) {
+  //   return <FolderLoader />;
+  // }
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
