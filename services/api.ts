@@ -12,30 +12,9 @@ export const PhotoverseAPI = createApi({
   tagTypes: ["folders", "photos", "favourite"],
 
   endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (body) => ({
-        url: "auth/login",
-        method: "POST",
-        body,
-      }),
-    }),
     logout: builder.mutation({
       query: (body) => ({
         url: "auth/logout",
-        method: "POST",
-        body,
-      }),
-    }),
-    register: builder.mutation({
-      query: (body) => ({
-        url: "auth/register",
-        method: "POST",
-        body,
-      }),
-    }),
-    verifyEmail: builder.mutation({
-      query: (body) => ({
-        url: "auth/verify-otp",
         method: "POST",
         body,
       }),
@@ -112,10 +91,7 @@ export const PhotoverseAPI = createApi({
 
 export const {
   useUploadPhotosMutation,
-  useLoginMutation,
   useLogoutMutation,
-  useRegisterMutation,
-  useVerifyEmailMutation,
   useResendOTPMutation,
   useGetPhotosQuery,
   useCreateFolderMutation,

@@ -38,7 +38,8 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const response = await authApi.login(data.email, data.password);
-      toast.success(response.message);
+      console.log(response);
+      toast.success(response?.message);
       router.push("/folders");
     } catch (error: any) {
       toast.error(error.response.data.error);

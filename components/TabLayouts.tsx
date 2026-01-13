@@ -15,47 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { IoSettingsSharp } from "react-icons/io5";
-// import { useLogoutMutation } from "@/services/api";
-// import { useDispatch, useSelector } from "react-redux";
-// import { Rootstate } from "@/lib/store";
-// import toast from "react-hot-toast";
-import { Loading } from "./modals/AuthenticationModal";
-// import { logUserOut } from "@/lib/slices/authSlice";
+
+import { Loading } from "./loaders/Loading";
 
 const TabLayouts = () => {
-  // const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
-  // const [values, setValues] = useState("Recent");
   const pathname = usePathname();
   const params = useParams();
   const router = useRouter();
   const { ref, openFileDialog } = useInputContext();
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
-  // const { refreshToken } = useSelector((state: Rootstate) => state.auth);
-  // const [logout, { isLoading }] = useLogoutMutation();
-  // const dispatch = useDispatch();
-
-  // async function Logout() {
-  //   const payload = { token: refreshToken };
-
-  //   const response = await logout(payload);
-  //   if ("data" in response) {
-  //     dispatch(logUserOut(false));
-  //     toast.success(response.data?.message);
-  //   } else if ("error" in response) {
-  //     const error = response.error as {
-  //       status?: number | string;
-  //       data?: { error: string };
-  //     };
-
-  //     const message =
-  //       error?.data?.error ||
-  //       (error?.status === "FETCH_ERROR"
-  //         ? "Network error. Please check your connection."
-  //         : "An unexpected error occurred.");
-
-  //     toast.error(message);
-  //   }
-  // }
 
   return (
     <>
@@ -103,13 +71,6 @@ const TabLayouts = () => {
             </Button>
           </div>
           <div className="flex items-center justify-center gap-6 relative">
-            {/* <DropDown
-          trigger={values}
-          items={filterValues}
-          initialValue={values}
-          changeValue={setValues}
-          className="w-32"
-        /> */}
             <Button
               variant={"outline"}
               disabled={modalStatus === "foldername"}

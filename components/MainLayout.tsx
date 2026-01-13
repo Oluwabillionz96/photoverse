@@ -5,15 +5,8 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
-import { Loading } from "./modals/AuthenticationModal";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-// import {
-//   getUser,
-//   logUserOut,
-//   refreshAccessToken,
-// } from "@/lib/slices/authSlice";
-// import useAppDispatch from "@/hooks/useAppDispatch";
 import MobileNavs from "./MobileNavs";
 import {
   handleFileChange,
@@ -32,6 +25,7 @@ import {
 // import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { redirect, usePathname } from "next/navigation";
+import { Loading } from "./loaders/Loading";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -57,38 +51,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     "" | "preview" | "select" | "foldername"
   >("");
   const pathname = usePathname();
-  // const [logout, { isLoading }] = useLogoutMutation();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     dispatch(getUser());
-  //   } else {
-  //     dispatch(refreshAccessToken());
-  //   }
-  // }, [token, dispatch]);
-
-  // async function Logout() {
-  //   const payload = { token: refreshToken };
-
-  //   const response = await logout(payload);
-  //   if ("data" in response) {
-  //     dispatch(logUserOut(false));
-  //     toast.success(response.data?.message);
-  //   } else if ("error" in response) {
-  //     const error = response.error as {
-  //       status?: number | string;
-  //       data?: { error: string };
-  //     };
-
-  //     const message =
-  //       error?.data?.error ||
-  //       (error?.status === "FETCH_ERROR"
-  //         ? "Network error. Please check your connection."
-  //         : "An unexpected error occurred.");
-
-  //     toast.error(message);
-  //   }
-  // }
 
   return (
     <>

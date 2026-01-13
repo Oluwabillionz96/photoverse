@@ -20,6 +20,6 @@ export const authApi = {
       email,
       password,
     });
-    return response;
+    return response.data;
   },
 };
