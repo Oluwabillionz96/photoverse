@@ -2,29 +2,28 @@
 import {
   ChangeEvent,
   ClipboardEvent,
+  FormEvent,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { Button } from "./ui/button";
-import { useResendOTPMutation, useVerifyEmailMutation } from "@/services/api";
+import { useResendOTPMutation } from "@/services/api";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { authenticate } from "@/lib/slices/authSlice";
 import Spinner from "./loaders/Spinner";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { authApi } from "@/services/auth";
 
 const VerifyEmail = ({ email }: { email: string }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-  const [verify, { isLoading: isVerifying }] = useVerifyEmailMutation();
+  // const [verify, { isLoading: isVerifying }] = useVerifyEmailMutation();
   const [resend, { isLoading: isResending }] = useResendOTPMutation();
   const loading = isVerifying || isResending;
   const [resendCode, setResendCode] = useState(60);
-  const dispatch = useDispatch();
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (resendCode <= 0) return;
@@ -44,7 +43,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
     };
   }, [resendCode, setResendCode]);
 
-  async function handlePaste(e: ClipboardEvent<HTMLDivElement>) {
+  async function handlePaste(e: ClipboardEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       const text = await navigator.clipboard.readText();
@@ -57,32 +56,19 @@ const VerifyEmail = ({ email }: { email: string }) => {
     }
   }
 
-  const verifyOTP = async () => {
-    const payload = { email: email, otp: inputValue.join("") };
-
-    const response = await verify(payload);
-
-    if ("data" in response) {
-      toast.success(response?.data?.message);
-      dispatch(authenticate({ token: response?.data?.token }));
-      if (pathname === "/") {
-        router.push("/folders");
-      }
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
-
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
+  const verifyOTP = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsVerifying(true);
+    try {
+      const response = await authApi.verifyOTP(email, inputValue.join(""));
+      console.log({ response });
+      toast.success(response?.message);
+      router.push("/folders");
+    } catch (error: any) {
+      toast.error(error.response.data.error || "OTP verification failed");
+    } finally {
+      setIsVerifying(false);
     }
-    return;
   };
 
   const resendOTP = async () => {
@@ -112,9 +98,11 @@ const VerifyEmail = ({ email }: { email: string }) => {
       <p className="text-center text-[1.15rem] md:w-9/10">
         Enter Verification Code
       </p>
-      <div
+      <form
         className="grid grid-cols-6 md:gap-4 gap-2  md:w-9/10"
         onPaste={handlePaste}
+        onSubmit={verifyOTP}
+        id="email_verification"
       >
         {inputValue.map((item, index) => (
           <input
@@ -152,7 +140,7 @@ const VerifyEmail = ({ email }: { email: string }) => {
             className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
           />
         ))}
-      </div>
+      </form>
       <Button
         className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
         disabled={
@@ -160,7 +148,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
           !inputValue.join("").trim() ||
           loading
         }
-        onClick={verifyOTP}
+        type="submit"
+        form="email_verification"
+        // onClick={verifyOTP}
       >
         {loading ? <Spinner /> : ""}
         {loading ? "Confirming..." : "Confirm"}

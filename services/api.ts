@@ -1,6 +1,6 @@
 import baseUrl from "@/baseUrl";
 import { GetFolderResponse, GetPhotoResponse, Photo } from "@/lib/apiTypes";
-import { Rootstate } from "@/lib/store";
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const PhotoverseAPI = createApi({
@@ -8,16 +8,6 @@ export const PhotoverseAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${baseUrl}`,
     credentials: "include",
-    prepareHeaders: (headers, { getState }) => {
-      const { auth } = getState() as Rootstate;
-      const token = auth.token;
-
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
   }),
   tagTypes: ["folders", "photos", "favourite"],
 

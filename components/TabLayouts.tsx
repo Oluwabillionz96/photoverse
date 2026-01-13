@@ -15,12 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { IoSettingsSharp } from "react-icons/io5";
-import { useLogoutMutation } from "@/services/api";
-import { useDispatch, useSelector } from "react-redux";
-import { Rootstate } from "@/lib/store";
-import toast from "react-hot-toast";
+// import { useLogoutMutation } from "@/services/api";
+// import { useDispatch, useSelector } from "react-redux";
+// import { Rootstate } from "@/lib/store";
+// import toast from "react-hot-toast";
 import { Loading } from "./modals/AuthenticationModal";
-import { logUserOut } from "@/lib/slices/authSlice";
+// import { logUserOut } from "@/lib/slices/authSlice";
 
 const TabLayouts = () => {
   // const filterValues = ["Recent", "Name(a-z)", "Name(z-a)", "Size"];
@@ -30,36 +30,36 @@ const TabLayouts = () => {
   const router = useRouter();
   const { ref, openFileDialog } = useInputContext();
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
-  const { refreshToken } = useSelector((state: Rootstate) => state.auth);
-  const [logout, { isLoading }] = useLogoutMutation();
-  const dispatch = useDispatch();
+  // const { refreshToken } = useSelector((state: Rootstate) => state.auth);
+  // const [logout, { isLoading }] = useLogoutMutation();
+  // const dispatch = useDispatch();
 
-  async function Logout() {
-    const payload = { token: refreshToken };
+  // async function Logout() {
+  //   const payload = { token: refreshToken };
 
-    const response = await logout(payload);
-    if ("data" in response) {
-      dispatch(logUserOut(false));
-      toast.success(response.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
+  //   const response = await logout(payload);
+  //   if ("data" in response) {
+  //     dispatch(logUserOut(false));
+  //     toast.success(response.data?.message);
+  //   } else if ("error" in response) {
+  //     const error = response.error as {
+  //       status?: number | string;
+  //       data?: { error: string };
+  //     };
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
+  //     const message =
+  //       error?.data?.error ||
+  //       (error?.status === "FETCH_ERROR"
+  //         ? "Network error. Please check your connection."
+  //         : "An unexpected error occurred.");
 
-      toast.error(message);
-    }
-  }
+  //     toast.error(message);
+  //   }
+  // }
 
   return (
     <>
-      {isLoading ? (
+      {false ? (
         <Loading />
       ) : (
         <div className="md:flex  justify-between items-center px-4 my-4 hidden">
@@ -141,7 +141,7 @@ const TabLayouts = () => {
               <DropdownMenuContent className="w-16" align="end">
                 <DropdownMenuItem
                   onClick={() => {
-                    Logout();
+                    // Logout();
                     redirect("/");
                   }}
                 >

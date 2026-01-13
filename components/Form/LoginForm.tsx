@@ -1,7 +1,7 @@
 "use client";
 
 import { LoginInfo, ViewPassword } from "@/lib/types";
-import { useLoginMutation } from "@/services/api";
+// import { useLoginMutation } from "@/services/api";
 import { motion, MotionConfig } from "framer-motion";
 import Link from "next/link";
 import {
@@ -15,11 +15,11 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Input from "../Input/Input";
 import { validateLoginInfo } from "@/lib/utils/Validation";
-import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { authenticate } from "@/lib/slices/authSlice";
+// import toast from "react-hot-toast";
+// import { useDispatch } from "react-redux";
+// import { authenticate } from "@/lib/slices/authSlice";
 import Spinner from "../loaders/Spinner";
-import { usePathname, useRouter } from "next/navigation";
+// import { usePathname, useRouter } from "next/navigation";
 
 const LoginForm = ({
   loginInfo,
@@ -36,46 +36,46 @@ const LoginForm = ({
   setIsLogin: (arg: boolean) => void;
   setMode?: Dispatch<SetStateAction<"login" | "register">>;
 }) => {
-  const [login, { isLoading }] = useLoginMutation();
+  // const [login, { isLoading }] = useLoginMutation();
   const [loginError, setLoginError] = useState({
     email: "",
     password: "",
   });
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const dispatch = useDispatch();
+  // const pathname = usePathname();
 
   useEffect(() => {
     setLoginInfo({ email: "", password: "" });
   }, [setLoginInfo]);
 
-  const handleLogin = async () => {
-    const payload = { email: loginInfo.email, password: loginInfo.password };
+  // const handleLogin = async () => {
+  //   const payload = { email: loginInfo.email, password: loginInfo.password };
 
-    const response = await login(payload);
+  //   const response = await login(payload);
 
-    if ("data" in response) {
-      toast.success(response?.data?.message);
-      dispatch(authenticate({ token: response?.data?.token }));
-      if (pathname === "/") {
-        router.push("/folders");
-      }
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
+  //   if ("data" in response) {
+  //     toast.success(response?.data?.message);
+  //     dispatch(authenticate({ token: response?.data?.token }));
+  //     if (pathname === "/") {
+  //       router.push("/folders");
+  //     }
+  //   } else if ("error" in response) {
+  //     const error = response.error as {
+  //       status?: number | string;
+  //       data?: { error: string };
+  //     };
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
+  //     const message =
+  //       error?.data?.error ||
+  //       (error?.status === "FETCH_ERROR"
+  //         ? "Network error. Please check your connection."
+  //         : "An unexpected error occurred.");
 
-      toast.error(message);
-    }
-    return;
-  };
+  //     toast.error(message);
+  //   }
+  //   return;
+  // };
 
   // if (isError) {
   //   console.log(error);
@@ -101,7 +101,7 @@ const LoginForm = ({
           e.preventDefault();
           const error = validateLoginInfo(loginInfo, setLoginError, loginError);
           if (error) return;
-          handleLogin();
+          // handleLogin();
         }}
       >
         <Input
@@ -152,11 +152,11 @@ const LoginForm = ({
           type="submit"
           className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
           disabled={
-            !loginInfo.email.trim() || !loginInfo.password.trim() || isLoading
+            !loginInfo.email.trim() || !loginInfo.password.trim() || false
           }
         >
-          {isLoading && <Spinner />}
-          {isLoading ? "Logging in..." : "Login"}
+          {false && <Spinner />}
+          {false ? "Logging in..." : "Login"}
         </button>
       </form>
       <MotionConfig transition={{ duration: 0.5, ease: "easeIn", delay: 1.2 }}>
