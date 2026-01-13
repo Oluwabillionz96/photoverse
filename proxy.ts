@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/folders", "/photos", "/favourites", "/trash"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
 
   const { pathname } = request.nextUrl;
