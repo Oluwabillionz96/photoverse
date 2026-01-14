@@ -154,6 +154,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
         {loading ? <Spinner /> : ""}
         {loading ? "Confirming..." : "Confirm"}
       </Button>
+
+      <div className="border-t border-border/50 w-full" />
+
       <div className="text-center space-y-3">
         <p className="text-sm text-muted-foreground">
           Didn&apos;t receive the code?

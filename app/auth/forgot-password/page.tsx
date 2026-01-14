@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import EmailStep from "@/components/forgot-password/email-step";
+import VerifyPasswordRecoveryEmail from "@/components/forgot-password/verify-email-for-password-recovery";
+import ResetPassword from "@/components/forgot-password/reset-password";
 
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<"email" | "code" | "reset" | "success">(
-    "email"
+    "reset"
   );
   const [email, setEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState([
@@ -107,200 +110,13 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
         {/* Step 1: Email */}
-        {step === "email" && (
-          <>
-            <div className="text-center mb-8">
-              <div className="inline-block mb-4 p-3 rounded-lg bg-blue-500/10">
-                <Mail className="w-6 h-6 text-blue-500" />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-                Forgot password?
-              </h1>
-              <p className="text-muted-foreground">
-                Enter your email and we&apos;ll send you a link to reset your
-                password
-              </p>
-            </div>
-
-            <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
-              <form onSubmit={handleEmailSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    Email address
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-blue-500"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-blue-500-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                >
-                  {isLoading ? "Sending..." : "Send reset code"}
-                  {!isLoading && <ArrowRight className="w-4 h-4" />}
-                </Button>
-              </form>
-
-              <p className="text-center text-sm text-muted-foreground">
-                Remember your password?{" "}
-                <Link
-                  href="/login"
-                  className="text-blue-500 hover:underline font-semibold"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </Card>
-          </>
-        )}
+        {step === "email" && <EmailStep />}
 
         {/* Step 2: Verification Code */}
-        {step === "code" && (
-          <>
-            <div className="text-center mb-8">
-              <div className="inline-block mb-4 p-3 rounded-lg bg-blue-500/10">
-                <Mail className="w-6 h-6 text-blue-500" />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-                Enter verification code
-              </h1>
-              <p className="text-muted-foreground">
-                We&apos;ve sent a 6-digit code to {email}
-              </p>
-            </div>
-
-            <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
-              <form onSubmit={handleCodeSubmit} className="space-y-6">
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-foreground">
-                    Verification code
-                  </label>
-                  <div className="flex gap-2 justify-center">
-                    {verificationCode.map((digit, index) => (
-                      <input
-                        key={index}
-                        id={`reset-code-${index}`}
-                        type="text"
-                        maxLength={1}
-                        value={digit}
-                        onChange={(e) =>
-                          handleCodeChange(index, e.target.value)
-                        }
-                        className="w-12 h-12 text-center text-lg font-bold border border-border rounded-lg bg-secondary/50 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-blue-500-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                >
-                  {isLoading ? "Verifying..." : "Verify code"}
-                  {!isLoading && <ArrowRight className="w-4 h-4" />}
-                </Button>
-              </form>
-
-              <div className="border-t border-border/50" />
-
-              <div className="text-center space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Didn&apos;t receive the code?
-                </p>
-                <button
-                  onClick={handleResendCode}
-                  disabled={resendCooldown > 0}
-                  className="text-blue-500 hover:underline font-semibold text-sm disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
-                >
-                  {resendCooldown > 0
-                    ? `Resend in ${resendCooldown}s`
-                    : "Resend code"}
-                </button>
-              </div>
-            </Card>
-          </>
-        )}
+        {step === "code" && <VerifyPasswordRecoveryEmail email="" />}
 
         {/* Step 3: Reset Password */}
-        {step === "reset" && (
-          <>
-            <div className="text-center mb-8">
-              <div className="inline-block mb-4 p-3 rounded-lg bg-blue-500/10">
-                <Mail className="w-6 h-6 text-blue-500" />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-                Create new password
-              </h1>
-              <p className="text-muted-foreground">
-                Enter a strong password for your account
-              </p>
-            </div>
-
-            <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
-              <form onSubmit={handleResetPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="new-password"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    New password
-                  </Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    placeholder="Create a strong password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-blue-500"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    At least 8 characters with a mix of letters and numbers
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="confirm-password"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    Confirm password
-                  </Label>
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-blue-500"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-blue-500-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                >
-                  {isLoading ? "Resetting..." : "Reset password"}
-                  {!isLoading && <ArrowRight className="w-4 h-4" />}
-                </Button>
-              </form>
-            </Card>
-          </>
-        )}
+        {step === "reset" && <ResetPassword />}
 
         {/* Step 4: Success */}
         {step === "success" && (
@@ -322,7 +138,7 @@ export default function ForgotPasswordPage() {
               </div>
               <Button className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-blue-500-foreground font-semibold rounded-lg">
                 <Link
-                  href="/login"
+                  href="/auth/login"
                   className="flex items-center justify-center gap-2 w-full"
                 >
                   Back to login
