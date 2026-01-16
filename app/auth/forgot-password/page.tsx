@@ -3,13 +3,14 @@
 import { useState } from "react";
 import EmailStep from "@/components/forgot-password/email-step";
 import VerifyPasswordRecoveryEmail from "@/components/forgot-password/verify-email-for-password-recovery";
+import ChoiceStep from "@/components/forgot-password/choice-step";
 import ResetPassword from "@/components/forgot-password/reset-password";
 import PasswordResetSuccess from "@/components/forgot-password/password-reset-success";
 
 export default function ForgotPasswordPage() {
-  const [step, setStep] = useState<"email" | "code" | "reset" | "success">(
-    "email"
-  );
+  const [step, setStep] = useState<
+    "email" | "code" | "choice" | "reset" | "success"
+  >("choice");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
@@ -20,10 +21,13 @@ export default function ForgotPasswordPage() {
         {/* Step 2: Verification Code */}
         {step === "code" && <VerifyPasswordRecoveryEmail setStep={setStep} />}
 
-        {/* Step 3: Reset Password */}
+        {/* Step 3: Choice */}
+        {step === "choice" && <ChoiceStep setStep={setStep} />}
+
+        {/* Step 4: Reset Password */}
         {step === "reset" && <ResetPassword />}
 
-        {/* Step 4: Success */}
+        {/* Step 5: Success */}
         {step === "success" && <PasswordResetSuccess />}
 
         {/* Info */}

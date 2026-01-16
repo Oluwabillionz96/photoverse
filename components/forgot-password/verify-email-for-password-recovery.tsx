@@ -10,7 +10,9 @@ import { Dispatch, FormEvent, SetStateAction } from "react";
 const VerifyPasswordRecoveryEmail = ({
   setStep,
 }: {
-  setStep: Dispatch<SetStateAction<"email" | "code" | "reset" | "success">>;
+  setStep: Dispatch<
+    SetStateAction<"email" | "code" | "choice" | "reset" | "success">
+  >;
 }) => {
   const [verifyForgotPasswordOTP, { isLoading }] =
     useVerifyForgotPasswordOTPMutation();
@@ -26,7 +28,7 @@ const VerifyPasswordRecoveryEmail = ({
 
       if ("data" in response) {
         toast.success(response?.data?.message);
-        setStep("reset");
+        setStep("choice");
       } else if ("error" in response) {
         const error = response.error as {
           status?: number | string;

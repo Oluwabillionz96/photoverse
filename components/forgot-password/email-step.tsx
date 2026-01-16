@@ -16,7 +16,9 @@ import { updateEmail } from "@/lib/slices/authSlice";
 const EmailStep = ({
   setStep,
 }: {
-  setStep: Dispatch<SetStateAction<"email" | "code" | "reset" | "success">>;
+  setStep: Dispatch<
+    SetStateAction<"email" | "code" | "choice" | "reset" | "success">
+  >;
 }) => {
   const [getForgotPasswordOTP, { isLoading }] =
     useGetForgotPasswordOTPMutation();
