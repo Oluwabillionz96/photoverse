@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import toast from "react-hot-toast";
 import { Dispatch, SetStateAction } from "react";
+import { useDispatch } from "react-redux";
+import { updateEmail } from "@/lib/slices/authSlice";
 
 const EmailStep = ({
   setStep,
@@ -30,6 +32,8 @@ const EmailStep = ({
     },
   });
 
+  const dispatch = useDispatch();
+
   async function onSubmit(data: z.infer<typeof EmailSchema>) {
     try {
       const response = await getForgotPasswordOTP(data);
@@ -37,6 +41,7 @@ const EmailStep = ({
       if ("data" in response) {
         toast.success(response?.data?.message);
         setStep("code");
+        dispatch(updateEmail(data.email));
       } else if ("error" in response) {
         const error = response.error as {
           status?: number | string;

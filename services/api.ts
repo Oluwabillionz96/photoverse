@@ -19,6 +19,13 @@ export const PhotoverseAPI = createApi({
         body,
       }),
     }),
+    verifyForgotPasswordOTP: builder.mutation({
+      query: (body) => ({
+        url: "forgotPassword/verify-otp",
+        method: "POST",
+        body,
+      })
+    }),
     resendOTP: builder.mutation({
       query: (body) => ({
         url: "auth/resend-otp",
@@ -91,6 +98,7 @@ export const PhotoverseAPI = createApi({
 
 export const {
   useGetForgotPasswordOTPMutation,
+  useVerifyForgotPasswordOTPMutation,
   useUploadPhotosMutation,
   useResendOTPMutation,
   useGetPhotosQuery,

@@ -72,70 +72,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 //   }
 // );
 
-
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     email: "",
-    // authenticated: false,
-    // token,
-    // refreshToken,
     loading: false,
   },
   reducers: {
-    // authenticate: (
-    //   state,
-    //   action: PayloadAction<{
-    //     token: { accessToken: string; refreshToken: string };
-    //   }>
-    // ) => {
-    //   state.token = action.payload.token.accessToken;
-    //   state.refreshToken = action.payload.token.refreshToken;
-    //   localStorage.setItem("token", action.payload.token.accessToken);
-    //   localStorage.setItem("refresh", action.payload.token.refreshToken);
-    // },
-    // logUserOut: (state, action: PayloadAction<boolean>) => {
-    //   state.token = null;
-    //   state.refreshToken = null;
-    //   localStorage.removeItem("token");
-    //   localStorage.removeItem("refresh");
-    //   state.authenticated = action.payload;
-    // },
     updateEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(getUser.pending, (state) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(getUser.fulfilled, (state, action: PayloadAction<boolean>) => {
-  //       state.loading = false;
-  //       state.authenticated = action.payload;
-  //     })
-  //     .addCase(getUser.rejected, (state) => {
-  //       state.loading = false;
-  //       state.authenticated = false;
-  //       state.token = null;
-  //     })
-  //     .addCase(refreshAccessToken.pending, (state) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(
-  //       refreshAccessToken.fulfilled,
-  //       (state, action: PayloadAction<string>) => {
-  //         state.loading = false;
-  //         state.token = action.payload;
-  //       }
-  //     )
-  //     .addCase(refreshAccessToken.rejected, (state) => {
-  //       state.loading = false;
-  //       state.authenticated = false;
-  //       state.token = null;
-  //       state.refreshToken = null;
-  //     });
-  // },
 });
 
 export const { updateEmail } = authSlice.actions;

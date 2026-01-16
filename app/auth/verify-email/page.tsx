@@ -2,11 +2,30 @@
 import { Card } from "@/components/ui/card";
 import VerifyEmail from "@/components/VerifyEmail";
 import { Rootstate } from "@/lib/store";
+import { authApi } from "@/services/auth";
 import { Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 export default function VerifyEmailPage() {
   const { email } = useSelector((state: Rootstate) => state.auth);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const router = useRouter();
+  const verifyOTP = async (e: FormEvent, inputValue: string[]) => {
+    e.preventDefault();
+    setIsVerifying(true);
+    try {
+      const response = await authApi.verifyOTP(email, inputValue.join(""));
+      toast.success(response?.message);
+      router.push("/folders");
+    } catch (error: any) {
+      toast.error(error.response.data.error || "OTP verification failed");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -25,7 +44,11 @@ export default function VerifyEmailPage() {
 
         <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
           {/* Verification Code Input */}
-          <VerifyEmail email={email} />
+          <VerifyEmail
+            email={email}
+            verifyOTP={verifyOTP}
+            isVerifying={isVerifying}
+          />
 
           {/* Divider */}
           <div className="border-t border-border/50" />

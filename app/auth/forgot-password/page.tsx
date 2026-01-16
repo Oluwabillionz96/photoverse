@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
         {step === "email" && <EmailStep setStep={setStep} />}
 
         {/* Step 2: Verification Code */}
-        {step === "code" && <VerifyPasswordRecoveryEmail email="" />}
+        {step === "code" && <VerifyPasswordRecoveryEmail setStep={setStep} />}
 
         {/* Step 3: Reset Password */}
         {step === "reset" && <ResetPassword />}

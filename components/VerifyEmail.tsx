@@ -11,19 +11,23 @@ import { Button } from "./ui/button";
 import { useResendOTPMutation } from "@/services/api";
 import toast from "react-hot-toast";
 import Spinner from "./loaders/Spinner";
-import { useRouter } from "next/navigation";
-import { authApi } from "@/services/auth";
 
-const VerifyEmail = ({ email }: { email: string }) => {
+const VerifyEmail = ({
+  email,
+  verifyOTP,
+  isVerifying,
+}: {
+  email: string;
+  verifyOTP: (e: FormEvent, inputValue: string[]) => void;
+  isVerifying: boolean;
+}) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
-  const [isVerifying, setIsVerifying] = useState(false);
 
   const inputRef = useRef<(HTMLInputElement | null)[]>([]);
   // const [verify, { isLoading: isVerifying }] = useVerifyEmailMutation();
   const [resend, { isLoading: isResending }] = useResendOTPMutation();
   const loading = isVerifying || isResending;
   const [resendCode, setResendCode] = useState(60);
-  const router = useRouter();
 
   useEffect(() => {
     if (resendCode <= 0) return;
@@ -56,20 +60,6 @@ const VerifyEmail = ({ email }: { email: string }) => {
     }
   }
 
-  const verifyOTP = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsVerifying(true);
-    try {
-      const response = await authApi.verifyOTP(email, inputValue.join(""));
-      toast.success(response?.message);
-      router.push("/folders");
-    } catch (error: any) {
-      toast.error(error.response.data.error || "OTP verification failed");
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
   const resendOTP = async () => {
     const response = await resend({ email });
     if ("data" in response) {
@@ -100,7 +90,9 @@ const VerifyEmail = ({ email }: { email: string }) => {
       <form
         className="grid grid-cols-6 md:gap-4 gap-2  md:w-9/10"
         onPaste={handlePaste}
-        onSubmit={verifyOTP}
+        onSubmit={(e: FormEvent) => {
+          verifyOTP(e, inputValue);
+        }}
         id="email_verification"
       >
         {inputValue.map((item, index) => (
