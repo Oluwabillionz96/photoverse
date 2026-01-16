@@ -2,10 +2,11 @@ import { Mail } from "lucide-react";
 import { Card } from "../ui/card";
 import VerifyEmail from "../VerifyEmail";
 import { useVerifyForgotPasswordOTPMutation } from "@/services/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import toast from "react-hot-toast";
 import { Dispatch, FormEvent, SetStateAction } from "react";
+import { updateVerificationId } from "@/lib/slices/authSlice";
 
 const VerifyPasswordRecoveryEmail = ({
   setStep,
@@ -17,6 +18,7 @@ const VerifyPasswordRecoveryEmail = ({
   const [verifyForgotPasswordOTP, { isLoading }] =
     useVerifyForgotPasswordOTPMutation();
   const { email } = useSelector((state: Rootstate) => state.auth);
+  const dispatch = useDispatch();
 
   async function verifyOTP(e: FormEvent, inputValue: string[]) {
     e.preventDefault();
@@ -28,6 +30,7 @@ const VerifyPasswordRecoveryEmail = ({
 
       if ("data" in response) {
         toast.success(response?.data?.message);
+        dispatch(updateVerificationId(response?.data?.verificationId));
         setStep("choice");
       } else if ("error" in response) {
         const error = response.error as {
