@@ -53,7 +53,10 @@ const VerifyPasswordRecoveryEmail = ({
           : "An unexpected error occurred.";
 
       toast.error(errorMessage);
-      console.error("Error in forgot password OTP request:", error);
+      console.error(
+        "Error in forgot password OTP verification request:",
+        error
+      );
     }
   }
 

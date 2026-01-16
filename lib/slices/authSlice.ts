@@ -5,14 +5,14 @@ const authSlice = createSlice({
   initialState: {
     email: "",
     loading: false,
-    otpId: "",
+    verificationId: "",
   },
   reducers: {
     updateEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
     updateVerificationId: (state, action: PayloadAction<string>) => {
-      state.otpId = action.payload;
+      state.verificationId = action.payload;
     },
   },
 });

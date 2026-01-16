@@ -10,7 +10,7 @@ import PasswordResetSuccess from "@/components/forgot-password/password-reset-su
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<
     "email" | "code" | "choice" | "reset" | "success"
-  >("choice");
+  >("email");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
