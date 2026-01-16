@@ -26,7 +26,7 @@ const VerifyPasswordRecoveryEmail = ({
 
       if ("data" in response) {
         toast.success(response?.data?.message);
-        setStep("code");
+        setStep("reset");
       } else if ("error" in response) {
         const error = response.error as {
           status?: number | string;
