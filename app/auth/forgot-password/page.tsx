@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
         {/* Step 1: Email */}
-        {step === "email" && <EmailStep />}
+        {step === "email" && <EmailStep setStep={setStep} />}
 
         {/* Step 2: Verification Code */}
         {step === "code" && <VerifyPasswordRecoveryEmail email="" />}

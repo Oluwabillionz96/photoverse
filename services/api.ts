@@ -12,9 +12,9 @@ export const PhotoverseAPI = createApi({
   tagTypes: ["folders", "photos", "favourite"],
 
   endpoints: (builder) => ({
-    logout: builder.mutation({
+    getForgotPasswordOTP: builder.mutation({
       query: (body) => ({
-        url: "auth/logout",
+        url: "forgot-password/get-otp",
         method: "POST",
         body,
       }),
@@ -90,8 +90,8 @@ export const PhotoverseAPI = createApi({
 });
 
 export const {
+  useGetForgotPasswordOTPMutation,
   useUploadPhotosMutation,
-  useLogoutMutation,
   useResendOTPMutation,
   useGetPhotosQuery,
   useCreateFolderMutation,
