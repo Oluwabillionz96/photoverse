@@ -8,6 +8,7 @@ const useLogout = () => {
   const router = useRouter();
   async function logout() {
     setLoading(true);
+    
 
     const response = await authApi.logout();
     toast.success(response.message);

@@ -1,10 +1,46 @@
-import { ArrowRight, Mail } from 'lucide-react';
-import { Card } from '../ui/card';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { ArrowRight, Mail } from "lucide-react";
+import { Card } from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import * as z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
+import PasswordInput from "../Input/password-input";
 
 const ResetPassword = () => {
+  const PasswordSchema = z
+    .object({
+      password: z
+        .string()
+        .min(5, "Password must be at least 8 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/[0-9]/, "Password must contain at least one number")
+        .regex(
+          /[^A-Za-z0-9]/,
+          "Password must contain at least one special character"
+        ),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
+
+  const { control, handleSubmit } = useForm<z.infer<typeof PasswordSchema>>({
+    resolver: zodResolver(PasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof PasswordSchema>) => {
+    console.log(data);
+  };
+
   return (
     <>
       <div className="text-center mb-8">
@@ -20,45 +56,67 @@ const ResetPassword = () => {
       </div>
 
       <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
-        <form onSubmit={()=>{}} className="space-y-4">
-          <div className="space-y-2">
-            <Label
-              htmlFor="new-password"
-              className="text-sm font-medium text-foreground"
-            >
-              New password
-            </Label>
-            <Input
-              id="new-password"
-              type="password"
-              placeholder="Create a strong password"
-              value={""}
-              onChange={()=>{}}
-              required
-              className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-blue-500"
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <FieldGroup>
+            <Controller
+              name="password"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor="new-password"
+                    className="text-sm font-medium text-foreground"
+                  >
+                    New password
+                  </FieldLabel>
+                  <PasswordInput
+                    field={field}
+                    fieldState={fieldState}
+                    id="new-password"
+                    placeholder="Create a strong password"
+                  />
+                  {fieldState.invalid ? (
+                    <FieldError
+                      className="text-xs"
+                      errors={[fieldState.error]}
+                    />
+                  ) : (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      At least 8 characters with a mix of letters and numbers
+                    </p>
+                  )}
+                </Field>
+              )}
             />
-            <p className="text-xs text-muted-foreground">
-              At least 8 characters with a mix of letters and numbers
-            </p>
-          </div>
 
-          <div className="space-y-2">
-            <Label
-              htmlFor="confirm-password"
-              className="text-sm font-medium text-foreground"
-            >
-              Confirm password
-            </Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              placeholder="Confirm your password"
-              value={""}
-              onChange={()=>{}}
-              required
-              className="h-11 bg-secondary/50 border-border placeholder-muted-foreground/50 focus:border-blue-500"
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel
+                    htmlFor="confirmPassword"
+                    className="text-sm font-medium text-foreground"
+                  >
+                    Confirm Password
+                  </FieldLabel>
+
+                  <PasswordInput
+                    field={field}
+                    fieldState={fieldState}
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError
+                      className="text-xs"
+                      errors={[fieldState.error]}
+                    />
+                  )}
+                </Field>
+              )}
             />
-          </div>
+          </FieldGroup>
 
           <Button
             type="submit"
@@ -72,6 +130,6 @@ const ResetPassword = () => {
       </Card>
     </>
   );
-}
+};
 
-export default ResetPassword
+export default ResetPassword;
