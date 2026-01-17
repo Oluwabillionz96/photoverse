@@ -1,8 +1,8 @@
-import React from 'react'
-import { Card } from '../ui/card';
-import { ArrowRight, CheckCircle } from 'lucide-react';
-import { Button } from '../ui/button';
-import Link from 'next/link';
+import React from "react";
+import { Card } from "../ui/card";
+import { ArrowRight, CheckCircle } from "lucide-react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 const PasswordResetSuccess = () => {
   return (
@@ -17,21 +17,20 @@ const PasswordResetSuccess = () => {
           Password reset
         </h2>
         <p className="text-muted-foreground">
-          Your password has been successfully reset. You can now sign in with
-          your new password.
+          Your password has been successfully reset.
         </p>
       </div>
       <Button className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-blue-500-foreground font-semibold rounded-lg">
         <Link
-          href="/auth/login"
+          href="/folders"
           className="flex items-center justify-center gap-2 w-full"
         >
-          Back to login
+          Continue to Account
           <ArrowRight className="w-4 h-4" />
         </Link>
       </Button>
     </Card>
   );
-}
+};
 
-export default PasswordResetSuccess
+export default PasswordResetSuccess;

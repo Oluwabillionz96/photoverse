@@ -77,6 +77,7 @@ const ChoiceStep = ({ setStep }: ChoiceStepProps) => {
           <div className="grid md:grid-cols-2 grid-rows-2 gap-4 ">
             <Button
               onClick={handleResetPassword}
+              disabled={isLoading}
               className="h-auto bg-blue-500 hover:bg-blue-500 cursor-pointer flex items-center gap-2"
             >
               <KeyRound className="w-5 h-5" />
@@ -85,6 +86,7 @@ const ChoiceStep = ({ setStep }: ChoiceStepProps) => {
             <Button
               onClick={handleProceedToAccount}
               variant="link"
+              disabled={isLoading}
               className="h-auto flex flex-row-reverse cursor-pointer items-center gap-2 hover:bg-primary/5 hover:border-primary transition-all"
             >
               <ArrowRight className="w-5 h-5" />

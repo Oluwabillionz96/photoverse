@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
         {step === "choice" && <ChoiceStep setStep={setStep} />}
 
         {/* Step 4: Reset Password */}
-        {step === "reset" && <ResetPassword />}
+        {step === "reset" && <ResetPassword setStep={setStep} />}
 
         {/* Step 5: Success */}
         {step === "success" && <PasswordResetSuccess />}
