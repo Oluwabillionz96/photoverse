@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -22,12 +22,13 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 const RegistrationPage = () => {
   const {
     control,
     handleSubmit,
-    formState: { isLoading },
+    formState: { isSubmitting: isLoading },
   } = useForm<z.infer<typeof RegistrationData>>({
     resolver: zodResolver(RegistrationData),
     defaultValues: {
@@ -46,13 +47,28 @@ const RegistrationPage = () => {
       toast.success(response?.message);
       dispatch(updateEmail(data.email));
       router.push("/auth/verify-email");
-    } catch (error: any) {
-      toast.error(error.response.data.error);
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data?.error || error.message
+          : "An unexpected error occurred.";
+
+      toast.error(errorMessage);
+      console.error("Registration Error:", error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-4 left-4 z-10 p-2 rounded-lg bg-card/80 backdrop-blur-sm border border-border/50 hover:bg-card transition-colors duration-200 cursor-pointer"
+        aria-label="Go back"
+      >
+        <ArrowLeft className="w-5 h-5 text-foreground" />
+      </button>
+
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -172,7 +188,7 @@ const RegistrationPage = () => {
               className="w-full h-11 cursor-pointer bg-blue-500 hover:bg-blue-500/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
               {isLoading ? "Creating account..." : "Create account"}
-              {isLoading && <ArrowRight className="w-4 h-4" />}
+              {!isLoading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 

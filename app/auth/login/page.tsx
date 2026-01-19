@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
+import { AxiosError } from "axios";
 
 const LoginPage = () => {
   const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
@@ -52,14 +53,31 @@ const LoginPage = () => {
         return;
       }
       router.push("/folders");
-    } catch (error: any) {
-      toast.error(error.response.data.error);
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data?.error || error.message
+          : "An unexpected error occurred.";
+
+      toast.error(
+        errorMessage  || "An unexpected error occurred.",
+      );
+      console.error("Error in login:", error);
     } finally {
       setLoading(loading);
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-4 left-4 z-10 p-2 rounded-lg bg-card/80 backdrop-blur-sm border border-border/50 hover:bg-card transition-colors duration-200 cursor-pointer"
+        aria-label="Go back"
+      >
+        <ArrowLeft className="w-5 h-5 text-foreground" />
+      </button>
+
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
