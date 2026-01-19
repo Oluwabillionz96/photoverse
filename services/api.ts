@@ -41,8 +41,8 @@ export const PhotoverseAPI = createApi({
       }),
     }),
     resendOTP: builder.mutation({
-      query: (body) => ({
-        url: "auth/resend-otp",
+      query: ({type,...body}) => ({
+        url: `auth/resend-otp?type=${type}`,
         method: "POST",
         body,
       }),

@@ -26,6 +26,11 @@ export default function VerifyEmailPage() {
       setIsVerifying(false);
     }
   };
+
+  if (!email.trim()) {
+    router.push("/auth/login");
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <div className="w-full max-w-md">
@@ -48,6 +53,7 @@ export default function VerifyEmailPage() {
             email={email}
             verifyOTP={verifyOTP}
             isVerifying={isVerifying}
+            type="account_verification"
           />
 
           {/* Divider */}

@@ -21,6 +21,8 @@ import { useState } from "react";
 import { authApi } from "@/services/auth";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { updateEmail } from "@/lib/slices/authSlice";
 
 const LoginPage = () => {
   const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
@@ -33,12 +35,22 @@ const LoginPage = () => {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const onSubmit: SubmitHandler<z.infer<typeof LoginData>> = async (data) => {
     setLoading(true);
     try {
       const response = await authApi.login(data.email, data.password);
+
       toast.success(response?.message);
+      if (
+        response?.message ===
+        "Enter the OTP we sent to your email to verify your account."
+      ) {
+        router.push("/auth/verify-email");
+        dispatch(updateEmail(data.email));
+        return;
+      }
       router.push("/folders");
     } catch (error: any) {
       toast.error(error.response.data.error);

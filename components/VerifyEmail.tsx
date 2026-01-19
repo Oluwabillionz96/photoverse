@@ -16,10 +16,12 @@ const VerifyEmail = ({
   email,
   verifyOTP,
   isVerifying,
+  type,
 }: {
   email: string;
   verifyOTP: (e: FormEvent, inputValue: string[]) => void;
   isVerifying: boolean;
+  type: "account_verification" | "account_recovery";
 }) => {
   const [inputValue, setInputValue] = useState(["", "", "", "", "", ""]);
 
@@ -61,7 +63,7 @@ const VerifyEmail = ({
   }
 
   const resendOTP = async () => {
-    const response = await resend({ email });
+    const response = await resend({ email, type });
     if ("data" in response) {
       toast.success(response?.data?.message);
     } else if ("error" in response) {
@@ -143,8 +145,8 @@ const VerifyEmail = ({
         form="email_verification"
         // onClick={verifyOTP}
       >
-        {loading ? <Spinner /> : ""}
-        {loading ? "Confirming..." : "Confirm"}
+        {isVerifying ? <Spinner /> :  ""}
+        {isVerifying ? "Confirming..." : "Confirm"}
       </Button>
 
       <div className="border-t border-border/50 w-full" />
@@ -155,15 +157,16 @@ const VerifyEmail = ({
         </p>
         <button
           onClick={resendOTP}
+          type="button"
           disabled={loading || resendCode > 0}
           className="text-blue-500 hover:underline font-semibold text-sm disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
         >
           {/* {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"} */}
           {resendCode > 0
-            ? ` Resend Code in ${resendCode} seconds`
+            ? ` Request a resend in ${resendCode} seconds`
             : isResending
-            ? "Resending code"
-            : "Resend Code"}
+              ? "Resending code"
+              : "Resend Code"}
         </button>
       </div>
     </div>

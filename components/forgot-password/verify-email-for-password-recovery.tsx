@@ -80,6 +80,7 @@ const VerifyPasswordRecoveryEmail = ({
           email={email}
           verifyOTP={verifyOTP}
           isVerifying={isLoading}
+          type="account_recovery"
         />
       </Card>
     </>
