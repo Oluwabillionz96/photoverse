@@ -89,7 +89,7 @@ const RegistrationPage = () => {
 
         <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
           {/* Google Sign Up */}
-          <GoogleButton handleClick={() => {}} text="Sign Up with Google" />
+          <GoogleButton text="Sign Up with Google" />
 
           {/* Divider */}
           <div className="relative">

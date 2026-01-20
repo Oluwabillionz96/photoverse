@@ -59,9 +59,7 @@ const LoginPage = () => {
           ? error.response?.data?.error || error.message
           : "An unexpected error occurred.";
 
-      toast.error(
-        errorMessage  || "An unexpected error occurred.",
-      );
+      toast.error(errorMessage || "An unexpected error occurred.");
       console.error("Error in login:", error);
     } finally {
       setLoading(loading);
@@ -98,7 +96,7 @@ const LoginPage = () => {
 
         <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
           {/* Google Sign In */}
-          <GoogleButton text="Continue with Google" handleClick={() => {}} />
+          <GoogleButton text="Continue with Google" />
 
           {/* Divider */}
           <div className="relative">
