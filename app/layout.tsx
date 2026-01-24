@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   description:
     "Photoverse is your online photo gallery—upload, organize, and access your photos anytime while freeing up storage space on your device.",
   icons: {
-    icon: "/photoverse-logo.png",
-    shortcut: "/photoverse-logo.png",
-    apple: "/photoverse-logo.png",
+    icon: "/photoverse.ico",
+    shortcut: "/photoverse.ico",
+    apple: "/photoverse.ico",
   },
 };
 

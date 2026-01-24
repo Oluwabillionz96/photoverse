@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
 import { AxiosError } from "axios";
+import Image from "next/image";
 
 const LoginPage = () => {
   const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
@@ -81,9 +82,14 @@ const LoginPage = () => {
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
             <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-xl font-bold text-primary-foreground">
-                P
-              </span>
+              <div className="bg-black rounded-full">
+                <Image
+                  src="/photoverse-logo.png"
+                  width={50}
+                  height={50}
+                  alt="Photoverse Logo"
+                />
+              </div>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
