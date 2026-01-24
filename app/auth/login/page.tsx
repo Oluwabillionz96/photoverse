@@ -45,10 +45,7 @@ const LoginPage = () => {
       const response = await authApi.login(data.email, data.password);
 
       toast.success(response?.message);
-      if (
-        response?.message ===
-        "Enter the OTP we sent to your email to verify your account."
-      ) {
+      if (response?.requiresVerification === true) {
         router.push("/auth/verify-email");
         dispatch(updateEmail(data.email));
         return;
