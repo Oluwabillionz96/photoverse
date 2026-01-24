@@ -23,7 +23,7 @@ export const authApi = {
     return response.data;
   },
   async logout() {
-    const response = await axiosInstance.get("auth/logout");
+    const response = await axiosInstance.post("auth/logout");
     return response.data;
   },
 };
