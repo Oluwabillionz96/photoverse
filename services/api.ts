@@ -1,57 +1,99 @@
 import baseUrl from "@/baseUrl";
 import { GetFolderResponse, GetPhotoResponse, Photo } from "@/lib/apiTypes";
-import { Rootstate } from "@/lib/store";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getCsrfToken } from "@/lib/utils";
+
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  credentials: "include",
+  prepareHeaders: (headers) => {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      headers.set("X-XSRF-TOKEN", csrfToken);
+    }
+
+    return headers;
+  },
+});
+
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  // If we get a 401 (unauthorized), try to refresh the token
+  if (result.error && result.error.status === 401) {
+    console.log("Access token expired, attempting refresh...");
+
+    // Try to refresh the token
+    const refreshResult = await baseQuery(
+      { url: "auth/refresh", method: "POST" },
+      api,
+      extraOptions,
+    );
+
+    if (refreshResult.data) {
+      // Refresh successful - new tokens (JWT + CSRF) are now in cookies
+      console.log("Token refreshed successfully, retrying original request");
+
+      // Retry the original request with new tokens
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // Refresh failed - redirect to login
+      console.log("Token refresh failed, redirecting to login");
+      window.location.href = "/login";
+    }
+  }
+
+  return result;
+};
 
 export const PhotoverseAPI = createApi({
   reducerPath: "phoverseAPI",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${baseUrl}`,
-    prepareHeaders: (headers, { getState }) => {
-      const { auth } = getState() as Rootstate;
-      const token = auth.token;
-
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["folders", "photos", "favourite"],
 
   endpoints: (builder) => ({
-    login: builder.mutation({
+    getForgotPasswordOTP: builder.mutation({
       query: (body) => ({
-        url: "auth/login",
+        url: "forgot-password/get-otp",
         method: "POST",
         body,
       }),
     }),
-    logout: builder.mutation({
+    verifyForgotPasswordOTP: builder.mutation({
       query: (body) => ({
-        url: "auth/logout",
+        url: "forgot-password/verify-otp",
         method: "POST",
         body,
       }),
     }),
-    register: builder.mutation({
+    continueToAccount: builder.mutation({
       query: (body) => ({
-        url: "auth/register",
+        url: "forgot-password/continue-to-account",
         method: "POST",
         body,
       }),
     }),
-    verifyEmail: builder.mutation({
+    resetPassword: builder.mutation({
       query: (body) => ({
-        url: "auth/verify-otp",
+        url: "forgot-password/reset-password",
         method: "POST",
         body,
       }),
     }),
     resendOTP: builder.mutation({
-      query: (body) => ({
-        url: "auth/resend-otp",
+      query: ({ type, ...body }) => ({
+        url: `auth/resend-otp?type=${type}`,
         method: "POST",
         body,
       }),
@@ -120,11 +162,11 @@ export const PhotoverseAPI = createApi({
 });
 
 export const {
+  useGetForgotPasswordOTPMutation,
+  useVerifyForgotPasswordOTPMutation,
+  useContinueToAccountMutation,
+  useResetPasswordMutation,
   useUploadPhotosMutation,
-  useLoginMutation,
-  useLogoutMutation,
-  useRegisterMutation,
-  useVerifyEmailMutation,
   useResendOTPMutation,
   useGetPhotosQuery,
   useCreateFolderMutation,

@@ -5,15 +5,8 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
-import AuthenticationModal, { Loading } from "./modals/AuthenticationModal";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import {
-  getUser,
-  logUserOut,
-  refreshAccessToken,
-} from "@/lib/slices/authSlice";
-import useAppDispatch from "@/hooks/useAppDispatch";
 import MobileNavs from "./MobileNavs";
 import {
   handleFileChange,
@@ -28,77 +21,39 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useLogoutMutation } from "@/services/api";
-import toast from "react-hot-toast";
 import { FaUser } from "react-icons/fa";
 import { redirect, usePathname } from "next/navigation";
+import { Loading } from "./loaders/Loading";
+import useLogout from "@/hooks/useLogout";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("collapsed") || "true")
       : true;
+  const { logout } = useLogout();
   const [collapsed, setCollapsed] = useState(true);
   useEffect(() => {
     setCollapsed(isCollapsed);
   }, [isCollapsed]);
   const isMobile = useScreenSize();
-  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
-  const { authenticated, loading, token, refreshToken } = useSelector(
-    (state: Rootstate) => state.auth
-  );
-  const dispatch = useAppDispatch();
-  const [registerInfo, setRegisterInfo] = useState({
-    email: "",
-    password: "",
-    confirmedPassword: "",
-  });
+
+  const { loading } = useSelector((state: Rootstate) => state.auth);
+
   const fileInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [modalStatus, setModalStatus] = useState<
     "" | "preview" | "select" | "foldername"
   >("");
   const pathname = usePathname();
-  const [logout, { isLoading }] = useLogoutMutation();
-
-  useEffect(() => {
-    if (token) {
-      dispatch(getUser());
-    } else {
-      dispatch(refreshAccessToken());
-    }
-  }, [token, dispatch]);
-
-  async function Logout() {
-    const payload = { token: refreshToken };
-
-    const response = await logout(payload);
-    if ("data" in response) {
-      dispatch(logUserOut(false));
-      toast.success(response.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
-
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
-    }
-  }
 
   return (
     <>
-      {loading || isLoading ? (
+      {loading || false ? (
         <Loading />
       ) : (
         <>
-          {pathname === "/" ? (
+          {pathname === "/" || pathname.startsWith("/auth") ? (
             <>{children}</>
           ) : (
             <main
@@ -112,14 +67,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   : "md:ml-[9rem] lg:ml-[17.5rem]"
               }`}
             >
-              {!authenticated && (
-                <AuthenticationModal
-                  loginInfo={loginInfo}
-                  setLoginInfo={setLoginInfo}
-                  registerInfo={registerInfo}
-                  setRegisterInfo={setRegisterInfo}
-                />
-              )}
               <ModalContext
                 value={{ modalStatus, changeModalStatus: setModalStatus }}
               >
@@ -157,7 +104,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         <DropdownMenuContent className="w-16" align="end">
                           <DropdownMenuItem
                             onClick={() => {
-                              Logout();
+                              logout();
                               redirect("/");
                             }}
                           >

@@ -1,27 +1,14 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import AuthenticationMenu from "./AuthenticationMenu";
 import { AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
-const Header = ({
-  setOpenModal,
-  setMode,
-}: {
-  setOpenModal: Dispatch<SetStateAction<boolean>>;
-  setMode: Dispatch<SetStateAction<"login" | "register">>;
-}) => {
+const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const onLoginClick = () => {
-    setOpenModal(true);
-    setMode("login");
-  };
 
-  const onRegisterClick = () => {
-    setOpenModal(true);
-    setMode("register");
-  };
   return (
     <>
       {" "}
@@ -64,16 +51,19 @@ const Header = ({
             </nav>
 
             <div className="md:flex items-center space-x-4 hidden">
-              <Button variant="ghost" size="sm" onClick={onLoginClick}>
-                Log in
-              </Button>
-              <Button
-                size="sm"
-                className="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer"
-                onClick={onRegisterClick}
-              >
-                Sign Up Free
-              </Button>
+              <Link href={"/auth/login"}>
+                <Button variant="ghost" size="sm">
+                  Log in
+                </Button>
+              </Link>
+              <Link href={"/auth/register"}>
+                <Button
+                  size="sm"
+                  className="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer"
+                >
+                  Sign Up Free
+                </Button>
+              </Link>
             </div>
             <div className="block md:hidden" onClick={() => setShowMenu(true)}>
               <IoMenu size={32} />
@@ -82,13 +72,7 @@ const Header = ({
         </div>
       </header>
       <AnimatePresence mode="wait">
-        {showMenu ? (
-          <AuthenticationMenu
-            setShowMenu={setShowMenu}
-            onLoginClick={onLoginClick}
-            onRegisterClick={onRegisterClick}
-          />
-        ) : null}
+        {showMenu ? <AuthenticationMenu setShowMenu={setShowMenu} /> : null}
       </AnimatePresence>
     </>
   );

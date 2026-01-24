@@ -1,15 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Image } from "lucide-react";
 import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
 
-const HeroSection = ({
-  setOpenModal,
-  setMode,
-}: {
-  setOpenModal: Dispatch<SetStateAction<boolean>>;
-  setMode: Dispatch<SetStateAction<"login" | "register">>;
-}) => {
+const HeroSection = () => {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted/20 py-16 sm:py-20 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,17 +24,15 @@ const HeroSection = ({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
-              <Button
-                size="lg"
-                className="text-base w-full sm:w-auto bg-blue-500 hover:bg-blue-600"
-                onClick={() => {
-                setOpenModal(true);
-                  setMode("login");
-                }}
-              >
-                Try Now - Free
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link href={"/auth/login"}>
+                <Button
+                  size="lg"
+                  className="text-base w-full sm:w-auto bg-blue-500 hover:bg-blue-600"
+                >
+                  Try Now - Free
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
               <Link href={"/photos"}>
                 <Button
                   variant="outline"
