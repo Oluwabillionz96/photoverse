@@ -5,7 +5,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import MobileNavs from "./MobileNavs";
 import {
@@ -25,6 +25,11 @@ import { FaUser } from "react-icons/fa";
 import { redirect, usePathname } from "next/navigation";
 import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
+import { authApi } from "@/services/auth";
+import { updateLoading, updateUser } from "@/lib/slices/authSlice";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
+import { useProtectedRoute } from "@/hooks/useProtectedRoutes";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -33,9 +38,43 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       : true;
   const { logout } = useLogout();
   const [collapsed, setCollapsed] = useState(true);
+  const dispatch = useDispatch();
   useEffect(() => {
     setCollapsed(isCollapsed);
   }, [isCollapsed]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        dispatch(updateLoading(true));
+        const response = await authApi.getUser();
+        if (response.isAuthenticated) {
+          dispatch(
+            updateUser({
+              email: response.email,
+              isAuthenticated: response.isAuthenticated,
+            }),
+          );
+        }
+        return;
+      } catch (error) {
+        const errorMessage =
+          error instanceof AxiosError
+            ? error.response?.data?.error || error.message
+            : "An unexpected error occurred.";
+
+        toast.error(errorMessage || "An unexpected error occurred.");
+        console.error("User verification error", error);
+      } finally {
+        dispatch(updateLoading(false));
+      }
+    };
+
+    initialize();
+  }, [dispatch]);
+
+  useProtectedRoute()
+
   const isMobile = useScreenSize();
 
   const { loading } = useSelector((state: Rootstate) => state.auth);
@@ -63,8 +102,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 isMobile
                   ? "ml-0"
                   : collapsed
-                  ? "md:ml-[5rem]"
-                  : "md:ml-[9rem] lg:ml-[17.5rem]"
+                    ? "md:ml-[5rem]"
+                    : "md:ml-[9rem] lg:ml-[17.5rem]"
               }`}
             >
               <ModalContext

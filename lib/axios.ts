@@ -4,7 +4,7 @@ import { getCsrfToken } from "./utils";
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,
-  withCredentials: true, // For cookies
+  withCredentials: true,
   timeout: 10000,
 });
 
@@ -56,12 +56,12 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-         window.location.href = "/login";
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
 
-    return Promise.reject(error)
+    return Promise.reject(error);
   },
 );
 
