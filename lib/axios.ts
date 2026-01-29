@@ -66,19 +66,29 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-      if (error.response?.status === 401) {
-
-        try {
-          await axiosInstance.post("auth/refresh");
-          return axiosInstance(originalRequest);
-        } catch {;
-          reRoute()
-          return Promise.reject(error);
-        }
+    if (error.response?.status === 401) {
+      try {
+        await axiosInstance.post("auth/refresh");
+        return axiosInstance(originalRequest);
+      } catch {
+        reRoute();
+        return Promise.reject(error);
       }
+    }
 
-      return Promise.reject(error);
+    return Promise.reject(error);
   },
+);
+
+axiosInstance.interceptors.response.use(
+  (res) => {
+    const data = res.data;
+    if (data.csrfToken) {
+      sessionStorage.setItem("csrfToken", data.csrfToken);
+    }
+    return res;
+  },
+  (error) => Promise.reject(error),
 );
 
 export default axiosInstance;
