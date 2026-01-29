@@ -56,7 +56,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       dispatch(updateLoading(true));
 
       const response = await authApi.getUser();
-      console.log({ response });
+
       if (response.isAuthenticated) {
         dispatch(
           updateUser({
