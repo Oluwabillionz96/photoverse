@@ -89,7 +89,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      {loading || keepLoading ? (
+      {loading ? (
         <Loading />
       ) : (
         <>
