@@ -43,13 +43,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
   // useProtectedRoute();
-  const keepLoading =
-    !user.isAuthenticated && pathname !== "/" && !pathname.startsWith("/auth");
+  // const keepLoading =
+  //   !user.isAuthenticated && pathname !== "/" && !pathname.startsWith("/auth");
   const initialize = async () => {
     if (
       user.isAuthenticated ||
       pathname === "/" ||
-      pathname.startsWith("/auth")
+      pathname.startsWith("/auth") ||
+      pathname === "/oauth"
     )
       return;
     try {
