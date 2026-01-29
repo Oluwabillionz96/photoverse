@@ -22,13 +22,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { FaUser } from "react-icons/fa";
-import { redirect, usePathname } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
-import { AxiosError } from "axios";
-import toast from "react-hot-toast";
 import { useProtectedRoute } from "@/hooks/useProtectedRoutes";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -37,47 +35,51 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       ? JSON.parse(localStorage.getItem("collapsed") || "true")
       : true;
   const { logout } = useLogout();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
     setCollapsed(isCollapsed);
   }, [isCollapsed]);
+  const { loading, user } = useSelector((state: Rootstate) => state.auth);
+
+  const initialize = async () => {
+    if (
+      user.isAuthenticated ||
+      pathname === "/" ||
+      pathname.startsWith("/auth")
+    )
+      return;
+    try {
+      dispatch(updateLoading(true));
+
+      const response = await authApi.getUser();
+      console.log({ response });
+      if (response.isAuthenticated) {
+        dispatch(
+          updateUser({
+            email: response.email,
+            isAuthenticated: response.isAuthenticated,
+          }),
+        );
+      }
+      return;
+    } catch (error) {
+      console.log(error);
+      router.push("/auth/login");
+      return;
+    } finally {
+      dispatch(updateLoading(false));
+    }
+  };
 
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        dispatch(updateLoading(true));
-        const response = await authApi.getUser();
-        if (response.isAuthenticated) {
-          dispatch(
-            updateUser({
-              email: response.email,
-              isAuthenticated: response.isAuthenticated,
-            }),
-          );
-        }
-        return;
-      } catch (error) {
-        const errorMessage =
-          error instanceof AxiosError
-            ? error.response?.data?.error || error.message
-            : "An unexpected error occurred.";
-
-        toast.error(errorMessage || "An unexpected error occurred.");
-        console.error("User verification error", error);
-      } finally {
-        dispatch(updateLoading(false));
-      }
-    };
-
     initialize();
-  }, [dispatch]);
+  }, []);
 
-  useProtectedRoute()
+  useProtectedRoute();
 
   const isMobile = useScreenSize();
-
-  const { loading } = useSelector((state: Rootstate) => state.auth);
 
   const fileInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -88,7 +90,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      {loading || false ? (
+      {loading ||
+      (!user.isAuthenticated &&
+        pathname !== "/" &&
+        !pathname.startsWith("/auth")) ? (
         <Loading />
       ) : (
         <>

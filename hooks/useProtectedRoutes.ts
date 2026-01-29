@@ -9,14 +9,11 @@ export function useProtectedRoute() {
   const { user, loading } = useSelector((state: Rootstate) => state.auth);
 
   useEffect(() => {
+    if (pathname.startsWith("/auth") || pathname === "/") {
+      return;
+    }
     if (!loading && !user.isAuthenticated) {
-      if (
-        pathname.startsWith("/photos") ||
-        pathname.startsWith("/folders") ||
-        pathname.startsWith("/favourites") ||
-        pathname.startsWith("/trash")
-      )
-        router.push("/auth/login");
+      router.push("/auth/login");
     }
   }, [user.isAuthenticated, loading, router, pathname]);
 

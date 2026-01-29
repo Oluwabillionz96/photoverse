@@ -8,6 +8,14 @@ const axiosInstance = axios.create({
   timeout: 10000,
 });
 
+export function reRoute() {
+  if (window.location.pathname === "/") {
+    window.location.href = "/";
+  } else {
+    window.location.href = "/auth/login";
+  }
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const methodsRequiringCsrf = ["post", "put", "delete", "patch"];
@@ -45,23 +53,30 @@ axiosInstance.interceptors.response.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (res) => res,
   async (error) => {
+    console.log({ error });
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        await axiosInstance.post("auth/refresh");
-
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        window.location.href = "/auth/login";
-        return Promise.reject(refreshError);
-      }
+    if (!originalRequest) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    if (originalRequest.url?.includes("auth/refresh")) {
+      return Promise.reject(error);
+    }
+
+      if (error.response?.status === 401) {
+
+        try {
+          await axiosInstance.post("auth/refresh");
+          return axiosInstance(originalRequest);
+        } catch {;
+          return Promise.reject(error);
+        }
+      }
+
+      return Promise.reject(error);
   },
 );
 
