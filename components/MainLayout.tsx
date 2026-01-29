@@ -27,7 +27,6 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
-import { useProtectedRoute } from "@/hooks/useProtectedRoutes";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -42,7 +41,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     setCollapsed(isCollapsed);
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
-
+  const pathname = usePathname();
+  // useProtectedRoute();
+  const keepLoading =
+    !user.isAuthenticated && pathname !== "/" && !pathname.startsWith("/auth");
   const initialize = async () => {
     if (
       user.isAuthenticated ||
@@ -77,8 +79,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     initialize();
   }, []);
 
-  useProtectedRoute();
-
   const isMobile = useScreenSize();
 
   const fileInput = useRef<HTMLInputElement>(null);
@@ -86,14 +86,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [modalStatus, setModalStatus] = useState<
     "" | "preview" | "select" | "foldername"
   >("");
-  const pathname = usePathname();
 
   return (
     <>
-      {loading ||
-      (!user.isAuthenticated &&
-        pathname !== "/" &&
-        !pathname.startsWith("/auth")) ? (
+      {loading || keepLoading ? (
         <Loading />
       ) : (
         <>

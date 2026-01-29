@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
   timeout: 10000,
 });
 
-export function reRoute() {
+function reRoute() {
   if (window.location.pathname === "/") {
     window.location.href = "/";
   } else {
@@ -72,6 +72,7 @@ axiosInstance.interceptors.response.use(
           await axiosInstance.post("auth/refresh");
           return axiosInstance(originalRequest);
         } catch {;
+          reRoute()
           return Promise.reject(error);
         }
       }
