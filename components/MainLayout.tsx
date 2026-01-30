@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { FaUser } from "react-icons/fa";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
@@ -138,12 +138,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-16" align="end">
-                          <DropdownMenuItem
-                            onClick={() => {
-                              logout();
-                              redirect("/");
-                            }}
-                          >
+                          <DropdownMenuItem onClick={logout}>
                             Log out
                           </DropdownMenuItem>
                         </DropdownMenuContent>

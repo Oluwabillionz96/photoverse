@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 // import DropDown from "./dropDown";
 import { FaFolder, FaPlus } from "react-icons/fa";
-import { redirect, useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import useModalContext from "@/hooks/useModalContext";
 import useInputContext from "@/hooks/useInputContext";
 import {
@@ -88,8 +88,8 @@ const TabLayouts = () => {
               {pathname === "/folders"
                 ? "Create Folder"
                 : params.folderName || pathname === "/photos"
-                ? "Add photo"
-                : ""}
+                  ? "Add photo"
+                  : ""}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -101,14 +101,7 @@ const TabLayouts = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-16" align="end">
-                <DropdownMenuItem
-                  onClick={() => {
-                    logout();
-                    redirect("/");
-                  }}
-                >
-                  Log out
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
