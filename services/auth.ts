@@ -30,4 +30,13 @@ export const authApi = {
     const response = await axiosInstance.get("auth/me");
     return response.data;
   },
-};
+
+  async oauth(code: string) {
+    const response = await axiosInstance.post("oauth/auth", {
+      code,
+    });
+
+    return response.data
+  },
+}
+

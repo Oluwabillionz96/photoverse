@@ -44,7 +44,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const initialize = async () => {
-    if (user.isAuthenticated || pathname.startsWith("/auth")) return;
+    if (
+      user.isAuthenticated ||
+      pathname.startsWith("/auth") ||
+      pathname.startsWith("/api")
+    )
+      return;
     try {
       dispatch(updateLoading(true));
 
