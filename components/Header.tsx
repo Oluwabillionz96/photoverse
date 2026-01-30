@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
@@ -5,9 +7,12 @@ import { IoMenu } from "react-icons/io5";
 import AuthenticationMenu from "./AuthenticationMenu";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const { user } = useSelector((state: Rootstate) => state.auth);
 
   return (
     <>
@@ -51,17 +56,17 @@ const Header = () => {
             </nav>
 
             <div className="md:flex items-center space-x-4 hidden">
-              <Link href={"/auth/login"}>
+              <Link href={user.isAuthenticated ? "/folders" : "/auth/login"}>
                 <Button variant="ghost" size="sm">
-                  Log in
+                  {user.isAuthenticated ? "folders" : "Login"}
                 </Button>
               </Link>
-              <Link href={"/auth/register"}>
+              <Link href={user.isAuthenticated ? "/photos" : "/auth/register"}>
                 <Button
                   size="sm"
                   className="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer"
                 >
-                  Sign Up Free
+                  {user.isAuthenticated ? "Photos" : "Sign Up Free"}
                 </Button>
               </Link>
             </div>

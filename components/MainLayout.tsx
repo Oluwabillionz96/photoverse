@@ -42,17 +42,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
-  // useProtectedRoute();
-  // const keepLoading =
-  //   !user.isAuthenticated && pathname !== "/" && !pathname.startsWith("/auth");
+
   const initialize = async () => {
-    if (
-      user.isAuthenticated ||
-      pathname === "/" ||
-      pathname.startsWith("/auth") ||
-      pathname === "/oauth"
-    )
-      return;
+    if (user.isAuthenticated || pathname.startsWith("/auth")) return;
     try {
       dispatch(updateLoading(true));
 
@@ -69,6 +61,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       return;
     } catch (error) {
       console.log(error);
+      if (pathname === "/") {
+        return;
+      }
       router.push("/auth/login");
       return;
     } finally {

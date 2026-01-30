@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction } from "react";
 import { IoIosClose } from "react-icons/io";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 const AuthenticationMenu = ({
   setShowMenu,
@@ -10,9 +12,12 @@ const AuthenticationMenu = ({
   setShowMenu: Dispatch<SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
+  const { user } = useSelector((state: Rootstate) => state.auth);
 
-  const onLoginClick = () => router.push("/auth/login");
-  const onRegisterClick = () => router.push("/auth/register");
+  const onLoginClick = () =>
+    router.push(user.isAuthenticated ? "/folders" : "/auth/login");
+  const onRegisterClick = () =>
+    router.push(user.isAuthenticated ? "/photos" : "/auth/register");
 
   return (
     <MotionConfig transition={{ duration: 0.5 }}>
@@ -42,7 +47,7 @@ const AuthenticationMenu = ({
               onLoginClick();
             }}
           >
-            Login
+            {user.isAuthenticated ? "folders" : "Login"}
           </Button>
           <Button
             className="w-full bg-blue-500 py-3"
@@ -51,7 +56,7 @@ const AuthenticationMenu = ({
               onRegisterClick();
             }}
           >
-            Register
+            {user.isAuthenticated ? "Photos" : "Register"}
           </Button>
         </div>
       </motion.div>

@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 function reRoute() {
   if (window.location.pathname === "/") {
-    window.location.href = "/";
+    return;
   } else {
     window.location.href = "/auth/login";
   }
