@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 export const handleFileChange = (
   e: ChangeEvent<HTMLInputElement>,
   files: File[],
-  setFiles: Dispatch<SetStateAction<File[]>>
+  setFiles: Dispatch<SetStateAction<File[]>>,
 ) => {
   if (!e.target.files) return;
   const selectedFiles = Array.from(e.target.files);
@@ -14,13 +14,27 @@ export const handleFileChange = (
     toast.error("Only ten files allowed at a time");
   }
 
+  const invalidFiles = selectedFiles.filter((file) => file.size > 500 * 1024);
+
+  if (invalidFiles.length > 0) {
+    toast.error("Some file exceed 500KB limit");
+    return;
+  }
+  const invalidTypes = selectedFiles.filter(
+    (file) => !file.type.startsWith("image/"),
+  );
+  if (invalidTypes.length > 0) {
+    toast.error("Only image files are allowed");
+    return;
+  }
+
   const uniqueNewFiles = selectedFiles.filter(
     (newFile) =>
       !files.some(
         (existingFile) =>
           existingFile.name === newFile.name &&
-          existingFile.size === newFile.size
-      )
+          existingFile.size === newFile.size,
+      ),
   );
 
   if (
