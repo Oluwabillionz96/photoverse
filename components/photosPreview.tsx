@@ -9,6 +9,8 @@ import Spinner from "./loaders/Spinner";
 // import toast from "react-hot-toast";
 import ProgressTracker from "./progress-tracker";
 import { handlePhotosUploads } from "@/lib/utils/handlePhotoUpload";
+import { useDispatch } from "react-redux";
+import { PhotoverseAPI } from "@/services/api";
 
 export function formatFileSize(bytes: number) {
   if (bytes === 0) return "0 bytes";
@@ -38,6 +40,7 @@ const PhotosPreview = ({
 
   const [preview, setPreview] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const urls = files.map((item) => URL.createObjectURL(item));
@@ -49,6 +52,7 @@ const PhotosPreview = ({
   function handleDone() {
     setProgress(0);
     setFiles([]);
+    dispatch(PhotoverseAPI.util.invalidateTags(["photos", "folders"]));
   }
 
   let size = 0;
