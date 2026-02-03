@@ -65,27 +65,88 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     dispatch(updatePhotoId(imageIds));
   }, [dispatch, photos]);
 
+  function getUploadDate(time: string) {
+    const uploadDate = new Date(time);
+
+    const isEqualYear =
+      new Date(Date.now()).getFullYear() === uploadDate.getFullYear();
+
+    return isEqualYear
+      ? uploadDate.toLocaleString("en-US", {
+          month: "long",
+        })
+      : uploadDate.toLocaleString("en-US", {
+          month: "long",
+          year: "numeric",
+        });
+  }
+
+  const month: Record<string, Photo[]> = {};
+
+  photos.map((item) => {
+    const uploadDate = getUploadDate(item.uploadedAt);
+    if (!month[uploadDate]) {
+      month[uploadDate] = [];
+    }
+
+    month[uploadDate].push(item);
+    console.log({ month });
+  });
+
   return (
     <>
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-        {photos.map((item) => (
-          <Link
-            key={item._id}
-            className="relative aspect-square"
-            href={`/${route}/${item._id}`}
-            onClick={(e: MouseEvent) => {
-              if (selectedPhotosIds.length > 0) {
-                e.preventDefault();
-              }
-            }}
-          >
-            {item.isFavourite && (
-              <div className="absolute top-2 right-2 text-pink-500  z-50">
-                <FaHeart />
+      <div className="space-y-4">
+        {Object.keys(month).map((key, index) => {
+          return (
+            <div key={index}>
+              <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
+                {month[key].map((item) => (
+                  <Link
+                    key={item._id}
+                    className="relative aspect-square"
+                    href={`/${route}/${item._id}`}
+                    onClick={(e: MouseEvent) => {
+                      if (selectedPhotosIds.length > 0) {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    {item.isFavourite && (
+                      <div className="absolute top-2 right-2 text-pink-500  z-50">
+                        <FaHeart />
+                      </div>
+                    )}
+                    <Image
+                      src={item?.link}
+                      alt="photo"
+                      fill
+                      loading="lazy"
+                      className="object-cover object-top"
+                      sizes="33vw"
+                      loader={cloudinaryLoader}
+                    />
+                    {selectedPhotosIds.length > 0 && (
+                      <input
+                        type="checkbox"
+                        id={item._id}
+                        value={item._id}
+                        checked={selectedPhotosIds?.includes(item._id)}
+                        className="z-50 absolute top-2 left-2 w-4 h-4"
+                        onClick={(e: MouseEvent) => {
+                          e.stopPropagation();
+                        }}
+                        onChange={() => handleImageSelection(item)}
+                      />
+                    )}
+                  </Link>
+                ))}
               </div>
-            )}
+            </div>
+          );
+        })}
 
-            {/* <ContextModal
+        {/* <ContextModal
               handleSelectImage={(e: MouseEvent) => {
                 e.stopPropagation();
                 handleImageSelection(item);
@@ -100,31 +161,8 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 handleSelectAll();
               }}
             > */}
-              <Image
-                src={item?.link}
-                alt="photo"
-                fill
-                loading="lazy"
-                className="object-cover object-top"
-                sizes="33vw"
-                loader={cloudinaryLoader}
-              />
-            {/* </ContextModal> */}
-            {selectedPhotosIds.length > 0 && (
-              <input
-                type="checkbox"
-                id={item._id}
-                value={item._id}
-                checked={selectedPhotosIds?.includes(item._id)}
-                className="z-50 absolute top-2 left-2 w-4 h-4"
-                onClick={(e: MouseEvent) => {
-                  e.stopPropagation();
-                }}
-                onChange={() => handleImageSelection(item)}
-              />
-            )}
-          </Link>
-        ))}
+
+        {/* </ContextModal> */}
       </div>
     </>
   );
