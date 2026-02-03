@@ -3,10 +3,12 @@ import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useUploadPhotosMutation } from "@/services/api";
+// import { useUploadPhotosMutation } from "@/services/api";
 import Image from "next/image";
 import Spinner from "./loaders/Spinner";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
+import ProgressTracker from "./progress-tracker";
+import { handlePhotosUploads } from "@/lib/utils/handlePhotoUpload";
 
 export function formatFileSize(bytes: number) {
   if (bytes === 0) return "0 bytes";
@@ -31,48 +33,11 @@ const PhotosPreview = ({
   ref: RefObject<HTMLInputElement | null>;
   folder?: string;
 }) => {
-  const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
-
-  async function handlePhotosUploads() {
-    if (files.length === 0) {
-      toast.error("Please select files to upload");
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-
-      files.forEach((file) => {
-        formData.append("images", file);
-      });
-
-      formData.append("folder", folder);
-
-      const response = await uploadPhotos(formData);
-      if ("data" in response) {
-        setFiles([]);
-        toast.success(response.data?.message);
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
-
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [preview, setPreview] = useState<string[]>([]);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const urls = files.map((item) => URL.createObjectURL(item));
@@ -81,12 +46,17 @@ const PhotosPreview = ({
     return () => urls.forEach((item) => URL.revokeObjectURL(item));
   }, [files]);
 
+  function handleDone() {
+    setProgress(0);
+    setFiles([]);
+  }
+
   let size = 0;
   files.forEach((file) => {
     size += file.size;
   });
   return (
-    <>
+    <div className="relative">
       <div>
         <h2 className="md:text-xl text-2xl font-bold text-gray-900">
           Ready to Upload
@@ -122,7 +92,15 @@ const PhotosPreview = ({
           <Button
             className="md:flex items-center gap-2 bg-green-500 hidden hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={files.length < 1 || isLoading}
-            onClick={handlePhotosUploads}
+            onClick={() => {
+              handlePhotosUploads(
+                files,
+                folder,
+                setFiles,
+                setIsLoading,
+                setProgress,
+              );
+            }}
           >
             {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
             {isLoading ? "Uploading " : "Upload "}file
@@ -174,11 +152,19 @@ const PhotosPreview = ({
             ))}
           </AnimatePresence>
         </div>
-        {files.length < 10 && (
+        {files.length <= 10 && (
           <Button
             className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
             disabled={files.length < 1 || isLoading}
-            onClick={handlePhotosUploads}
+            onClick={() => {
+              handlePhotosUploads(
+                files,
+                folder,
+                setFiles,
+                setIsLoading,
+                setProgress,
+              );
+            }}
           >
             {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
             {isLoading ? "Uploading " : "Upload "}file
@@ -186,7 +172,15 @@ const PhotosPreview = ({
           </Button>
         )}
       </div>
-    </>
+
+      {progress > 0 && (
+        <ProgressTracker
+          progress={progress}
+          handleDone={handleDone}
+          isLoading={isLoading}
+        />
+      )}
+    </div>
   );
 };
 

@@ -4,112 +4,67 @@ import CreateFolderModal from "./modals/CreateFolderModal";
 import AddPhotoModal from "./modals/AddPhotoModal";
 import ImagePreviewModal from "./modals/ImagePreviewModal";
 import { handleFileChange } from "@/lib/utils/handleInputChange";
-import {
-  useCreateFolderMutation,
-  useUploadPhotosMutation,
-} from "@/services/api";
+import { useCreateFolderMutation } from "@/services/api";
 import toast from "react-hot-toast";
 
 const CreateFolder = ({
-  foldername,
-  setFoldername,
+  folderName,
+  setFolderName,
   modalStatus,
   setModalStatus,
 }: {
-  foldername: string;
-  setFoldername: Dispatch<SetStateAction<string>>;
+  folderName: string;
+  setFolderName: Dispatch<SetStateAction<string>>;
   modalStatus: "" | "preview" | "select" | "foldername";
   setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [createNewFolder, { isLoading: isCreatingFolder }] =
     useCreateFolderMutation();
-  const [uploadPhotos, { isLoading: isUploadingPhoto }] =
-    useUploadPhotosMutation();
-  const [loading, setLoading] = useState(isCreatingFolder || isUploadingPhoto);
   const fileInput = useRef<HTMLInputElement>(null);
   function handleUpload() {
     fileInput.current?.click();
   }
 
-  async function handlePhotosUploads(
-    urls: string[],
-    folder: string,
-    public_id: string[]
-  ) {
-    const payload = {
-      photos: files.map((item, index) => ({
-        link: urls[index],
-        size: item.size,
-        public_id: public_id[index],
-        folder,
-      })),
-    };
-
-    await uploadPhotos(payload);
-    setFiles([]);
-    if (fileInput.current) fileInput.current.value = "";
-    return;
-  }
-
-  async function UploadToCloudinary() {
-    const presetKey = "photoverse_test";
-    const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
-    const url = [];
-    const public_id = [];
-
-    for (let index = files.length - 1; index > -1; index--) {
-      const formData = new FormData();
-      formData.append("file", files[index]);
-
-      formData.append("upload_preset", presetKey);
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudname}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await response.json();
-      url.push(data.secure_url);
-      public_id.push(data.public_id);
+  async function handleFolderCreation() {
+    if (files.length === 0) {
+      toast.error("Please select files to upload");
+      return;
     }
 
-    return { url, public_id };
-  }
+    try {
+      const formData = new FormData();
 
-  async function CreateFolder() {
-    const response = await createNewFolder({ name: foldername });
-    if ("data" in response) {
-      try {
-        const id = response.data.name;
-        setLoading(true);
-        const { url, public_id } = await UploadToCloudinary();
-        await handlePhotosUploads(url, id, public_id);
-        setFoldername("");
+      files.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      formData.append("name", folderName);
+
+      const response = await createNewFolder(formData);
+
+      if ("data" in response) {
         setFiles([]);
+        setFolderName("");
         setModalStatus("");
-        toast.success("folder created successfully");
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
+        toast.success(response.data?.message);
+      } else if ("error" in response) {
+        const error = response.error as {
+          status?: number | string;
+          data?: { error: string };
+        };
+
+        const message =
+          error?.data?.error ||
+          (error?.status === "FETCH_ERROR"
+            ? "Network error. Please check your connection."
+            : "An unexpected error occurred.");
+
+        toast.error(message);
       }
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
-
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -118,14 +73,14 @@ const CreateFolder = ({
       {modalStatus === "foldername" && (
         <CreateFolderModal
           setModalStatus={setModalStatus}
-          value={foldername}
-          setValue={setFoldername}
+          value={folderName}
+          setValue={setFolderName}
         />
       )}
       {modalStatus === "select" && (
         <AddPhotoModal
           setModalStatus={setModalStatus}
-          folderName={foldername}
+          folderName={folderName}
           handleUpload={handleUpload}
         />
       )}
@@ -133,12 +88,12 @@ const CreateFolder = ({
       {modalStatus === "preview" && (
         <ImagePreviewModal
           setModalStatus={setModalStatus}
-          isLoading={loading}
-          folderName={foldername}
+          isLoading={isCreatingFolder}
+          folderName={folderName}
           setSelectedImages={setFiles}
           selectedImages={files}
           handleUpload={handleUpload}
-          createFolder={CreateFolder}
+          createFolder={handleFolderCreation}
         />
       )}
       <input
