@@ -14,10 +14,12 @@ export const handleFileChange = (
     toast.error("Only ten files allowed at a time");
   }
 
-  const invalidFiles = selectedFiles.filter((file) => file.size > 500 * 1024);
+  const invalidFiles = selectedFiles.filter(
+    (file) => file.size > 5 * 1024 * 1024,
+  );
 
   if (invalidFiles.length > 0) {
-    toast.error("Some file exceed 500KB limit");
+    toast.error("Some file exceed 5MB limit");
     return;
   }
   const invalidTypes = selectedFiles.filter(
