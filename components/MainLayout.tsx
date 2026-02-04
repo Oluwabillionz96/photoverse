@@ -32,6 +32,12 @@ import MobileDebugPanel from "./mobile-debuggin-panel";
 // import toast from "react-hot-toast";
 // import toast from "react-hot-toast";
 
+export interface DebugLog {
+  timestamp: string;
+  message: string;
+  type: "info" | "success" | "error" | "warning";
+}
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
     typeof window !== "undefined"
@@ -46,6 +52,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
+  const [logs, setLogs] = useState<DebugLog[]>([]);
+  const addLog = (message: string, type: DebugLog["type"] = "info") => {
+    const timestamp = new Date().toLocaleTimeString();
+    setLogs((prev) => [...prev, { timestamp, message, type }].slice(-10)); // Keep last 10 logs
+  };
   const initialize = async () => {
     console.log("🔍 [Initialize] Starting...");
     console.log("🔍 [Initialize] user.isAuthenticated:", user.isAuthenticated);
@@ -218,7 +229,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           )}
 
           {typeof window !== "undefined" &&
-            /mobile/i.test(navigator.userAgent) && <MobileDebugPanel />}
+            /mobile/i.test(navigator.userAgent) && (
+              <MobileDebugPanel addLog={addLog} logs={logs} />
+            )}
         </>
       )}
     </>

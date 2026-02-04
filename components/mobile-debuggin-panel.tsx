@@ -3,22 +3,16 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
+import { DebugLog } from "./MainLayout";
 
-interface DebugLog {
-  timestamp: string;
-  message: string;
-  type: "info" | "success" | "error" | "warning";
-}
-
-const MobileDebugPanel = () => {
-  const [logs, setLogs] = useState<DebugLog[]>([]);
+const MobileDebugPanel = ({ addLog, logs }: { addLog: (message: string, type: DebugLog["type"],) => void;logs:DebugLog[] }, ) => {
   const [isOpen, setIsOpen] = useState(true);
   const { user } = useSelector((state: Rootstate) => state.auth);
 
-  const addLog = (message: string, type: DebugLog["type"] = "info") => {
-    const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev, { timestamp, message, type }].slice(-10)); // Keep last 10 logs
-  };
+  //   const addLog = (message: string, type: DebugLog["type"] = "info") => {
+  //     const timestamp = new Date().toLocaleTimeString();
+  //     setLogs((prev) => [...prev, { timestamp, message, type }].slice(-10)); // Keep last 10 logs
+  //   };
 
   useEffect(() => {
     // Log initial state
