@@ -27,8 +27,8 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
-import { AxiosError } from "axios";
-import toast from "react-hot-toast";
+// import { AxiosError } from "axios";
+// import toast from "react-hot-toast";
 // import toast from "react-hot-toast";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -51,22 +51,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       user.isAuthenticated ||
       pathname.startsWith("/auth") ||
       pathname.startsWith("/api")
-    )
+    ) {
       return;
-    
+    }
+
     // Check if we have a CSRF token (indicates previous authentication)
     const csrfToken = localStorage.getItem("csrfToken");
     if (!csrfToken && pathname !== "/") {
       // No token and not on home page - redirect to login
       router.push("/auth/login");
       return;
+      // console.log("No CSRF token");
     }
-    
+
     try {
       dispatch(updateLoading(true));
-
       const response = await authApi.getUser();
-
       if (response.isAuthenticated) {
         dispatch(
           updateUser({
@@ -75,21 +75,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        // User not authenticated and not on home page
+        console.log("User is not authenticated");
+        //     // User not authenticated and not on home page
         router.push("/auth/login");
       }
-      return;
+      //   return;
     } catch (error) {
       console.log(error);
       if (pathname === "/") {
         return;
       }
-      const errorMessage =
-        error instanceof AxiosError
-          ? error.response?.data?.error || error.message
-          : "An unexpected error occurred.";
-      toast.error(errorMessage);
-      router.push("/auth/main-layout");
+      //   const errorMessage =
+      //     error instanceof AxiosError
+      //       ? error.response?.data?.error || error.message
+      //       : "An unexpected error occurred.";
+      //   toast.error(errorMessage);
+      router.push("/auth/login");
       return;
     } finally {
       dispatch(updateLoading(false));
