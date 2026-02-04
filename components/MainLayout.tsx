@@ -27,6 +27,7 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
+import MobileDebugPanel from "./mobile-debuggin-panel";
 // import { AxiosError } from "axios";
 // import toast from "react-hot-toast";
 // import toast from "react-hot-toast";
@@ -47,17 +48,26 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const initialize = async () => {
+    console.log("🔍 [Initialize] Starting...");
     if (
       user.isAuthenticated ||
       pathname.startsWith("/auth") ||
       pathname.startsWith("/api")
     ) {
+      console.log(
+        "🔍 [Initialize] Skipping - already authenticated or on auth page",
+      );
       return;
     }
 
     // Check if we have a CSRF token (indicates previous authentication)
     const csrfToken = localStorage.getItem("csrfToken");
+    console.log(
+      "🔍 [Initialize] CSRF token:",
+      csrfToken ? "EXISTS" : "MISSING",
+    );
     if (!csrfToken && pathname !== "/") {
+      console.log("🔍 [Initialize] No CSRF token - redirecting to login");
       // No token and not on home page - redirect to login
       router.push("/auth/login");
       return;
@@ -66,8 +76,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
     try {
       dispatch(updateLoading(true));
+      console.log("🔍 [Initialize] Calling authApi.getUser()...");
       const response = await authApi.getUser();
+      console.log("🔍 [Initialize] Response:", response);
       if (response.isAuthenticated) {
+        console.log("🔍 [Initialize] User IS authenticated ✓");
         dispatch(
           updateUser({
             email: response.email,
@@ -75,13 +88,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        console.log("User is not authenticated");
+        console.log("🔍 [Initialize] User NOT authenticated - redirecting");
         //     // User not authenticated and not on home page
         router.push("/auth/login");
       }
       //   return;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      console.log("🔍 [Initialize] ERROR:", error);
       if (pathname === "/") {
         return;
       }
@@ -187,6 +201,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </ModalContext>
             </main>
           )}
+
+          {typeof window !== "undefined" &&
+            /mobile/i.test(navigator.userAgent) && <MobileDebugPanel />}
         </>
       )}
     </>
