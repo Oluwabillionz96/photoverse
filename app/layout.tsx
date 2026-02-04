@@ -25,8 +25,6 @@ export const metadata: Metadata = {
     shortcut: "/photoverse.ico",
     apple: "/photoverse.ico",
   },
-  themeColor: "#1a1b2e", // Dark theme color for mobile browsers
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
@@ -35,15 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <head>
-        <meta name="theme-color" content="#1a1b2e" />
-        <meta name="msapplication-navbutton-color" content="#1a1b2e" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
-      </head>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} overflow-scroll`}
         suppressHydrationWarning={true}
@@ -61,34 +51,31 @@ export default function RootLayout({
             toastOptions={{
               success: {
                 style: {
-                  backgroundColor: "oklch(0.19 0.04 240)",
-                  border: "1px solid oklch(0.68 0.22 180)",
-                  color: "oklch(0.95 0.01 240)",
+                  backgroundColor: "#064e3b",
+                  border: "1px solid #10b981",
+                  color: "#d1fae5",
                   padding: "16px",
                   fontSize: "14px",
                   zIndex: 99999999999,
-                  backdropFilter: "blur(20px)",
                 },
               },
               error: {
                 style: {
-                  backgroundColor: "oklch(0.19 0.04 240)",
-                  border: "1px solid oklch(0.65 0.25 15)",
-                  color: "oklch(0.95 0.01 240)",
+                  backgroundColor: "#7f1d1d",
+                  border: "1px solid #ef4444",
+                  color: "#fee2e2",
                   padding: "16px",
                   fontSize: "14px",
                   zIndex: 99999999999,
-                  backdropFilter: "blur(20px)",
                 },
               },
               style: {
-                backgroundColor: "oklch(0.19 0.04 240)",
-                border: "1px solid oklch(0.72 0.28 240)",
-                color: "oklch(0.95 0.01 240)",
+                backgroundColor: "#1e3a8a",
+                border: "1px solid #3b82f6",
+                color: "#dbeafe",
                 padding: "16px",
                 fontSize: "14px",
                 zIndex: 99999999999,
-                backdropFilter: "blur(20px)",
               },
             }}
           />
