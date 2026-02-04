@@ -90,7 +90,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     }
 
     month[uploadDate].push(item);
-    console.log({ month });
   });
 
   return (

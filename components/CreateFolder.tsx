@@ -62,7 +62,6 @@ const CreateFolder = ({
 
         toast.error(message);
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

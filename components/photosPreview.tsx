@@ -35,7 +35,6 @@ const PhotosPreview = ({
   ref: RefObject<HTMLInputElement | null>;
   folder?: string;
 }) => {
-  // const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
   const [isLoading, setIsLoading] = useState(false);
 
   const [preview, setPreview] = useState<string[]>([]);
@@ -50,6 +49,10 @@ const PhotosPreview = ({
   }, [files]);
 
   function handleDone() {
+    if (isError) {
+      setProgress(0);
+      return;
+    }
     setProgress(0);
     setFiles([]);
     dispatch(PhotoverseAPI.util.invalidateTags(["photos", "folders"]));
@@ -59,6 +62,9 @@ const PhotosPreview = ({
   files.forEach((file) => {
     size += file.size;
   });
+
+  const [isError, setIsError] = useState(false);
+
   return (
     <div className="relative">
       <div>
@@ -100,9 +106,9 @@ const PhotosPreview = ({
               handlePhotosUploads(
                 files,
                 folder,
-                setFiles,
                 setIsLoading,
                 setProgress,
+                setIsError,
               );
             }}
           >
@@ -164,9 +170,9 @@ const PhotosPreview = ({
               handlePhotosUploads(
                 files,
                 folder,
-                setFiles,
                 setIsLoading,
                 setProgress,
+                setIsError,
               );
             }}
           >
@@ -182,6 +188,7 @@ const PhotosPreview = ({
           progress={progress}
           handleDone={handleDone}
           isLoading={isLoading}
+          isError={isError}
         />
       )}
     </div>

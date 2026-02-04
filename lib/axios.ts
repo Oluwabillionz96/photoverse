@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
   (res) => {
     const data = res.data;
     if (data.csrfToken) {
-      sessionStorage.setItem("csrfToken", data.csrfToken);
+      localStorage.setItem("csrfToken", data.csrfToken);
     }
     return res;
   },
