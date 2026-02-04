@@ -12,7 +12,7 @@ function reRoute() {
   if (window.location.pathname === "/") {
     return;
   } else {
-    window.location.href = "/auth/login";
+    window.location.href = "/mmdhu";
   }
 }
 
