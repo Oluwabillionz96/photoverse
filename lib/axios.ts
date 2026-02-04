@@ -12,7 +12,7 @@ function reRoute() {
   if (window.location.pathname === "/") {
     return;
   } else {
-    window.location.href = "/mmdhu";
+    window.location.href = "/axios-cause";
   }
 }
 

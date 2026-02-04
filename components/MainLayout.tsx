@@ -76,7 +76,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           ? error.response?.data?.error || error.message
           : "An unexpected error occurred.";
       toast.error(errorMessage);
-      router.push("/auth/login");
+      router.push("/main-layout");
       return;
     } finally {
       dispatch(updateLoading(false));
