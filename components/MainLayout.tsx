@@ -46,41 +46,52 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
-
   const initialize = async () => {
     console.log("🔍 [Initialize] Starting...");
-    if (
-      user.isAuthenticated ||
-      pathname.startsWith("/auth") ||
-      pathname.startsWith("/api")
-    ) {
+    console.log("🔍 [Initialize] user.isAuthenticated:", user.isAuthenticated);
+    console.log("🔍 [Initialize] pathname:", pathname);
+
+    // IMPORTANT: Skip initialize if user is already authenticated
+    if (user.isAuthenticated) {
       console.log(
-        "🔍 [Initialize] Skipping - already authenticated or on auth page",
+        "🔍 [Initialize] User already authenticated in store - skipping",
       );
+      return;
+    }
+
+    if (pathname.startsWith("/auth") || pathname.startsWith("/api")) {
+      console.log("🔍 [Initialize] On auth/api page - skipping");
       return;
     }
 
     // Check if we have a CSRF token (indicates previous authentication)
     const csrfToken = localStorage.getItem("csrfToken");
-    console.log(
-      "🔍 [Initialize] CSRF token:",
-      csrfToken ? "EXISTS" : "MISSING",
-    );
+    console.log("🔍 [Initialize] CSRF token exists:", !!csrfToken);
+
     if (!csrfToken && pathname !== "/") {
-      console.log("🔍 [Initialize] No CSRF token - redirecting to login");
-      // No token and not on home page - redirect to login
-      router.push("/auth/login");
+      console.log(
+        "🔍 [Initialize] No CSRF token - redirecting to mainlayout-cause",
+      );
+      router.push("/auth/mainlayout-cause?reason=no-csrf");
       return;
-      // console.log("No CSRF token");
     }
 
     try {
       dispatch(updateLoading(true));
       console.log("🔍 [Initialize] Calling authApi.getUser()...");
+
       const response = await authApi.getUser();
-      console.log("🔍 [Initialize] Response:", response);
+      console.log(
+        "🔍 [Initialize] Response received:",
+        JSON.stringify(response),
+      );
+      console.log(
+        "🔍 [Initialize] response.isAuthenticated:",
+        response.isAuthenticated,
+      );
+
       if (response.isAuthenticated) {
-        console.log("🔍 [Initialize] User IS authenticated ✓");
+        console.log("🔍 [Initialize] User IS authenticated - updating store");
         dispatch(
           updateUser({
             email: response.email,
@@ -88,23 +99,27 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        console.log("🔍 [Initialize] User NOT authenticated - redirecting");
-        //     // User not authenticated and not on home page
-        router.push("/auth/login");
+        console.log(
+          "🔍 [Initialize] User NOT authenticated - redirecting to mainlayout-cause",
+        );
+        router.push("/auth/mainlayout-cause?reason=not-authenticated");
       }
-      //   return;
     } catch (error) {
-      // console.log(error);
-      console.log("🔍 [Initialize] ERROR:", error);
+      console.log("🔍 [Initialize] ERROR caught:", error);
+      console.log(
+        "🔍 [Initialize] Error details:",
+        JSON.stringify(error, null, 2),
+      );
+
       if (pathname === "/") {
+        console.log("🔍 [Initialize] On home page - not redirecting");
         return;
       }
-      //   const errorMessage =
-      //     error instanceof AxiosError
-      //       ? error.response?.data?.error || error.message
-      //       : "An unexpected error occurred.";
-      //   toast.error(errorMessage);
-      router.push("/auth/login");
+
+      console.log(
+        "🔍 [Initialize] Error on protected route - redirecting to mainlayout-cause",
+      );
+      router.push("/auth/mainlayout-cause?reason=error");
       return;
     } finally {
       dispatch(updateLoading(false));
