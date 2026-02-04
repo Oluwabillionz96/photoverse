@@ -55,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [logs, setLogs] = useState<DebugLog[]>([]);
   const addLog = (message: string, type: DebugLog["type"] = "info") => {
     const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev, { timestamp, message, type }].slice(-10)); // Keep last 10 logs
+    setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
   };
   const initialize = async () => {
     addLog("🔍 [Initialize] Starting...");
