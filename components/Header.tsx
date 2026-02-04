@@ -1,76 +1,114 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoMenu } from "react-icons/io5";
 import AuthenticationMenu from "./AuthenticationMenu";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
+import Logo from "./Logo";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const { user } = useSelector((state: Rootstate) => state.auth);
+
+  // Intersection Observer to track active section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: "-20% 0px -20% 0px",
+      }
+    );
+
+    // Observe sections
+    const heroSection = document.querySelector('section:first-of-type');
+    const featuresSection = document.getElementById('features');
+    const freeSection = document.getElementById('free');
+
+    if (heroSection) {
+      heroSection.id = 'hero';
+      observer.observe(heroSection);
+    }
+    if (featuresSection) observer.observe(featuresSection);
+    if (freeSection) observer.observe(freeSection);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const navItems = [
+    { id: 'features', label: 'Features' },
+    { id: 'free', label: '100% Free' }
+  ];
 
   return (
     <>
-      {" "}
-      <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="border-b border-border/20 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="bg-black rounded-full">
-                <Image
-                  src="/photoverse-logo.png"
-                  width={50}
-                  height={50}
-                  alt="Photoverse Logo"
-                />
-              </div>
-              <span className="text-xl font-bold text-foreground">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <Logo
+                className="text-primary group-hover:text-accent transition-colors duration-300"
+                size="md"
+              />
+              <span className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
                 Photoverse
               </span>
-            </div>
+            </Link>
 
             <nav className="hidden md:flex items-center space-x-8">
-              <a
-                href="#features"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#free"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                100% Free
-              </a>
-              <a
-                href="#about"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                About
-              </a>
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })}
+                  className={`relative text-sm font-medium transition-colors duration-300 ${
+                    activeSection === item.id
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-primary'
+                  }`}
+                >
+                  {item.label}
+                  {/* Active indicator */}
+                  {activeSection === item.id && (
+                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+                  )}
+                </button>
+              ))}
             </nav>
 
             <div className="md:flex items-center space-x-4 hidden">
               <Link href={user.isAuthenticated ? "/folders" : "/auth/login"}>
-                <Button variant="ghost" size="sm">
-                  {user.isAuthenticated ? "folders" : "Login"}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hover:text-primary hover:bg-primary/10"
+                >
+                  {user.isAuthenticated ? "Folders" : "Login"}
                 </Button>
               </Link>
               <Link href={user.isAuthenticated ? "/photos" : "/auth/register"}>
                 <Button
                   size="sm"
-                  className="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer"
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 hover:cursor-pointer"
                 >
                   {user.isAuthenticated ? "Photos" : "Sign Up Free"}
                 </Button>
               </Link>
             </div>
-            <div className="block md:hidden" onClick={() => setShowMenu(true)}>
+            <div
+              className="block md:hidden text-primary"
+              onClick={() => setShowMenu(true)}
+            >
               <IoMenu size={32} />
             </div>
           </div>
