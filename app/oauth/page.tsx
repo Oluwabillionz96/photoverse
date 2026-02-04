@@ -9,7 +9,7 @@ const OauthPage = () => {
   const csrfToken = searchParams.get("csrfToken");
 
   if (csrfToken) {
-    sessionStorage.setItem("csrfToken", csrfToken);
+    localStorage.setItem("csrfToken", csrfToken);
   }
 
   router.push("/folders");

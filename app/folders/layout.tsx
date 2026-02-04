@@ -9,15 +9,15 @@ const Layout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [foldername, setFoldername] = useState("");
+  const [folderName, setFolderName] = useState("");
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
   return (
     <>
       <TabLayouts />
       {modalStatus !== "" ? (
         <CreateFolder
-          foldername={foldername}
-          setFoldername={setFoldername}
+          folderName={folderName}
+          setFolderName={setFolderName}
           modalStatus={modalStatus}
           setModalStatus={setModalStatus}
         />

@@ -114,14 +114,6 @@ export const PhotoverseAPI = createApi({
       query: ({ page }) => `folders?limit=12&page=${page}`,
       providesTags: ["folders"],
     }),
-    uploadPhotos: builder.mutation({
-      query: (formData) => ({
-        url: "photos/add",
-        method: "POST",
-        body: formData,
-      }),
-      invalidatesTags: ["photos", "folders"],
-    }),
     getFolderPhotos: builder.query<GetPhotoResponse, { foldername: string }>({
       query: ({ foldername }) => `photos/${foldername}`,
       providesTags: ["photos"],
@@ -166,7 +158,6 @@ export const {
   useVerifyForgotPasswordOTPMutation,
   useContinueToAccountMutation,
   useResetPasswordMutation,
-  useUploadPhotosMutation,
   useResendOTPMutation,
   useGetPhotosQuery,
   useCreateFolderMutation,

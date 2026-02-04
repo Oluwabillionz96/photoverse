@@ -8,6 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 export function getCsrfToken() {
   if (typeof document === "undefined") return null; // SSR safety
 
-  const token = sessionStorage.getItem("csrfToken");
+  const token = localStorage.getItem("csrfToken");
   return token ? token : null;
 }

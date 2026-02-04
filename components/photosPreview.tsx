@@ -3,9 +3,14 @@ import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useUploadPhotosMutation } from "@/services/api";
+// import { useUploadPhotosMutation } from "@/services/api";
 import Image from "next/image";
 import Spinner from "./loaders/Spinner";
+// import toast from "react-hot-toast";
+import ProgressTracker from "./progress-tracker";
+import { handlePhotosUploads } from "@/lib/utils/handlePhotoUpload";
+import { useDispatch } from "react-redux";
+import { PhotoverseAPI } from "@/services/api";
 
 export function formatFileSize(bytes: number) {
   if (bytes === 0) return "0 bytes";
@@ -30,55 +35,11 @@ const PhotosPreview = ({
   ref: RefObject<HTMLInputElement | null>;
   folder?: string;
 }) => {
-  const [uploadPhotos, { isLoading }] = useUploadPhotosMutation();
-  const [loading, setLoading] = useState(false);
-
-  async function handlePhotosUploads(urls: string[], public_id: string[]) {
-    const payload = {
-      photos: files.map((item, index) => ({
-        link: urls[index],
-        size: item.size,
-        public_id: public_id[index],
-        folder,
-      })),
-    };
-
-    await uploadPhotos(payload);
-    setFiles([]);
-    if (ref.current) ref.current.value = "";
-    setLoading(false);
-    return;
-  }
-
-  async function UploadToCloudinary() {
-    const presetKey = "photoverse_test";
-    const cloudname = process.env.NEXT_PUBLIC_CLOUDNAME;
-    const url = [];
-    const public_ids = [];
-    setLoading(true);
-
-    for (let index = files.length - 1; index > -1; index--) {
-      const formData = new FormData();
-      formData.append("file", files[index]);
-
-      formData.append("upload_preset", presetKey);
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudname}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await response.json();
-      url.push(data.secure_url);
-      public_ids.push(data.public_id);
-    }
-    handlePhotosUploads(url, public_ids);
-  }
+  const [isLoading, setIsLoading] = useState(false);
 
   const [preview, setPreview] = useState<string[]>([]);
+  const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const urls = files.map((item) => URL.createObjectURL(item));
@@ -87,12 +48,25 @@ const PhotosPreview = ({
     return () => urls.forEach((item) => URL.revokeObjectURL(item));
   }, [files]);
 
+  function handleDone() {
+    if (isError) {
+      setProgress(0);
+      return;
+    }
+    setProgress(0);
+    setFiles([]);
+    dispatch(PhotoverseAPI.util.invalidateTags(["photos", "folders"]));
+  }
+
   let size = 0;
   files.forEach((file) => {
     size += file.size;
   });
+
+  const [isError, setIsError] = useState(false);
+
   return (
-    <>
+    <div className="relative">
       <div>
         <h2 className="md:text-xl text-2xl font-bold text-gray-900">
           Ready to Upload
@@ -110,7 +84,7 @@ const PhotosPreview = ({
               setFiles([]);
               if (ref.current) ref.current.value = "";
             }}
-            disabled={loading || isLoading}
+            disabled={isLoading}
           >
             <TrashIcon className="w-4 h-4" />
             <span className="hidden md:inline">Clear</span>
@@ -120,24 +94,26 @@ const PhotosPreview = ({
             <Button
               onClick={() => ref.current?.click()}
               className="bg-blue-500   hover:bg-blue-600 hover:scale-105 hover:shadow-lg"
-              disabled={isLoading || loading}
+              disabled={isLoading}
             >
               Add more photos
             </Button>
           )}
           <Button
             className="md:flex items-center gap-2 bg-green-500 hidden hover:bg-green-600 transition-all duration-200 hover:scale-105 hover:shadow-lg md:px-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={files.length < 1 || isLoading || loading}
-            onClick={async () => {
-              await UploadToCloudinary();
+            disabled={files.length < 1 || isLoading}
+            onClick={() => {
+              handlePhotosUploads(
+                files,
+                folder,
+                setIsLoading,
+                setProgress,
+                setIsError,
+              );
             }}
           >
-            {isLoading || loading ? (
-              <Spinner />
-            ) : (
-              <UploadIcon className={`w-4 h-4 `} />
-            )}
-            {isLoading || loading ? "Uploading " : "Upload "}file
+            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
+            {isLoading ? "Uploading " : "Upload "}file
             {files.length > 1 && "s"}
           </Button>
         </div>
@@ -177,7 +153,7 @@ const PhotosPreview = ({
                     newFiles.splice(index, 1);
                     setFiles([...newFiles]);
                   }}
-                  disabled={isLoading || loading}
+                  disabled={isLoading}
                   className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
                 >
                   <XIcon className="w-3 h-3 text-white" />
@@ -186,25 +162,36 @@ const PhotosPreview = ({
             ))}
           </AnimatePresence>
         </div>
-        {files.length < 10 && (
+        {files.length <= 10 && (
           <Button
             className="flex items-center gap-2 bg-green-500 md:hidden w-full disabled:opacity-50 my-4"
-            disabled={files.length < 1 || isLoading || loading}
-            onClick={async () => {
-              await UploadToCloudinary();
+            disabled={files.length < 1 || isLoading}
+            onClick={() => {
+              handlePhotosUploads(
+                files,
+                folder,
+                setIsLoading,
+                setProgress,
+                setIsError,
+              );
             }}
           >
-            {isLoading || loading ? (
-              <Spinner />
-            ) : (
-              <UploadIcon className={`w-4 h-4 `} />
-            )}
-            {isLoading || loading ? "Uploading " : "Upload "}file
+            {isLoading ? <Spinner /> : <UploadIcon className={`w-4 h-4 `} />}
+            {isLoading ? "Uploading " : "Upload "}file
             {files.length > 1 && "s"}
           </Button>
         )}
       </div>
-    </>
+
+      {progress > 0 && (
+        <ProgressTracker
+          progress={progress}
+          handleDone={handleDone}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      )}
+    </div>
   );
 };
 
