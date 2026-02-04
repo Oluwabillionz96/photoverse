@@ -50,7 +50,7 @@ const baseQueryWithReauth: BaseQueryFn<
     } else {
       // Refresh failed - redirect to login
       console.log("Token refresh failed, redirecting to login");
-      window.location.href = "/rtk-query";
+      window.location.href = "/auth/login";
     }
   }
 
