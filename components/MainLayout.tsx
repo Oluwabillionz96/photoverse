@@ -58,51 +58,47 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     setLogs((prev) => [...prev, { timestamp, message, type }].slice(-10)); // Keep last 10 logs
   };
   const initialize = async () => {
-    console.log("🔍 [Initialize] Starting...");
-    console.log("🔍 [Initialize] user.isAuthenticated:", user.isAuthenticated);
-    console.log("🔍 [Initialize] pathname:", pathname);
+    addLog("🔍 [Initialize] Starting...");
+    addLog(`🔍 [Initialize] user.isAuthenticated: ${user.isAuthenticated}`);
+    addLog(`🔍 [Initialize] pathname: ${pathname}`);
 
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {
-      console.log(
-        "🔍 [Initialize] User already authenticated in store - skipping",
-      );
+      addLog("🔍 [Initialize] User already authenticated in store - skipping");
       return;
     }
 
     if (pathname.startsWith("/auth") || pathname.startsWith("/api")) {
-      console.log("🔍 [Initialize] On auth/api page - skipping");
+      addLog("🔍 [Initialize] On auth/api page - skipping");
       return;
     }
 
     // Check if we have a CSRF token (indicates previous authentication)
     const csrfToken = localStorage.getItem("csrfToken");
-    console.log("🔍 [Initialize] CSRF token exists:", !!csrfToken);
+    addLog(`🔍 [Initialize] CSRF token exists: ${csrfToken}`);
 
     if (!csrfToken && pathname !== "/") {
-      console.log(
-        "🔍 [Initialize] No CSRF token - redirecting to mainlayout-cause",
-      );
+      addLog("🔍 [Initialize] No CSRF token - redirecting to mainlayout-cause");
       router.push("/auth/mainlayout-cause?reason=no-csrf");
       return;
     }
 
     try {
       dispatch(updateLoading(true));
-      console.log("🔍 [Initialize] Calling authApi.getUser()...");
+      addLog("🔍 [Initialize] Calling authApi.getUser()...");
 
       const response = await authApi.getUser();
-      console.log(
-        "🔍 [Initialize] Response received:",
-        JSON.stringify(response),
+      addLog(
+        `🔍 [Initialize] Response received:
+        ${JSON.stringify(response)}`,
       );
-      console.log(
-        "🔍 [Initialize] response.isAuthenticated:",
-        response.isAuthenticated,
+      addLog(
+        `🔍 [Initialize] response.isAuthenticated:",
+        ${response.isAuthenticated}`,
       );
 
       if (response.isAuthenticated) {
-        console.log("🔍 [Initialize] User IS authenticated - updating store");
+        addLog("🔍 [Initialize] User IS authenticated - updating store");
         dispatch(
           updateUser({
             email: response.email,
@@ -110,24 +106,24 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        console.log(
+        addLog(
           "🔍 [Initialize] User NOT authenticated - redirecting to mainlayout-cause",
         );
         router.push("/auth/mainlayout-cause?reason=not-authenticated");
       }
     } catch (error) {
-      console.log("🔍 [Initialize] ERROR caught:", error);
-      console.log(
-        "🔍 [Initialize] Error details:",
-        JSON.stringify(error, null, 2),
+      // addLog(`🔍 [Initialize] ERROR caught: ${error}`);
+      addLog(
+        `🔍 [Initialize] Error details:",
+        ${JSON.stringify(error, null, 2)}`,
       );
 
       if (pathname === "/") {
-        console.log("🔍 [Initialize] On home page - not redirecting");
+        addLog("🔍 [Initialize] On home page - not redirecting");
         return;
       }
 
-      console.log(
+      addLog(
         "🔍 [Initialize] Error on protected route - redirecting to mainlayout-cause",
       );
       router.push("/auth/mainlayout-cause?reason=error");
