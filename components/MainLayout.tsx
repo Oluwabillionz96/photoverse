@@ -28,7 +28,7 @@ import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
 import { AxiosError } from "axios";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -52,6 +52,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       pathname.startsWith("/api")
     )
       return;
+    
+    // Check if we have a CSRF token (indicates previous authentication)
+    const csrfToken = localStorage.getItem("csrfToken");
+    if (!csrfToken && pathname !== "/") {
+      // No token and not on home page - redirect to login
+      router.push("/auth/login");
+      return;
+    }
+    
     try {
       dispatch(updateLoading(true));
 
@@ -64,6 +73,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             isAuthenticated: response.isAuthenticated,
           }),
         );
+      } else if (pathname !== "/") {
+        // User not authenticated and not on home page
+        router.push("/auth/login");
       }
       return;
     } catch (error) {
@@ -71,12 +83,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       if (pathname === "/") {
         return;
       }
-      const errorMessage =
-        error instanceof AxiosError
-          ? error.response?.data?.error || error.message
-          : "An unexpected error occurred.";
-      toast.error(errorMessage);
-      router.push("/auth/main-layout");
+      // Only redirect on specific auth errors, not network errors
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        router.push("/auth/login");
+      } else {
+        // For network errors, retry after a delay instead of redirecting
+        setTimeout(() => initialize(), 2000);
+      }
       return;
     } finally {
       dispatch(updateLoading(false));
