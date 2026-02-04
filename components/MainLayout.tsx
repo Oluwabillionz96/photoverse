@@ -27,6 +27,8 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const isCollapsed =
@@ -69,6 +71,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       if (pathname === "/") {
         return;
       }
+      const errorMessage =
+        error instanceof AxiosError
+          ? error.response?.data?.error || error.message
+          : "An unexpected error occurred.";
+      toast.error(errorMessage);
       router.push("/auth/login");
       return;
     } finally {
