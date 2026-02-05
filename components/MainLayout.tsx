@@ -68,7 +68,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const csrfToken = localStorage.getItem("csrfToken");
 
     if (!csrfToken && pathname !== "/") {
-      router.push("/auth/mainlayout-cause?reason=no-csrf");
+      router.push("/auth/login");
       return;
     }
 
@@ -85,7 +85,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        router.push("/auth/mainlayout-cause?reason=not-authenticated");
+        router.push("/auth/login");
       }
     } catch (error) {
       console.log(error);
@@ -94,7 +94,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      router.push("/auth/mainlayout-cause?reason=error");
+      router.push("/auth/login");
       return;
     } finally {
       dispatch(updateLoading(false));

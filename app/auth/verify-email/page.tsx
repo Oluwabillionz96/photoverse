@@ -35,7 +35,7 @@ export default function VerifyEmailPage() {
   };
 
   if (!email.trim()) {
-    router.push("/auth/verirfifi");
+    router.push("/auth/login");
   }
 
   return (
