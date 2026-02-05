@@ -1,4 +1,4 @@
-import baseUrl from "@/baseUrl";
+// import baseUrl from "@/baseUrl";
 import { GetFolderResponse, GetPhotoResponse, Photo } from "@/lib/apiTypes";
 import { getCsrfToken } from "@/lib/utils";
 
@@ -11,7 +11,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl,
+  baseUrl: "/api/v1",
   credentials: "include",
   prepareHeaders: (headers) => {
     const csrfToken = getCsrfToken();
