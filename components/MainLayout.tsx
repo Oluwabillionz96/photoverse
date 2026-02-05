@@ -27,10 +27,7 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
-import MobileDebugPanel from "./mobile-debuggin-panel";
-// import { AxiosError } from "axios";
-// import toast from "react-hot-toast";
-// import toast from "react-hot-toast";
+// import MobileDebugPanel from "./mobile-debuggin-panel";
 
 export interface DebugLog {
   timestamp: string;
@@ -52,53 +49,35 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
-  const [logs, setLogs] = useState<DebugLog[]>([]);
-  const addLog = (message: string, type: DebugLog["type"] = "info") => {
-    const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
-  };
+  // const [logs, setLogs] = useState<DebugLog[]>([]);
+  // const addLog = (message: string, type: DebugLog["type"] = "info") => {
+  //   const timestamp = new Date().toLocaleTimeString();
+  //   setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
+  // };
   const initialize = async () => {
-    addLog("🔍 [Initialize] Starting...");
-    addLog(`🔍 [Initialize] user.isAuthenticated: ${user.isAuthenticated}`);
-    addLog(`🔍 [Initialize] pathname: ${pathname}`);
-
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {
-      addLog("🔍 [Initialize] User already authenticated in store - skipping");
       return;
     }
 
     if (pathname.startsWith("/auth") || pathname.startsWith("/api")) {
-      addLog("🔍 [Initialize] On auth/api page - skipping");
       return;
     }
 
     // Check if we have a CSRF token (indicates previous authentication)
     const csrfToken = localStorage.getItem("csrfToken");
-    addLog(`🔍 [Initialize] CSRF token exists: ${csrfToken}`);
 
     if (!csrfToken && pathname !== "/") {
-      addLog("🔍 [Initialize] No CSRF token - redirecting to mainlayout-cause");
       router.push("/auth/mainlayout-cause?reason=no-csrf");
       return;
     }
 
     try {
       dispatch(updateLoading(true));
-      addLog("🔍 [Initialize] Calling authApi.getUser()...");
 
       const response = await authApi.getUser();
-      addLog(
-        `🔍 [Initialize] Response received:
-        ${JSON.stringify(response)}`,
-      );
-      addLog(
-        `🔍 [Initialize] response.isAuthenticated:",
-        ${response.isAuthenticated}`,
-      );
 
       if (response.isAuthenticated) {
-        addLog("🔍 [Initialize] User IS authenticated - updating store");
         dispatch(
           updateUser({
             email: response.email,
@@ -106,26 +85,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           }),
         );
       } else if (pathname !== "/") {
-        addLog(
-          "🔍 [Initialize] User NOT authenticated - redirecting to mainlayout-cause",
-        );
         router.push("/auth/mainlayout-cause?reason=not-authenticated");
       }
     } catch (error) {
-      // addLog(`🔍 [Initialize] ERROR caught: ${error}`);
-      addLog(
-        `🔍 [Initialize] Error details:",
-        ${JSON.stringify(error, null, 2)}`,
-      );
+      console.log(error);
 
       if (pathname === "/") {
-        addLog("🔍 [Initialize] On home page - not redirecting");
         return;
       }
 
-      addLog(
-        "🔍 [Initialize] Error on protected route - redirecting to mainlayout-cause",
-      );
       router.push("/auth/mainlayout-cause?reason=error");
       return;
     } finally {
@@ -224,10 +192,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </main>
           )}
 
-          {typeof window !== "undefined" &&
+          {/* {typeof window !== "undefined" &&
             /mobile/i.test(navigator.userAgent) && (
               <MobileDebugPanel addLog={addLog} logs={logs} />
-            )}
+            )} */}
         </>
       )}
     </>

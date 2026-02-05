@@ -1,9 +1,9 @@
-import baseUrl from "@/baseUrl";
+// import baseUrl from "@/baseUrl";
 import axios from "axios";
 import { getCsrfToken } from "./utils";
 
 const axiosInstance = axios.create({
-  baseURL: baseUrl,
+  baseURL: "/api/v1",
   withCredentials: true,
   timeout: 10000,
 });

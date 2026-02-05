@@ -5,7 +5,13 @@ import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import { DebugLog } from "./MainLayout";
 
-const MobileDebugPanel = ({ addLog, logs }: { addLog: (message: string, type: DebugLog["type"],) => void;logs:DebugLog[] }, ) => {
+const MobileDebugPanel = ({
+  addLog,
+  logs,
+}: {
+  addLog: (message: string, type: DebugLog["type"]) => void;
+  logs: DebugLog[];
+}) => {
   const [isOpen, setIsOpen] = useState(true);
   const { user } = useSelector((state: Rootstate) => state.auth);
 
