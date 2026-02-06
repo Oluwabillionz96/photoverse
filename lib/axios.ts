@@ -38,17 +38,6 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (res) => {
-    const data = res.data;
-    if (data.csrfToken) {
-      localStorage.setItem("csrfToken", data.csrfToken);
-    }
-    return res;
-  },
-  (error) => Promise.reject(error),
-);
-
-axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (
@@ -66,7 +55,7 @@ axiosInstance.interceptors.response.use(
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
-    console.log({ error });
+    // console.log({ error });
     const originalRequest = error.config;
 
     if (!originalRequest) {
