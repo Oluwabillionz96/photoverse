@@ -27,6 +27,7 @@ import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
+import { getCsrfToken } from "@/lib/utils";
 // import MobileDebugPanel from "./mobile-debuggin-panel";
 
 export interface DebugLog {
@@ -65,7 +66,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Check if we have a CSRF token (indicates previous authentication)
-    const csrfToken = localStorage.getItem("csrfToken");
+    const csrfToken = getCsrfToken();
 
     if (!csrfToken && pathname !== "/") {
       router.push("/auth/login");

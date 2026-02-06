@@ -37,16 +37,16 @@ axiosInstance.interceptors.request.use(
   },
 );
 
-axiosInstance.interceptors.response.use(
-  (res) => {
-    const data = res.data;
-    if (data.csrfToken) {
-      localStorage.setItem("csrfToken", data.csrfToken);
-    }
-    return res;
-  },
-  (error) => Promise.reject(error),
-);
+// axiosInstance.interceptors.response.use(
+//   (res) => {
+//     const data = res.data;
+//     if (data.csrfToken) {
+//       localStorage.setItem("csrfToken", data.csrfToken);
+//     }
+//     return res;
+//   },
+//   (error) => Promise.reject(error),
+// );
 
 axiosInstance.interceptors.response.use(
   (response) => response,
