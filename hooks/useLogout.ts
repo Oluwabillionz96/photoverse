@@ -16,7 +16,6 @@ const useLogout = () => {
       const response = await authApi.logout();
       if (response.message) {
         toast.success(response.message);
-        // localStorage.removeItem("csrfToken");
         dispatch(updateUser({ email: "", isAuthenticated: false }));
         router.push("/");
       }

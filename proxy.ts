@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
     try {
       const headers = await limiter.checkNext(request, 50);
       return NextResponse.next({ headers });
-    } catch (error) {
+    } catch {
       return new NextResponse("Too Many Requests", { status: 429 });
     }
   }
