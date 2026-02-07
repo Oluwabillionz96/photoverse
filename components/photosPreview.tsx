@@ -51,6 +51,7 @@ const PhotosPreview = ({
   function handleDone() {
     if (isError) {
       setProgress(0);
+      setIsError(false);
       return;
     }
     setProgress(0);
