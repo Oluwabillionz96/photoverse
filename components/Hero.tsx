@@ -147,7 +147,7 @@ const HeroSection = () => {
                 up storage on your phone while keeping your memories safe in the
                 cloud.{" "}
                 <span className="text-accent font-semibold">
-                  Completely free, forever.
+                  Completely free.
                 </span>
               </motion.p>
             </motion.div>
@@ -161,7 +161,7 @@ const HeroSection = () => {
               <Link href={"/auth/login"}>
                 <Button
                   size="lg"
-                  className="text-base w-full sm:w-auto bg-primary hover:bg-primary/90 animate-pulse-glow"
+                  className="text-base cursor-pointer w-full sm:w-auto bg-primary hover:bg-primary/90 animate-pulse-glow"
                 >
                   <Icons.Sparkles className="mr-2 h-4 w-4" />
                   Try Now - Free
@@ -172,7 +172,7 @@ const HeroSection = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="text-base bg-transparent w-full sm:w-auto border-primary/30 hover:border-primary/60 hover:bg-primary/5"
+                  className="text-base cursor-pointer bg-transparent w-full sm:w-auto border-primary/30 hover:border-primary/60 hover:bg-primary/5"
                 >
                   <Icons.Image className="w-4 h-4 mr-2" />
                   Upload Photo

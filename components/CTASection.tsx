@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 const CTASection = () => {
+  const { user } = useSelector((state: Rootstate) => state.auth);
   return (
     <section id="free" className="py-20 sm:py-32 relative overflow-hidden">
       {/* Seamless animated background */}
@@ -59,8 +62,8 @@ const CTASection = () => {
             transition={{ delay: 0.4, duration: 0.8 }}
             viewport={{ once: true }}
           >
-            Join thousands of users who have already freed up space on their
-            phones and organized their photo collections with Photoverse.{" "}
+            Join users who have already freed up space on their phones and
+            organized their photo collections with Photoverse.{" "}
             <span className="text-accent font-semibold">
               No hidden costs, no subscriptions.
             </span>
@@ -73,23 +76,23 @@ const CTASection = () => {
             transition={{ delay: 0.6, duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Link href={"/auth/register"}>
+            <Link href={user?.isAuthenticated ? "/folders" : "/auth/register"}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-lg px-8 py-6 animate-pulse-glow"
+                  className="bg-gradient-to-r cursor-pointer from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-lg px-8 py-6 animate-pulse-glow"
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
-                  Sign Up Free
+                  {user.isAuthenticated ? "Create a folder" : "Sign Up Free"}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </motion.div>
             </Link>
 
-            <Link href={"/auth/login"}>
+            <Link href={user.isAuthenticated ? "/photos" : "/auth/login"}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -100,7 +103,7 @@ const CTASection = () => {
                   className="text-lg px-8 py-6 bg-transparent border-primary/30 hover:border-primary/60 hover:bg-primary/5"
                 >
                   <Zap className="mr-2 h-5 w-5" />
-                  Try Now
+                  {user.isAuthenticated ? "Upload a photo" : "Try Now"}
                 </Button>
               </motion.div>
             </Link>
@@ -116,7 +119,7 @@ const CTASection = () => {
             {[
               { icon: "✓", text: "No credit card required" },
               { icon: "∞", text: "Unlimited free storage" },
-              { icon: "⚡", text: "Free forever" },
+              { icon: "⚡", text: "Completely free" },
             ].map((item, index) => (
               <motion.div
                 key={index}

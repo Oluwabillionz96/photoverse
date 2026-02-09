@@ -77,7 +77,7 @@ const FeaturesSection = () => {
           </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -131,14 +131,14 @@ const FeaturesSection = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+          {/* <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <motion.div
               className="w-2 h-2 bg-primary rounded-full"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
             <span>Trusted by thousands of users worldwide</span>
-          </div>
+          </div> */}
         </motion.div>
       </div>
     </section>
