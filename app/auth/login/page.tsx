@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import GoogleButton from "@/components/google-button";
 import {
   Field,
@@ -17,17 +16,22 @@ import z from "zod";
 import { LoginData } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "@/components/Input/password-input";
-import { useState } from "react";
+// import { useState } from "react";
 import { authApi } from "@/services/auth";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
 import { AxiosError } from "axios";
-import Image from "next/image";
+import Logo from "@/components/Logo";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
-  const { control, handleSubmit } = useForm<z.infer<typeof LoginData>>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting: loading },
+  } = useForm<z.infer<typeof LoginData>>({
     resolver: zodResolver(LoginData),
     defaultValues: {
       email: "",
@@ -35,16 +39,15 @@ const LoginPage = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
   const onSubmit: SubmitHandler<z.infer<typeof LoginData>> = async (data) => {
-    setLoading(true);
     try {
       const response = await authApi.login(data.email, data.password);
-
       toast.success(response?.message);
+
       if (response?.requiresVerification === true) {
         router.push("/auth/verify-email");
         dispatch(updateEmail(data.email));
@@ -54,150 +57,292 @@ const LoginPage = () => {
     } catch (error) {
       const errorMessage =
         error instanceof AxiosError
-          ? error.response?.data?.error || error.message
+          ? error.response?.data?.error ||
+            error?.response?.data ||
+            error?.message
           : "An unexpected error occurred.";
-
       toast.error(errorMessage || "An unexpected error occurred.");
       console.error("Error in login:", error);
-    } finally {
-      setLoading(loading);
     }
   };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4 relative">
+    <div className="min-h-screen flex relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-background">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        {Array.from({ length: 3 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-primary/5"
+            style={{
+              width: `${300 + i * 100}px`,
+              height: `${300 + i * 100}px`,
+              left: `${20 + i * 30}%`,
+              top: `${10 + i * 20}%`,
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 8 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
       {/* Back Button */}
-      <button
+      <motion.button
         onClick={() => router.push("/")}
-        className="absolute top-4 left-4 z-10 p-2 rounded-lg bg-card/80 backdrop-blur-sm border border-border/50 hover:bg-card transition-colors duration-200 cursor-pointer"
+        className="absolute top-6 left-6 z-50 p-3 rounded-xl glass border border-border/30 hover:border-primary/50 transition-all duration-300 group"
         aria-label="Go back"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        <ArrowLeft className="w-5 h-5 text-foreground" />
-      </button>
+        <ArrowLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+      </motion.button>
 
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
-              <div className="bg-black rounded-full">
-                <Image
-                  src="/photoverse-logo.png"
-                  width={50}
-                  height={50}
-                  alt="Photoverse Logo"
-                />
-              </div>
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-            Welcome back
-          </h1>
-          <p className="text-muted-foreground">
-            Sign in to your Photoverse account
-          </p>
-        </div>
-
-        <Card className="border border-border/50 backdrop-blur-sm bg-card/95 p-8 space-y-6 shadow-lg">
-          {/* Google Sign In */}
-          <GoogleButton text="Continue with Google" />
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border/50" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-card text-muted-foreground">
-                Or continue with email
+      {/* Left Side - Branding (Hidden on mobile) */}
+      <motion.div
+        className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12"
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="max-w-lg space-y-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            <div className="flex items-center space-x-3 mb-8">
+              <Logo className="text-primary" size="lg" />
+              <span className="text-2xl font-bold text-foreground">
+                Photoverse
               </span>
             </div>
+
+            <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight">
+              Your photos,{" "}
+              <span className="text-gradient-primary">everywhere</span>
+            </h1>
+
+            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
+              Access your entire photo collection from any device. Secure, fast,
+              and completely free.
+            </p>
+
+            <div className="space-y-4">
+              {[
+                { icon: "✓", text: "Unlimited storage" },
+                { icon: "⚡", text: "Lightning fast uploads" },
+                { icon: "🔒", text: "Bank-level security" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-center space-x-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                    {item.icon}
+                  </div>
+                  <span className="text-muted-foreground">{item.text}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Right Side - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative z-10">
+        <motion.div
+          className="w-full max-w-md"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center space-x-3 mb-8">
+            <Logo className="text-primary" size="md" />
+            <span className="text-xl font-bold text-foreground">
+              Photoverse
+            </span>
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <FieldGroup>
-              <Controller
-                name="email"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="email">Email Address</FieldLabel>
-                    <Input
-                      {...field}
-                      type="email"
-                      id="email"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="you@example.com"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError
-                        className="text-xs"
-                        errors={[fieldState.error]}
+          {/* Header */}
+          <motion.div
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+              Welcome back
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Sign in to continue your journey
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="glass rounded-2xl p-6 sm:p-8 space-y-6 border border-border/30"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            {/* Google Sign In */}
+            <GoogleButton text="Continue with Google" />
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border/30" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-3 bg-card text-muted-foreground font-medium">
+                  Or continue with email
+                </span>
+              </div>
+            </div>
+
+            {/* Login Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <FieldGroup>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel
+                        htmlFor="email"
+                        className="text-sm font-semibold"
+                      >
+                        Email Address
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        type="email"
+                        id="email"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="you@example.com"
+                        className="h-12 bg-background/50 border-border/30 focus:border-primary/50 transition-all"
                       />
-                    )}
-                  </Field>
-                )}
-              />
+                      {fieldState.invalid && (
+                        <FieldError
+                          className="text-xs mt-1"
+                          errors={[fieldState.error]}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
 
-              <Controller
-                name="password"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="flex items-center justify-between mb-2">
+                        <FieldLabel
+                          htmlFor="password"
+                          className="text-sm font-semibold"
+                        >
+                          Password
+                        </FieldLabel>
+                        <Link
+                          href="/auth/forgot-password"
+                          className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+                        >
+                          Forgot password?
+                        </Link>
+                      </div>
+                      <PasswordInput
+                        fieldState={fieldState}
+                        field={field}
+                        id="password"
+                        placeholder="••••••••"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          className="text-xs mt-1"
+                          errors={[fieldState.error]}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
 
-                    <PasswordInput
-                      fieldState={fieldState}
-                      field={field}
-                      id="password"
-                      placeholder="••••••••"
-                    />
-                    <Link
-                      href="/auth/forgot-password"
-                      className="text-xs text-primary hover:underline font-medium"
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 cursor-pointer bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+              >
+                {loading ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
-                      Forgot password?
-                    </Link>
-                    {fieldState.invalid && (
-                      <FieldError
-                        className="text-xs"
-                        errors={[fieldState.error]}
-                      />
-                    )}
-                  </Field>
+                      <Sparkles className="w-4 h-4" />
+                    </motion.div>
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Sign in
+                    <ArrowRight className="w-4 h-4" />
+                  </>
                 )}
-              />
-            </FieldGroup>
+              </Button>
+            </form>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 bg-blue-500 hover:bg-blue-500/90 text-primary-foreground font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-              {!loading && <ArrowRight className="w-4 h-4" />}
-            </Button>
-          </form>
+            {/* Footer */}
+            <p className="text-center text-sm text-muted-foreground pt-2">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="text-primary hover:text-primary/80 font-semibold transition-colors"
+              >
+                Sign up for free
+              </Link>
+            </p>
+          </motion.div>
 
-          {/* Footer */}
-          <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/auth/register"
-              className="text-blue-500 hover:underline font-semibold"
-            >
-              Sign up
-            </Link>
-          </p>
-        </Card>
-
-        {/* Trust Indicators */}
-        {/* <div className="mt-8 text-center text-xs text-muted-foreground space-y-2">
-          <p>🔒 Your data is encrypted and secure</p>
-          <p>
-            By signing in, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </div> */}
+          {/* Trust Indicators */}
+          <motion.div
+            className="mt-6 flex items-center justify-center space-x-6 text-xs text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+          >
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+              <span>Secure</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span>Encrypted</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+              <span>Private</span>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
