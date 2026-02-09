@@ -26,7 +26,7 @@ const PasswordInput = ({
         className="h-12 bg-background/50 border-border/30 focus:border-primary/50 transition-all"
       />
       <button
-        className="absolute top-2 right-2 cursor-pointer"
+        className="absolute top-4 right-4 cursor-pointer"
         type="button"
         onClick={() => setShowPassword(!showPassword)}
       >
