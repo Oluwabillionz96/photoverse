@@ -85,12 +85,12 @@ const VerifyEmail = ({
   };
 
   return (
-    <div className="bg-white w-full md:h-fit flex flex-col justify-center items-center gap-6 pt-8 rounded-xl overflow-hidden">
-      <p className="text-center text-[1.15rem] md:w-9/10">
+    <div className="w-full flex flex-col justify-center items-center gap-6">
+      <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-wider">
         Enter Verification Code
       </p>
       <form
-        className="grid grid-cols-6 md:gap-4 gap-2  md:w-9/10"
+        className="grid grid-cols-6 gap-3 w-full"
         onPaste={handlePaste}
         onSubmit={(e: FormEvent) => {
           verifyOTP(e, inputValue);
@@ -130,12 +130,12 @@ const VerifyEmail = ({
                 inputRef.current[index - 1]?.focus();
               }
             }}
-            className="border-2 border-gray-300 h-12 rounded-[8px] text-center text-xl"
+            className="h-14 rounded-xl text-center text-2xl font-bold bg-background/50 border-2 border-border/30 focus:border-primary/50 focus:outline-none transition-all text-foreground"
           />
         ))}
       </form>
       <Button
-        className="w-full h-11 rounded-sm text-white text-xl hover:cursor-pointer bg-blue-500 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-4"
+        className="w-full h-12 rounded-xl text-primary-foreground font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all duration-300"
         disabled={
           inputValue.join("").length !== 6 ||
           !inputValue.join("").trim() ||
@@ -143,15 +143,14 @@ const VerifyEmail = ({
         }
         type="submit"
         form="email_verification"
-        // onClick={verifyOTP}
       >
-        {isVerifying ? <Spinner /> :  ""}
-        {isVerifying ? "Confirming..." : "Confirm"}
+        {isVerifying && <Spinner />}
+        {isVerifying ? "Verifying..." : "Verify Email"}
       </Button>
 
-      <div className="border-t border-border/50 w-full" />
+      <div className="border-t border-border/30 w-full my-2" />
 
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-3 pb-2">
         <p className="text-sm text-muted-foreground">
           Didn&apos;t receive the code?
         </p>
@@ -159,13 +158,12 @@ const VerifyEmail = ({
           onClick={resendOTP}
           type="button"
           disabled={loading || resendCode > 0}
-          className="text-blue-500 hover:underline font-semibold text-sm disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
+          className="text-primary hover:text-primary/80 font-semibold text-sm disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
         >
-          {/* {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"} */}
           {resendCode > 0
-            ? ` Request a resend in ${resendCode} seconds`
+            ? `Resend in ${resendCode}s`
             : isResending
-              ? "Resending code"
+              ? "Resending..."
               : "Resend Code"}
         </button>
       </div>
