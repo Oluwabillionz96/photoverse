@@ -14,7 +14,7 @@ const Photos = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(
-    Number.parseInt(searchParams.get("page") || "1")
+    Number.parseInt(searchParams.get("page") || "1"),
   );
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
