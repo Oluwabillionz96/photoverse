@@ -7,6 +7,7 @@ import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
+import Logo from "./Logo";
 
 interface Icon {
   className: string;
@@ -53,68 +54,86 @@ const SideNav = ({
     }
     return pathname.startsWith(`${url}/`) || pathname === url;
   };
+  
   return (
     <aside
-      className={`hidden transition-all duration-500 ease-in-out md:block bg-black fixed top-0 bottom-0 left-0 ${
+      className={`hidden transition-all duration-500 ease-in-out md:flex flex-col fixed top-0 bottom-0 left-0 border-r border-border/30 glass ${
         collapsed
-          ? "w-[5rem] px-[0.2rem]"
-          : "md:w-[9rem] lg:w-[17.5rem] px-[0.5rem]"
+          ? "w-20"
+          : "md:w-56 lg:w-64"
       }`}
     >
-      <div className="  h-8 my-6 flex justify-end relative lg:visible invisible">
-        <Button
-          size={"icon"}
-          onClick={() => {
-            setCollapsed(!collapsed);
-            if (typeof window !== "undefined") {
-              localStorage.setItem("collapsed", JSON.stringify(!collapsed));
-            }
-          }}
-          className="hover:cursor-pointer font-bold"
-        >
-          {collapsed ? <GoSidebarCollapse /> : <GoSidebarExpand />}
-        </Button>
+      {/* Collapse Toggle at Top */}
+      <div className="p-4 border-b border-border/30 mt-20">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => {
+              setCollapsed(!collapsed);
+              if (typeof window !== "undefined") {
+                localStorage.setItem("collapsed", JSON.stringify(!collapsed));
+              }
+            }}
+            className={`hover:bg-primary/10 hover:text-primary transition-all h-12 ${
+              collapsed ? "w-full" : "w-full"
+            }`}
+          >
+            {collapsed ? (
+              <GoSidebarExpand className="w-6 h-6" />
+            ) : (
+              <GoSidebarCollapse className="w-6 h-6" />
+            )}
+          </Button>
+        </motion.div>
       </div>
-      <nav>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
         {navLinks.map((nav, id) => {
           const isActive = active(nav.url);
           return (
             <Link key={id} href={nav.url}>
               <motion.div
-                className={`flex items-center relative cursor-pointer 
-            ${
-              !collapsed
-                ? " px-[23px] py-[13.7px] pr-[45px] mb-[11.7px]"
-                : "p-4  w-full justify-center"
-            }
-             rounded-[14px] text-[15px] leading-[150%] text-white 
-             font-light tracking-[-0.02em] transition-all duration-300`}
+                className={`flex items-center relative cursor-pointer rounded-xl transition-all duration-300 ${
+                  collapsed ? "justify-center p-3" : "px-4 py-3 gap-3"
+                } ${
+                  isActive
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
                 whileHover={{
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  transition: { duration: 0.3 },
+                  scale: 1.02,
+                  transition: { duration: 0.2 },
                 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {nav.icon({
-                  className: `mr-3 relative z-20`,
-                  size: 21,
-                  color: "white",
+                  className: `relative z-20 transition-transform ${isActive ? "scale-110" : ""}`,
+                  size: 20,
+                  color: "currentColor",
                 })}
+                
                 {!collapsed && (
-                  <span
-                    className={`inline-block -mb-[3px] z-20 font-semibold md:hidden lg:inline-block`}
+                  <motion.span
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    className="z-20 font-semibold text-sm"
                   >
                     {nav.label}
-                  </span>
+                  </motion.span>
                 )}
+                
                 <AnimatePresence>
                   {isActive && (
                     <motion.span
-                      exit={{ opacity: 0 }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
                       layoutId="active_state"
-                      className={`absolute inset-0 bg-[#636262] rounded-[10px] cursor-pointer z-0`}
-                      transition={{ duration: 0.01 }}
+                      className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl z-0"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3, type: "spring" }}
                     />
                   )}
                 </AnimatePresence>

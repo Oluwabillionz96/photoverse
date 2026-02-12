@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
@@ -28,6 +27,7 @@ import useLogout from "@/hooks/useLogout";
 import { authApi } from "@/services/auth";
 import { updateLoading, updateUser } from "@/lib/slices/authSlice";
 import { getCsrfToken } from "@/lib/utils";
+import Logo from "./Logo";
 // import MobileDebugPanel from "./mobile-debuggin-panel";
 
 export interface DebugLog {
@@ -124,14 +124,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <>{children}</>
           ) : (
             <main
-              className={`relative transition-all duration-500 ease-in-out ${
+              className={`relative transition-all duration-500 ease-in-out pt-20 md:pt-40 ${
                 files.length < 1 ? "mb-24" : "mb-0"
               } md:mb-0 ${
-                isMobile
-                  ? "ml-0"
-                  : collapsed
-                    ? "md:ml-[5rem]"
-                    : "md:ml-[9rem] lg:ml-[17.5rem]"
+                isMobile ? "ml-0" : collapsed ? "md:ml-20" : "md:ml-56 lg:ml-64"
               }`}
             >
               <ModalContext
@@ -146,38 +142,67 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   }}
                 >
                   <motion.header
-                    className={`bg-[#141414] relative flex justify-around items-center`}
+                    className="glass border-b border-border/30 fixed top-0 left-0 right-0 z-50"
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                   >
-                    <Link href={"/"}>
-                      <Image
-                        width={100}
-                        height={100}
-                        src={"/photoverse-logo.png"}
-                        alt="logo"
-                        className="block mx-auto"
-                      />
-                    </Link>
+                    <div className="flex justify-between items-center px-6 py-4">
+                      {/* Left: Logo & Brand */}
+                      <Link
+                        href="/"
+                        className="flex items-center gap-3 group"
+                      >
+                        <motion.div
+                          whileHover={{ rotate: 360 }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <Logo className="text-primary" size="md" />
+                        </motion.div>
+                        <div className="hidden sm:block">
+                          <span className="text-xl font-bold text-foreground block">
+                            Photoverse
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            Your photos, everywhere
+                          </span>
+                        </div>
+                      </Link>
 
-                    <div className="md:hidden">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="flex items-center justify-center gap-2 text-black"
+                      {/* Right: Mobile Logout */}
+                      <div className="md:hidden">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <motion.div
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 transition-all"
+                              >
+                                <FaUser className="w-4 h-4" />
+                              </Button>
+                            </motion.div>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            className="glass border-border/30"
+                            align="end"
                           >
-                            <FaUser />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-16" align="end">
-                          <DropdownMenuItem onClick={logout}>
-                            Log out
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <DropdownMenuItem
+                              onClick={logout}
+                              className="cursor-pointer hover:bg-primary/10 hover:text-primary"
+                            >
+                              Log out
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </div>
                   </motion.header>
                   <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
-                  <MobileNavs>{children}</MobileNavs>
+                  <MobileNavs collapsed={collapsed}>{children}</MobileNavs>
                   <input
                     type="file"
                     className="hidden"

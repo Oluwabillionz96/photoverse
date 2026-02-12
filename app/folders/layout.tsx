@@ -1,6 +1,5 @@
 "use client";
 import CreateFolder from "@/components/CreateFolder";
-import TabLayouts from "@/components/TabLayouts";
 import useModalContext from "@/hooks/useModalContext";
 import { useState } from "react";
 
@@ -13,7 +12,6 @@ const Layout = ({
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
   return (
     <>
-      <TabLayouts />
       {modalStatus !== "" ? (
         <CreateFolder
           folderName={folderName}

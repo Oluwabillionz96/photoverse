@@ -11,6 +11,7 @@ import {
 import { FaHeart } from "react-icons/fa";
 import { Rootstate } from "@/lib/store";
 import { motion } from "framer-motion";
+import Logo from "./Logo";
 
 export const cloudinaryLoader = ({
   src,
@@ -95,6 +96,23 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
   };
 
+  // Generate random gradient for each photo
+  const getRandomGradient = (id: string) => {
+    const gradients = [
+      "from-primary/20 via-accent/20 to-primary/20",
+      "from-accent/20 via-primary/20 to-accent/20",
+      "from-blue-500/20 via-purple-500/20 to-pink-500/20",
+      "from-green-500/20 via-teal-500/20 to-blue-500/20",
+      "from-orange-500/20 via-red-500/20 to-pink-500/20",
+      "from-purple-500/20 via-pink-500/20 to-red-500/20",
+      "from-teal-500/20 via-cyan-500/20 to-blue-500/20",
+      "from-yellow-500/20 via-orange-500/20 to-red-500/20",
+    ];
+    // Use photo ID to consistently pick same gradient for same photo
+    const index = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % gradients.length;
+    return gradients[index];
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -120,10 +138,20 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                     >
                       {/* Placeholder - shows while loading or on error */}
                       {showPlaceholder && (
-                        <div className="absolute inset-0 bg-border/20 z-10">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${getRandomGradient(item._id)} z-10 flex items-center justify-center`}>
+                          {/* Logo in center */}
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 0.4, scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            <Logo className="text-foreground/30" size="lg" />
+                          </motion.div>
+                          
+                          {/* Shimmer effect for loading */}
                           {imageState === "loading" && (
                             <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-transparent via-border/40 to-transparent"
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
                               animate={{
                                 x: ["-100%", "200%"],
                               }}
@@ -133,11 +161,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                                 ease: "easeInOut",
                               }}
                             />
-                          )}
-                          {imageState === "error" && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="w-8 h-8 rounded-full bg-border/40" />
-                            </div>
                           )}
                         </div>
                       )}
