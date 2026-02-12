@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Layout from "@/components/MainLayout";
@@ -25,8 +25,12 @@ export const metadata: Metadata = {
     shortcut: "/photoverse.ico",
     apple: "/photoverse.ico",
   },
-  themeColor: "#1a1b2e", // Dark theme color for mobile browsers
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewPort : Viewport= {
+  themeColor: "#1a1b2e",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
