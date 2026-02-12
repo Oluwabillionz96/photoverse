@@ -1,6 +1,6 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,10 +9,8 @@ import {
   updateSelectedPhotosIds,
 } from "@/lib/slices/photoSlice";
 import { FaHeart } from "react-icons/fa";
-// import ContextModal from "./modals/ContextModal";
 import { Rootstate } from "@/lib/store";
-// import ContextModal from "./modals/ContextModal";
-// import { useMovePhotoToTrashMutation } from "@/services/api";
+import { motion } from "framer-motion";
 
 export const cloudinaryLoader = ({
   src,
@@ -29,15 +27,7 @@ export const cloudinaryLoader = ({
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
   const { selectedPhotosIds } = useSelector((state: Rootstate) => state.photo);
-  // const [moveToTrash] = useMovePhotoToTrashMutation();
-
-  // async function handleMoveToTrash() {
-  //   const payload = {
-  //     photos: selectedPhotosIds,
-  //   };
-
-  //   await moveToTrash(payload);
-  // }
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   function handleImageSelection(item: Photo) {
     if (selectedPhotosIds.includes(item._id)) {
@@ -46,19 +36,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
       dispatch(updateSelectedPhotosIds([item._id]));
     }
   }
-
-  // function handleSelectAll() {
-  //   if (selectedPhotosIds.length !== photos.length) {
-  //     const toBeIncluded = photos
-  //       .filter((item) => !selectedPhotosIds.includes(item._id))
-  //       .map((item) => item._id);
-  //     console.log(toBeIncluded);
-  //     dispatch(updateSelectedPhotosIds(toBeIncluded));
-  //   } else if (selectedPhotosIds.length === photos.length) {
-  //     const ids = photos.map((item) => item._id);
-  //     dispatch(removeSelectedPhoto(ids));
-  //   }
-  // }
 
   useEffect(() => {
     const imageIds = photos?.map((item) => item._id);
@@ -92,6 +69,10 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     month[uploadDate].push(item);
   });
 
+  const handleImageLoad = (imageId: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageId));
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -103,7 +84,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 {month[key].map((item) => (
                   <Link
                     key={item._id}
-                    className="relative aspect-square"
+                    className="relative aspect-square overflow-hidden group"
                     href={`/${route}/${item._id}`}
                     onClick={(e: MouseEvent) => {
                       if (selectedPhotosIds.length > 0) {
@@ -111,20 +92,43 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                       }
                     }}
                   >
+                    {/* Loading placeholder - shows while image loads */}
+                    {!loadedImages.has(item._id) && (
+                      <div className="absolute inset-0 bg-border/20">
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-border/30 to-transparent"
+                          animate={{
+                            x: ["-100%", "200%"],
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </div>
+                    )}
+
                     {item.isFavourite && (
-                      <div className="absolute top-2 right-2 text-pink-500  z-50">
+                      <div className="absolute top-2 right-2 text-pink-500 z-50">
                         <FaHeart />
                       </div>
                     )}
+
                     <Image
                       src={item?.link}
                       alt="photo"
                       fill
                       loading="lazy"
-                      className="object-cover object-top"
+                      className={`object-cover object-top transition-opacity duration-300 ${
+                        loadedImages.has(item._id) ? "opacity-100" : "opacity-0"
+                      }`}
                       sizes="33vw"
                       loader={cloudinaryLoader}
+                      onLoad={() => handleImageLoad(item._id)}
+                      onError={() => handleImageLoad(item._id)}
                     />
+
                     {selectedPhotosIds.length > 0 && (
                       <input
                         type="checkbox"
@@ -144,24 +148,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
             </div>
           );
         })}
-
-        {/* <ContextModal
-              handleSelectImage={(e: MouseEvent) => {
-                e.stopPropagation();
-                handleImageSelection(item);
-              }}
-              handleMoveToTrash={handleMoveToTrash}
-              removeFavOption={selectedPhotosIds.length > 1}
-              isSelected={selectedPhotosIds?.includes(item._id)}
-              canSelectAll={selectedPhotosIds.length > 0}
-              allIsSelected={selectedPhotosIds.length === photos.length}
-              handleAllSelection={(e: MouseEvent) => {
-                e.stopPropagation();
-                handleSelectAll();
-              }}
-            > */}
-
-        {/* </ContextModal> */}
       </div>
     </>
   );

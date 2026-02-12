@@ -20,13 +20,15 @@ const PhotoLoader = () => {
               ease: "easeInOut",
             }}
           />
-          
+
           {/* Photo grid skeleton */}
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {Array.from({ length: monthIndex === 0 ? 12 : monthIndex === 1 ? 18 : 6 }).map((_, index) => (
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
+            {Array.from({
+              length: monthIndex === 0 ? 12 : monthIndex === 1 ? 18 : 6,
+            }).map((_, index) => (
               <motion.div
                 key={index}
-                className="aspect-square bg-border/30 rounded-xl relative overflow-hidden"
+                className="aspect-square bg-border/30 relative overflow-hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{
@@ -38,7 +40,7 @@ const PhotoLoader = () => {
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-border/40 to-transparent"
                   animate={{
-                    x: ['-100%', '200%'],
+                    x: ["-100%", "200%"],
                   }}
                   transition={{
                     duration: 1.8,
