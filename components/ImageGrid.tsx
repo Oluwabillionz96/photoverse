@@ -1,6 +1,6 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, SyntheticEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -27,7 +27,9 @@ export const cloudinaryLoader = ({
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
   const { selectedPhotosIds } = useSelector((state: Rootstate) => state.photo);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [imageStates, setImageStates] = useState<
+    Record<string, "loading" | "loaded" | "error">
+  >({});
 
   function handleImageSelection(item: Photo) {
     if (selectedPhotosIds.includes(item._id)) {
@@ -40,6 +42,13 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   useEffect(() => {
     const imageIds = photos?.map((item) => item._id);
     dispatch(updatePhotoId(imageIds));
+
+    // Initialize all images as loading
+    const initialStates: Record<string, "loading" | "loaded" | "error"> = {};
+    photos.forEach((photo) => {
+      initialStates[photo._id] = "loading";
+    });
+    setImageStates(initialStates);
   }, [dispatch, photos]);
 
   function getUploadDate(time: string) {
@@ -69,8 +78,21 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     month[uploadDate].push(item);
   });
 
-  const handleImageLoad = (imageId: string) => {
-    setLoadedImages((prev) => new Set(prev).add(imageId));
+  const handleImageLoad = (
+    imageId: string,
+    event: SyntheticEvent<HTMLImageElement>,
+  ) => {
+    // Check if image actually loaded with valid dimensions
+    const img = event.currentTarget
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      setImageStates((prev) => ({ ...prev, [imageId]: "loaded" }));
+    } else {
+      setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
+    }
+  };
+
+  const handleImageError = (imageId: string) => {
+    setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
   };
 
   return (
@@ -81,69 +103,81 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
             <div key={index}>
               <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
               <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-                {month[key].map((item) => (
-                  <Link
-                    key={item._id}
-                    className="relative aspect-square overflow-hidden group"
-                    href={`/${route}/${item._id}`}
-                    onClick={(e: MouseEvent) => {
-                      if (selectedPhotosIds.length > 0) {
-                        e.preventDefault();
-                      }
-                    }}
-                  >
-                    {/* Loading placeholder - shows while image loads */}
-                    {!loadedImages.has(item._id) && (
-                      <div className="absolute inset-0 bg-border/20">
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-border/30 to-transparent"
-                          animate={{
-                            x: ["-100%", "200%"],
-                          }}
-                          transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                        />
-                      </div>
-                    )}
+                {month[key].map((item) => {
+                  const imageState = imageStates[item._id] || "loading";
+                  const showPlaceholder = imageState !== "loaded";
 
-                    {item.isFavourite && (
-                      <div className="absolute top-2 right-2 text-pink-500 z-50">
-                        <FaHeart />
-                      </div>
-                    )}
+                  return (
+                    <Link
+                      key={item._id}
+                      className="relative aspect-square overflow-hidden group bg-border/10"
+                      href={`/${route}/${item._id}`}
+                      onClick={(e: MouseEvent) => {
+                        if (selectedPhotosIds.length > 0) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      {/* Placeholder - shows while loading or on error */}
+                      {showPlaceholder && (
+                        <div className="absolute inset-0 bg-border/20 z-10">
+                          {imageState === "loading" && (
+                            <motion.div
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-border/40 to-transparent"
+                              animate={{
+                                x: ["-100%", "200%"],
+                              }}
+                              transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                              }}
+                            />
+                          )}
+                          {imageState === "error" && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-8 h-8 rounded-full bg-border/40" />
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                    <Image
-                      src={item?.link}
-                      alt="photo"
-                      fill
-                      loading="lazy"
-                      className={`object-cover object-top transition-opacity duration-300 ${
-                        loadedImages.has(item._id) ? "opacity-100" : "opacity-0"
-                      }`}
-                      sizes="33vw"
-                      loader={cloudinaryLoader}
-                      onLoad={() => handleImageLoad(item._id)}
-                      onError={() => handleImageLoad(item._id)}
-                    />
+                      {item.isFavourite && (
+                        <div className="absolute top-2 right-2 text-pink-500 z-50">
+                          <FaHeart />
+                        </div>
+                      )}
 
-                    {selectedPhotosIds.length > 0 && (
-                      <input
-                        type="checkbox"
-                        id={item._id}
-                        value={item._id}
-                        checked={selectedPhotosIds?.includes(item._id)}
-                        className="z-50 absolute top-2 left-2 w-4 h-4"
-                        onClick={(e: MouseEvent) => {
-                          e.stopPropagation();
-                        }}
-                        onChange={() => handleImageSelection(item)}
+                      <Image
+                        src={item?.link}
+                        alt="photo"
+                        fill
+                        loading="lazy"
+                        className={`object-cover object-top transition-opacity duration-500 ${
+                          imageState === "loaded" ? "opacity-100" : "opacity-0"
+                        }`}
+                        sizes="33vw"
+                        loader={cloudinaryLoader}
+                        onLoad={(e) => handleImageLoad(item._id, e)}
+                        onError={() => handleImageError(item._id)}
                       />
-                    )}
-                  </Link>
-                ))}
+
+                      {selectedPhotosIds.length > 0 && (
+                        <input
+                          type="checkbox"
+                          id={item._id}
+                          value={item._id}
+                          checked={selectedPhotosIds?.includes(item._id)}
+                          className="z-50 absolute top-2 left-2 w-4 h-4"
+                          onClick={(e: MouseEvent) => {
+                            e.stopPropagation();
+                          }}
+                          onChange={() => handleImageSelection(item)}
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           );
