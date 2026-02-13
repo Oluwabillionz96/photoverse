@@ -124,9 +124,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <>{children}</>
           ) : (
             <main
-              className={`relative transition-all duration-500 ease-in-out pt-20 md:pt-40 ${
-                files.length < 1 ? "mb-24" : "mb-0"
-              } md:mb-0 ${
+              className={`relative transition-all duration-500 ease-in-out ${
+                pathname.startsWith("/trash") ||
+                pathname.startsWith("/favourites")
+                  ? "md:pt-28 pt-20"
+                  : "pt-20 md:pt-40"
+              } ${files.length < 1 ? "mb-24" : "mb-0"} md:mb-0 ${
                 isMobile ? "ml-0" : collapsed ? "md:ml-20" : "md:ml-56 lg:ml-64"
               }`}
             >
@@ -149,10 +152,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   >
                     <div className="flex justify-between items-center px-6 py-4">
                       {/* Left: Logo & Brand */}
-                      <Link
-                        href="/"
-                        className="flex items-center gap-3 group"
-                      >
+                      <Link href="/" className="flex items-center gap-3 group">
                         <motion.div
                           whileHover={{ rotate: 360 }}
                           transition={{ duration: 0.6 }}

@@ -15,8 +15,8 @@ const FolderLoader = () => {
           transition={{ duration: 0.3, delay: index * 0.05 }}
           className="group relative overflow-hidden rounded-xl glass border border-border/30 transition-all"
         >
-          {/* Image area with gradient placeholder */}
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10 flex items-center justify-center overflow-hidden">
+          {/* Image area with linear placeholder */}
+          <div className="relative aspect-4/3 bg-linear-to-br from-primary/10 via-accent/10 to-primary/10 flex items-center justify-center overflow-hidden">
             {/* Logo in center */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}

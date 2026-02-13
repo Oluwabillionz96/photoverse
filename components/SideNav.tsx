@@ -7,7 +7,6 @@ import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
-import Logo from "./Logo";
 
 interface Icon {
   className: string;
@@ -21,7 +20,7 @@ export const navLinks = [
       <IoHome className={className} size={size} color={color} />
     ),
     label: "Home",
-    url: "/",
+    url: "/folders",
   },
   {
     icon: ({ className, size, color }: Icon) => (
@@ -54,13 +53,11 @@ const SideNav = ({
     }
     return pathname.startsWith(`${url}/`) || pathname === url;
   };
-  
+
   return (
     <aside
       className={`hidden transition-all duration-500 ease-in-out md:flex flex-col fixed top-0 bottom-0 left-0 border-r border-border/30 glass ${
-        collapsed
-          ? "w-20"
-          : "md:w-56 lg:w-64"
+        collapsed ? "w-20" : "md:w-56 lg:w-64"
       }`}
     >
       {/* Collapse Toggle at Top */}
@@ -113,7 +110,7 @@ const SideNav = ({
                   size: 20,
                   color: "currentColor",
                 })}
-                
+
                 {!collapsed && (
                   <motion.span
                     initial={{ opacity: 0, x: -10 }}
@@ -124,12 +121,12 @@ const SideNav = ({
                     {nav.label}
                   </motion.span>
                 )}
-                
+
                 <AnimatePresence>
                   {isActive && (
                     <motion.span
                       layoutId="active_state"
-                      className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-xl z-0"
+                      className="absolute inset-0 bg-linear-to-r from-primary to-accent rounded-xl z-0"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}

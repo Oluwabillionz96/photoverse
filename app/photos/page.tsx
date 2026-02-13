@@ -72,7 +72,7 @@ const Photos = () => {
         />
 
         {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--primary-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--primary-rgb),0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--primary-rgb),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--primary-rgb),0.03)_1px,transparent_1px)] bg-size-[50px_50px]" />
 
         {/* Animated Lines */}
         <svg className="absolute inset-0 w-full h-full">

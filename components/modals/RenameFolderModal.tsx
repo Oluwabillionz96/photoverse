@@ -16,12 +16,11 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-// import { FaPlus } from "react-icons/fa";
-import { FaX } from "react-icons/fa6";
+import { X, FolderEdit } from "lucide-react";
 import Spinner from "../loaders/Spinner";
+import { motion, AnimatePresence } from "framer-motion";
 
 const RenameFolderModal = ({
-    
   isOpen,
   setIsOpen,
   handleRename,
@@ -35,22 +34,30 @@ const RenameFolderModal = ({
   loading: boolean;
 }) => {
   const [value, setValue] = useState("");
+  
   useEffect(() => {
     if (!isOpen) {
       setValue("");
       return;
     }
   }, [isOpen]);
+  
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md glass border-border/30 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle>New Folder Name</DialogTitle>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <FolderEdit className="w-5 h-5 text-primary" />
+            </div>
+            <DialogTitle className="text-xl">Rename Folder</DialogTitle>
+          </div>
         </DialogHeader>
-        <div className="flex items-center gap-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="folder_name" className="sr-only">
-              Link
+        
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="folder_name" className="text-sm font-medium">
+              New folder name
             </Label>
             <Input
               id="folder_name"
@@ -59,29 +66,55 @@ const RenameFolderModal = ({
               }
               value={value}
               disabled={loading}
+              placeholder="Enter folder name..."
+              className="glass border-border/30 focus:border-primary/50 transition-all"
+              autoFocus
             />
+            <AnimatePresence>
+              {value.trim() && value.length < 3 && (
+                <motion.p
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="text-xs text-red-400"
+                >
+                  Folder name must be at least 3 characters
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-        <DialogFooter className="sm:justify-start flex-row">
-          <Button
-            type="button"
-            disabled={!value.trim() || value.length < 3 || loading}
-            className="sm:text-[1.1rem] text-sm hover:scale-105 bg-green-500 hover:bg-green-600"
-            onClick={() => {
-              handleRename(folderId, value);
-            }}
+        
+        <DialogFooter className="flex-row gap-2">
+          <motion.div 
+            className="flex-1"
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }}
           >
-            {loading && <Spinner />}
-            {!loading ? "Re-name" : "Renaming"} Folder
-          </Button>
-          <DialogClose asChild>
             <Button
               type="button"
-              variant="destructive"
-              className="sm:text-[1.1rem] text-sm hover:scale-105"
+              disabled={!value.trim() || value.length < 3 || loading}
+              className="w-full bg-linear-to-r from-primary to-accent hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => {
+                handleRename(folderId, value);
+              }}
             >
-              <FaX /> Cancel
+              {loading && <Spinner />}
+              {!loading ? "Rename" : "Renaming..."}
             </Button>
+          </motion.div>
+          
+          <DialogClose asChild>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="button"
+                variant="outline"
+                className="glass border-border/30 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+            </motion.div>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

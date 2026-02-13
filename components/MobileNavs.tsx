@@ -46,12 +46,17 @@ const MobileNavs = ({
         </nav>
       )}
 
-      <TabLayouts collapsed={collapsed} />
+      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) && (
+        <TabLayouts collapsed={collapsed} />
+      )}
 
       {children}
 
       {/* Bottom Navigation Bar */}
-      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) &&
+      {(pathName.startsWith("/folders") ||
+        pathName.startsWith("/photos") ||
+        pathName.startsWith("/trash") ||
+        pathName.startsWith("/favourites")) &&
         files.length < 1 && (
           <motion.nav
             className="fixed bottom-0 left-0 right-0 glass border-t border-border/30 flex justify-around items-center px-6 py-4 md:hidden z-50"
@@ -72,24 +77,28 @@ const MobileNavs = ({
               <span className="text-xs font-semibold">Photos</span>
             </motion.button>
 
-            <motion.button
-              className="relative -mt-6"
-              onClick={() => {
-                if (pathName === "/folders") {
-                  setModalStatus("foldername");
-                } else if (pathName === "/photos") {
-                  openFileDialog(ref);
-                } else if (params.folderName) {
-                  openFileDialog(ref);
-                }
-              }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <div className="w-14 h-14 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
-                <FaPlus className="w-6 h-6 text-primary-foreground" />
-              </div>
-            </motion.button>
+            {/* Only show create button on folders/photos pages */}
+            {(pathName.startsWith("/folders") ||
+              pathName.startsWith("/photos")) && (
+              <motion.button
+                className="relative -mt-6"
+                onClick={() => {
+                  if (pathName === "/folders") {
+                    setModalStatus("foldername");
+                  } else if (pathName === "/photos") {
+                    openFileDialog(ref);
+                  } else if (params.folderName) {
+                    openFileDialog(ref);
+                  }
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <div className="w-14 h-14 rounded-full bg-linear-to-r from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
+                  <FaPlus className="w-6 h-6 text-primary-foreground" />
+                </div>
+              </motion.button>
+            )}
 
             <motion.button
               className={`flex flex-col items-center gap-1 transition-all ${
