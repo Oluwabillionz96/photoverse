@@ -62,7 +62,7 @@ const Folders = () => {
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">
-      {isLoading || isFetching ? (
+      {isLoading || isFetching  ? (
         <FolderLoader />
       ) : folders && folders?.length > 0 ? (
         <>

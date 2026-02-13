@@ -12,6 +12,7 @@ import { FaHeart } from "react-icons/fa";
 import { Rootstate } from "@/lib/store";
 import { motion } from "framer-motion";
 import Logo from "./Logo";
+import { getRandomGradient } from "@/lib/utils";
 import ShimmerSweep from "./shimmer-sweep";
 
 export const cloudinaryLoader = ({
@@ -95,25 +96,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
 
   const handleImageError = (imageId: string) => {
     setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
-  };
-
-  // Generate random gradient for each photo
-  const getRandomGradient = (id: string) => {
-    const gradients = [
-      "from-primary/20 via-accent/20 to-primary/20",
-      "from-accent/20 via-primary/20 to-accent/20",
-      "from-blue-500/20 via-purple-500/20 to-pink-500/20",
-      "from-green-500/20 via-teal-500/20 to-blue-500/20",
-      "from-orange-500/20 via-red-500/20 to-pink-500/20",
-      "from-purple-500/20 via-pink-500/20 to-red-500/20",
-      "from-teal-500/20 via-cyan-500/20 to-blue-500/20",
-      "from-yellow-500/20 via-orange-500/20 to-red-500/20",
-    ];
-    // Use photo ID to consistently pick same gradient for same photo
-    const index =
-      id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
-      gradients.length;
-    return gradients[index];
   };
 
   return (

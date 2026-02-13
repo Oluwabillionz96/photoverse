@@ -14,3 +14,25 @@ export function getCsrfToken() {
     ?.split("=")[1];
   return token ? token : null;
 }
+
+// Gradient colors for placeholders
+export const PLACEHOLDER_GRADIENTS = [
+  "from-primary/20 via-accent/20 to-primary/20",
+  "from-accent/20 via-primary/20 to-accent/20",
+  "from-blue-500/20 via-purple-500/20 to-pink-500/20",
+  "from-green-500/20 via-teal-500/20 to-blue-500/20",
+  "from-orange-500/20 via-red-500/20 to-pink-500/20",
+  "from-purple-500/20 via-pink-500/20 to-red-500/20",
+  "from-teal-500/20 via-cyan-500/20 to-blue-500/20",
+  "from-yellow-500/20 via-orange-500/20 to-red-500/20",
+];
+
+/**
+ * Get a consistent gradient based on an ID string
+ * @param id - Unique identifier (e.g., photo ID, folder ID)
+ * @returns Tailwind gradient class string
+ */
+export function getRandomGradient(id: string): string {
+  const index = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % PLACEHOLDER_GRADIENTS.length;
+  return PLACEHOLDER_GRADIENTS[index];
+}
