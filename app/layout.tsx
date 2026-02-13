@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewPort : Viewport= {
+export const viewPort: Viewport = {
   themeColor: "#1a1b2e",
   width: "device-width",
   initialScale: 1,
@@ -60,38 +60,44 @@ export default function RootLayout({
           <Toaster
             position="top-center"
             containerStyle={{
-              zIndex: 99999999999999,
+              zIndex: 9999,
             }}
             toastOptions={{
+              duration: 3000,
               success: {
                 style: {
-                  backgroundColor: "oklch(0.19 0.04 240)",
+                  background: "oklch(0.19 0.04 240)",
                   border: "1px solid oklch(0.68 0.22 180)",
                   color: "oklch(0.95 0.01 240)",
                   padding: "16px",
                   fontSize: "14px",
-                  zIndex: 99999999999,
                   backdropFilter: "blur(20px)",
+                },
+                iconTheme: {
+                  primary: "oklch(0.68 0.22 180)",
+                  secondary: "oklch(0.19 0.04 240)",
                 },
               },
               error: {
                 style: {
-                  backgroundColor: "oklch(0.19 0.04 240)",
+                  background: "oklch(0.19 0.04 240)",
                   border: "1px solid oklch(0.65 0.25 15)",
                   color: "oklch(0.95 0.01 240)",
                   padding: "16px",
                   fontSize: "14px",
-                  zIndex: 99999999999,
                   backdropFilter: "blur(20px)",
+                },
+                iconTheme: {
+                  primary: "oklch(0.65 0.25 15)",
+                  secondary: "oklch(0.19 0.04 240)",
                 },
               },
               style: {
-                backgroundColor: "oklch(0.19 0.04 240)",
+                background: "oklch(0.19 0.04 240)",
                 border: "1px solid oklch(0.72 0.28 240)",
                 color: "oklch(0.95 0.01 240)",
                 padding: "16px",
                 fontSize: "14px",
-                zIndex: 99999999999,
                 backdropFilter: "blur(20px)",
               },
             }}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import ShimmerSweep from "../shimmer-sweep";
 
 const PhotoLoader = () => {
   return (
@@ -37,8 +38,8 @@ const PhotoLoader = () => {
                 }}
               >
                 {/* Simple shimmer sweep */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-border/40 to-transparent"
+                {/* <motion.div
+                  className="absolute inset-0 bg-linear-to-r from-transparent via-border/40 to-transparent"
                   animate={{
                     x: ["-100%", "200%"],
                   }}
@@ -48,6 +49,12 @@ const PhotoLoader = () => {
                     ease: "easeInOut",
                     delay: index * 0.05,
                   }}
+                /> */}
+
+                <ShimmerSweep
+                  delay={index * 0.05}
+                  via="border/40"
+                  duration={1.8}
                 />
               </motion.div>
             ))}

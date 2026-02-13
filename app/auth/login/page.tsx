@@ -62,7 +62,7 @@ const LoginPage = () => {
             error?.message
           : "An unexpected error occurred.";
       toast.error(errorMessage || "An unexpected error occurred.");
-      console.error("Error in login:", error);
+      console.log("Error in login:", error);
     }
   };
 

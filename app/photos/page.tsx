@@ -47,7 +47,7 @@ const Photos = () => {
           }}
         />
         <motion.div
-          className="absolute top-40 right-20 w-96 h-96 rounded-full bg-gradient-to-br from-accent/10 to-transparent blur-3xl"
+          className="absolute top-40 right-20 w-96 h-96 rounded-full bg-linear-to-br from-accent/10 to-transparent blur-3xl"
           animate={{
             y: [0, -40, 0],
             scale: [1, 1.15, 1],
@@ -59,7 +59,7 @@ const Photos = () => {
           }}
         />
         <motion.div
-          className="absolute bottom-20 left-1/3 w-80 h-80 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-3xl"
+          className="absolute bottom-20 left-1/3 w-80 h-80 rounded-full bg-linear-to-br from-primary/10 to-transparent blur-3xl"
           animate={{
             y: [0, 60, 0],
             x: [0, 30, 0],

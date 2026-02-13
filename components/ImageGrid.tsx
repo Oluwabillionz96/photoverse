@@ -12,6 +12,7 @@ import { FaHeart } from "react-icons/fa";
 import { Rootstate } from "@/lib/store";
 import { motion } from "framer-motion";
 import Logo from "./Logo";
+import ShimmerSweep from "./shimmer-sweep";
 
 export const cloudinaryLoader = ({
   src,
@@ -84,7 +85,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     event: SyntheticEvent<HTMLImageElement>,
   ) => {
     // Check if image actually loaded with valid dimensions
-    const img = event.currentTarget
+    const img = event.currentTarget;
     if (img.naturalWidth > 0 && img.naturalHeight > 0) {
       setImageStates((prev) => ({ ...prev, [imageId]: "loaded" }));
     } else {
@@ -109,7 +110,9 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
       "from-yellow-500/20 via-orange-500/20 to-red-500/20",
     ];
     // Use photo ID to consistently pick same gradient for same photo
-    const index = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % gradients.length;
+    const index =
+      id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      gradients.length;
     return gradients[index];
   };
 
@@ -138,7 +141,9 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                     >
                       {/* Placeholder - shows while loading or on error */}
                       {showPlaceholder && (
-                        <div className={`absolute inset-0 bg-gradient-to-br ${getRandomGradient(item._id)} z-10 flex items-center justify-center`}>
+                        <div
+                          className={`absolute inset-0 bg-linear-to-br ${getRandomGradient(item._id)} z-10 flex items-center justify-center`}
+                        >
                           {/* Logo in center */}
                           <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -147,20 +152,10 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                           >
                             <Logo className="text-foreground/30" size="lg" />
                           </motion.div>
-                          
+
                           {/* Shimmer effect for loading */}
                           {imageState === "loading" && (
-                            <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                              animate={{
-                                x: ["-100%", "200%"],
-                              }}
-                              transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                              }}
-                            />
+                            <ShimmerSweep duration={1.5} via="via-white/10" />
                           )}
                         </div>
                       )}
