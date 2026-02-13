@@ -160,12 +160,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                         </div>
                       )}
 
-                      {item.isFavourite && (
-                        <div className="absolute top-2 right-2 text-pink-500 z-50">
-                          <FaHeart />
-                        </div>
-                      )}
-
                       <Image
                         src={item?.link}
                         alt="photo"
@@ -179,6 +173,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                         onLoad={(e) => handleImageLoad(item._id, e)}
                         onError={() => handleImageError(item._id)}
                       />
+
+                      {item.isFavourite && (
+                        <div className="absolute top-2 right-2 text-pink-500">
+                          <FaHeart />
+                        </div>
+                      )}
 
                       {selectedPhotosIds.length > 0 && (
                         <input

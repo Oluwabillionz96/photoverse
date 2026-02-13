@@ -9,7 +9,7 @@ const ShimmerSweep = ({
   delay?: number;
   via: string;
   duration: number;
-  repeatDelay: number;
+  repeatDelay?: number;
 }) => {
   return (
     <motion.div
