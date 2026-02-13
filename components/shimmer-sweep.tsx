@@ -4,10 +4,12 @@ const ShimmerSweep = ({
   delay,
   duration,
   via,
+  repeatDelay,
 }: {
   delay?: number;
   via: string;
   duration: number;
+  repeatDelay: number;
 }) => {
   return (
     <motion.div
@@ -20,6 +22,7 @@ const ShimmerSweep = ({
         repeat: Infinity,
         ease: "easeInOut",
         delay,
+        repeatDelay,
       }}
     />
   );

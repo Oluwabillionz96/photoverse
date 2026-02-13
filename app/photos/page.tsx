@@ -35,7 +35,7 @@ const Photos = () => {
       <div className="fixed inset-0 pointer-events-none opacity-30 -z-10">
         {/* Floating Circles */}
         <motion.div
-          className="absolute top-20 left-10 w-64 h-64 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-3xl"
+          className="absolute top-20 left-10 w-64 h-64 rounded-full bg-linear-to-br from-primary/10 to-transparent blur-3xl"
           animate={{
             y: [0, 50, 0],
             scale: [1, 1.1, 1],
