@@ -47,7 +47,11 @@ const PhotosPreview = ({
   }, [files]);
 
   function handleDone() {
-    console.log("Clicked");
+    if (isError) {
+      setProgress(0);
+      setIsError(false);
+      return;
+    }
     setProgress(0);
     setIsError(false);
     if (!isError) {
