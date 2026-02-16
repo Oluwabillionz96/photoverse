@@ -1,7 +1,6 @@
 import { Folder } from "@/lib/apiTypes";
 import Link from "next/link";
 import { Button } from "./ui/button";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +11,9 @@ import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import Image from "next/image";
-// import { useRenameFolderMutation } from "@/services/api";
+import Logo from "./Logo";
+import { cloudinaryLoader } from "./ImageGrid";
+import { getRandomGradient } from "@/lib/utils";
 
 const FolderCard = ({
   folder,
@@ -24,26 +25,44 @@ const FolderCard = ({
   const router = useRouter();
   const [openSideModal, setOpenSideModal] = useState(false);
 
+  // Get first photo from folder's photos array
+  const firstPhoto =
+    Array.isArray(folder.photos) && folder.photos.length > 0
+      ? folder.photos[0]
+      : null;
+
+  // Get consistent gradient for this folder
+  const gradient = getRandomGradient(folder._id);
+
   return (
     <Link href={`/folders/${folder.name}`}>
-      {" "}
-      <div className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-lg hover:shadow-primary/5">
-        <div className="relative aspect-[4/3] bg-gradient-to-br from-muted/50 to-muted p-6">
-          <div className="absolute right-3 top-3">
+      <div className="group relative overflow-hidden rounded-xl border border-border glass transition-all hover:shadow-lg hover:shadow-primary/20 hover:border-primary/50">
+        <div className="relative aspect-4/3 bg-linear-to-br from-muted/50 to-muted overflow-hidden">
+          <div className="absolute right-3 top-3 z-50">
             <DropdownMenu open={openSideModal} onOpenChange={setOpenSideModal}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 bg-background/80 absolute md:static top-0 right-0 z-50 w-8 rounded-full hover:cursor-pointer backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                  onClick={() => setOpenSideModal(true)}
+                  className="h-8 w-8 rounded-full glass border border-border/30 hover:bg-background/90 backdrop-blur-sm transition-all"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenSideModal(true);
+                  }}
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent
+                align="end"
+                className="glass border-border/30"
+              >
                 <DropdownMenuItem
-                  onClick={() => router.push(`/folders/${folder.name}`)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    router.push(`/folders/${folder.name}`);
+                  }}
+                  className="hover:bg-primary/10 hover:text-primary cursor-pointer"
                 >
                   Open
                 </DropdownMenuItem>
@@ -54,6 +73,7 @@ const FolderCard = ({
                       openRenameModal();
                       setOpenSideModal(false);
                     }}
+                    className="hover:bg-primary/10 hover:text-primary cursor-pointer"
                   >
                     Rename
                   </DropdownMenuItem>
@@ -62,27 +82,34 @@ const FolderCard = ({
             </DropdownMenu>
           </div>
 
-          <div className="flex h-full items-center justify-center relative z-20">
+          {firstPhoto ? (
+            // Show first photo as folder thumbnail
             <Image
-              src={"/folder_thumbnail.png"}
-              width={200}
-              height={200}
-              alt="Folder Thumbnail"
+              src={firstPhoto.link}
+              alt={folder.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              loader={cloudinaryLoader}
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
-          </div>
+          ) : (
+            // Show placeholder with logo (no shimmer)
+            <div
+              className={`absolute inset-0 bg-linear-to-br ${gradient} flex items-center justify-center`}
+            >
+              <Logo className="text-foreground/20" size="lg" />
+            </div>
+          )}
         </div>
 
         {/* Folder Info */}
-        <div className="p-4">
+        <div className="p-4 glass border-t border-border/30">
           <h3
-            className="truncate font-medium text-card-foreground"
+            className="truncate font-semibold text-foreground"
             title={folder.name}
           >
             {folder.name}
           </h3>
-          {/* <p className="mt-1 text-sm text-muted-foreground">
-          {folder.imageCount} {folder.imageCount === 1 ? "photo" : "photos"}
-        </p> */}
         </div>
       </div>
     </Link>

@@ -12,10 +12,10 @@ const EmptyFolder = () => {
       {
         <div className="flex flex-col items-center justify-center  min-h-fit text-center animate-in fade-in-50 duration-500">
           <div className="relative md:mb-6 mb-8 animate-in slide-in-from-top-4 duration-700 delay-150">
-            <div className="w-24 h-24  bg-gradient-to-br from-blue-100 to-blue-200 md:rounded-2xl rounded-3xl flex items-center justify-center mb-4 transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-xl">
+            <div className="w-24 h-24  bg-linear-to-br from-blue-100 to-blue-200 md:rounded-2xl rounded-3xl flex items-center justify-center mb-4 transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-xl">
               <FolderIcon className="md:w-12 md:h-12 w-16 h-16 text-blue-500 transition-all duration-300" />
             </div>
-            <div className="absolute md:-top-1 md:-right-1 -top-2 -right-2 md:w-8 md:h-8 w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 md:rounded-xl rounded-2xl flex items-center justify-center animate-bounce">
+            <div className="absolute md:-top-1 md:-right-1 -top-2 -right-2 md:w-8 md:h-8 w-12 h-12 bg-linear-to-br from-purple-100 to-purple-200 md:rounded-xl rounded-2xl flex items-center justify-center animate-bounce">
               <FolderPlusIcon className="w-4 h-4 text-purple-500" />
             </div>
           </div>

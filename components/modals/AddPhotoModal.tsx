@@ -26,9 +26,9 @@ const AddPhotoModal = ({
           // setOpen(isOpen);
         }}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md glass border-border/30 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle>Add Images to Folder</DialogTitle>
+            <DialogTitle className="text-xl">Add Images to Folder</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground text-center">
@@ -37,11 +37,11 @@ const AddPhotoModal = ({
             </p>
             <div className="space-y-3">
               <Card
-                className="cursor-pointer hover:bg-accent transition-colors"
+                className="cursor-pointer hover:bg-primary/5 transition-colors glass border-border/30"
                 onClick={handleUpload}
               >
                 <CardContent className="flex flex-col items-center md:space-x-4 gap-2 md:gap-0 p-4 md:flex-row">
-                  <div className="md:w-12 md:h-12 p-2 md:p-0 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <div className="md:w-12 md:h-12 p-2 md:p-0 bg-linear-to-br from-primary/10 to-accent/10 rounded-lg flex items-center justify-center">
                     <Upload className="w-6 h-6 text-primary" />
                   </div>
                   <div>
@@ -55,11 +55,11 @@ const AddPhotoModal = ({
 
               {folder && folder?.length > 0 && (
                 <Card
-                  className="cursor-pointer hover:bg-accent transition-colors"
+                  className="cursor-pointer hover:bg-primary/5 transition-colors glass border-border/30"
                   onClick={() => {}}
                 >
                   <CardContent className="flex items-center space-x-4 p-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-linear-to-br from-primary/10 to-accent/10 rounded-lg flex items-center justify-center">
                       <FolderOpen className="w-6 h-6 text-primary" />
                     </div>
                     <div>

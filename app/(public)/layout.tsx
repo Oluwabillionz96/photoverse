@@ -16,16 +16,16 @@ const Layout = ({ children }: { children: ReactNode }) => {
     : "";
   return (
     <>
-      <div className="flex items-center my-4 border-b pb-4  text-xl">
+      <div className="flex items-center mb-4 border-b border-border/30 pb-4 text-xl">
         <Button
           onClick={() => {
             router.back();
           }}
-          className="w-fit h-fit text-black bg-transparent hover:bg-transparent flex items-center justify-center"
+          className="w-fit h-fit bg-transparent hover:bg-transparent flex items-center justify-center text-foreground"
         >
           <FaArrowLeft />
         </Button>
-        <p className="">{currentPath}</p>
+        <p className="font-semibold">{currentPath}</p>
       </div>
       {children}
     </>

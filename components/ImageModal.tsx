@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "./ImageGrid";
 import { Button } from "./ui/button";
@@ -13,6 +12,8 @@ import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import { useToggleFavouriteMutation } from "@/services/api";
 import toast from "react-hot-toast";
+import Logo from "./Logo";
+import ShimmerSweep from "./shimmer-sweep";
 
 // interface Photo {
 //   id: number;
@@ -117,12 +118,12 @@ export function ImageModal({
 
       <div className="relative z-10 md:max-w-7xl md:max-h-[90vh] h-full w-full md:mx-4">
         {showOptions && (
-          <div className="absolute top-4 z-20 flex justify-between  w-full">
+          <div className="absolute top-4 z-20 flex justify-between items-center w-full px-4">
             <Button
               onClick={() => {
                 onClose();
               }}
-              className="  p-2 bg-transparent hover:bg-transparent text-white focus:outline focus:outline-white border-0 rounded-full "
+              className="p-2 bg-transparent hover:bg-white/10 text-white focus:outline-none border-0 rounded-full"
             >
               <div className="lg:hidden">
                 <ArrowLeft className="w-8 h-8" />
@@ -131,12 +132,54 @@ export function ImageModal({
                 <X className="w-8 h-8" />
               </div>
             </Button>
-            <Button
-              onClick={onClose}
-              className="  p-2 bg-transparent hover:bg-transparent text-white invisible"
-            >
-              <BsThreeDotsVertical />
-            </Button>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              {/* Download Button */}
+              <motion.a
+                href={
+                  photo?.link?.replace("/upload/", "/upload/fl_attachment/") ||
+                  ""
+                }
+                download
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-white/10 flex items-center justify-center transition-all"
+                title="Download"
+              >
+                <GrDownload className="w-5 h-5 text-white" />
+              </motion.a>
+
+              {/* Favorite Button */}
+              <motion.button
+                onClick={toggleIsFavourite}
+                disabled={isLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`w-10 h-10 rounded-full glass border transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed ${
+                  photo?.isFavourite
+                    ? "border-pink-500/50 bg-pink-500/20"
+                    : "border-white/20 hover:bg-white/10"
+                }`}
+                title={
+                  photo?.isFavourite
+                    ? "Remove from favorites"
+                    : "Add to favorites"
+                }
+              >
+                {photo?.isFavourite ? (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  >
+                    <FaHeart className="w-5 h-5 text-pink-500" />
+                  </motion.div>
+                ) : (
+                  <FaRegHeart className="w-5 h-5 text-white" />
+                )}
+              </motion.button>
+            </div>
           </div>
         )}
 
@@ -144,17 +187,40 @@ export function ImageModal({
 
         {/* Image Container */}
         {loading || isLoading ? (
-          <div className=" w-full h-full grid place-items-center">
+          <div className="w-full h-full grid place-items-center">
             <motion.div
-              initial={{ rotate: 0 }}
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "loop",
-              }}
-              className=" w-32 h-32 border-8 rounded-full border-b-blue-500 border-l-blue-500 border-t-green-500 border-r-green-500"
-            ></motion.div>
+              className="relative w-64 h-64 rounded-2xl bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center overflow-hidden"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Logo */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 0.6, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Logo className="text-foreground/40" size="lg" />
+              </motion.div>
+
+              {/* Shimmer effect */}
+
+              <ShimmerSweep duration={1.5} via="white/20" />
+
+              {/* Pulsing ring */}
+              <motion.div
+                className="absolute inset-0 border-4 border-primary/30 rounded-2xl"
+                animate={{
+                  scale: [1, 1.05, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </motion.div>
           </div>
         ) : (
           <div
@@ -183,35 +249,7 @@ export function ImageModal({
           </div>
         )}
 
-        {/* Image Info */}
-        {showOptions && (
-          <div className="absolute bottom-0 md:bottom-16 left-0 right-0 z-20">
-            <div className="bg-black/50 backdrop-blur-sm text-white p-4 flex justify-center  md:justify-center gap-6 md:w-[50vw] md:mx-auto">
-              <a
-                href={
-                  photo?.link?.replace("/upload/", "/upload/fl_attachment/") ||
-                  ""
-                }
-                download
-              >
-                <GrDownload />
-              </a>
-
-              <button className="bg-transparent" onClick={toggleIsFavourite}>
-                {photo?.isFavourite ? (
-                  <span className="text-pink-500">
-                    <FaHeart />
-                  </span>
-                ) : (
-                  <span className="text-white">
-                    <FaRegHeart />
-                  </span>
-                )}
-              </button>
-              {/* <FaRegTrashAlt /> */}
-            </div>
-          </div>
-        )}
+        {/* Navigation Buttons - Desktop */}
         <div className="absolute bottom-0 lg:flex justify-center gap-6 w-full z-20 hidden">
           <button
             onClick={() => {

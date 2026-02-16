@@ -1,10 +1,13 @@
 "use client";
-import { FolderIcon, ImageIcon, ImagePlusIcon } from "lucide-react";
+import { FolderIcon, ImageIcon, ImagePlusIcon, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
 import { RefObject } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import Logo from "../Logo";
+import ShimmerSweep from "../shimmer-sweep";
 
 const EmptyPhotos = ({
   handleUpload,
@@ -24,64 +27,173 @@ const EmptyPhotos = ({
       {files.length > 0 ? (
         <PhotosPreview files={files} setFiles={setFiles} ref={ref} />
       ) : (
-        <div className="flex flex-col items-center justify-center  min-h-fit text-center animate-in fade-in-50 duration-500">
-          <div className="relative md:mb-6 mb-8 animate-in slide-in-from-top-4 duration-700 delay-150">
-            <div className=" w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 md:rounded-2xl rounded-3xl flex items-center justify-center mb-4 transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-xl">
-              <ImageIcon className="w-12 h-12 text-green-500 transition-all duration-300" />
-            </div>
-            <div className="absolute md:-top-1 md:-right-1 -top-2 -right-2 md:w-8 md:h-8 w-12 h-12 bg-gradient-to-br from-pink-100 to-pink-200 md:rounded-xl rounded-2xl flex items-center justify-center animate-bounce">
-              <ImagePlusIcon className="md:w-4 sm:h-4 w-6 h-6 text-pink-500" />
-            </div>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 relative">
+          {/* Background decoration */}
+          <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+            <motion.div
+              className="absolute top-10 left-10 w-40 h-40 rounded-full bg-linear-to-br from-primary/30 to-transparent blur-3xl"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-linear-to-br from-accent/30 to-transparent blur-3xl"
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1,
+              }}
+            />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 md:text-xl md:mb-2">
-            No Photos yet
-          </h1>
-
-          <p className="text-gray-600 md:mb-6 mb-8 md:max-w-sm max-w-md leading-relaxed md:text-sm lg:text-[1rem] text-base md:px-4 px-0">
-            Upload your first photos to start building your collection.
-            Supported formats include JPG, PNG, GIF, and more.
-          </p>
-          <div className="flex flex-col md:flex-row gap-3 w-full justify-center items-center min-w-fit overflow-hidden md:w-[25%] lg:w-[15%] md:p-4">
-            <Button
-              className={`flex items-center justify-center space-x-2 
-                 " bg-green-500 hover:bg-green-600"
-             transition-all duration-200 hover:scale-105 hover:shadow-lg w-full md:w-auto`}
-              onClick={() => {
-                handleUpload(ref);
+          {/* Animated Icon */}
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", duration: 0.8 }}
+            className="relative mb-8 z-10"
+          >
+            <motion.div
+              animate={{
+                scale: [1, 1.05, 1],
               }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="w-32 h-32 rounded-3xl bg-linear-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center glass border border-border/30 shadow-2xl relative overflow-hidden"
             >
-              <>
-                <ImagePlusIcon className="w-4 h-4" />
+              <Logo className="text-primary relative z-10" size="lg" />
+
+              {/* Shimmer effect */}
+
+              <ShimmerSweep via="via-white/10 " duration={2} repeatDelay={1} />
+            </motion.div>
+
+            {/* Floating sparkles */}
+            <motion.div
+              animate={{
+                y: [-5, 5, -5],
+                rotate: [0, 10, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-linear-to-br from-accent/30 to-primary/30 flex items-center justify-center glass border border-accent/30 shadow-lg"
+            >
+              <Sparkles className="w-5 h-5 text-accent" />
+            </motion.div>
+
+            {/* Additional floating icon */}
+            <motion.div
+              animate={{
+                y: [5, -5, 5],
+                rotate: [0, -10, 0],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5,
+              }}
+              className="absolute -bottom-2 -left-2 w-10 h-10 rounded-xl bg-linear-to-br from-primary/30 to-accent/30 flex items-center justify-center glass border border-primary/30 shadow-lg"
+            >
+              <ImageIcon className="w-5 h-5 text-primary" />
+            </motion.div>
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl md:text-4xl font-bold bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4 z-10 relative"
+          >
+            No Photos Yet
+          </motion.h1>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-muted-foreground mb-8 max-w-md text-base md:text-lg z-10 relative"
+          >
+            Start building your collection by uploading your first photos.
+            All formats supported.
+          </motion.p>
+
+          {/* Action Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto z-10 relative"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                className="w-full sm:w-auto bg-linear-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-lg shadow-primary/50 px-8 py-6 text-base"
+                onClick={() => {
+                  handleUpload(ref);
+                }}
+              >
+                <ImagePlusIcon className="w-5 h-5 mr-2" />
                 Upload Photos
-              </>
-            </Button>
-            <Button
-              variant="outline"
-              className={`flex items-center justify-center space-x-2 
-                bg-transparent
-             transition-all w-full md:w-auto duration-200 hover:scale-105 hover:shadow-md`}
-              onClick={() => {
-                router.push("/folders");
-              }}
+              </Button>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto glass border-border/30 hover:border-primary/50 hover:bg-primary/10 px-8 py-6 text-base"
+                onClick={() => {
+                  router.push("/folders");
+                }}
+              >
+                <FolderIcon className="w-5 h-5 mr-2" />
+                Browse Folders
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Quick Tip */}
+          {!isMobile && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="mt-12 p-6 glass border border-border/30 rounded-2xl max-w-md z-10 relative"
             >
-              <>
-                <FolderIcon className="w-4 h-4" />
-                <span>Browse Folders</span>
-              </>
-            </Button>
-          </div>
-          {!isMobile ? (
-            <div className="md:mt-8 mt-12 md:p-4 p-6 bg-gray-50 md:rounded-xl rounded-2xl md:max-w-sm max-w-md md:w-full w-auto animate-in slide-in-from-bottom-4  hover:bg-gray-100 transition-colors duration-300">
-              <h3 className="font-semibold text-gray-900 mb-2 md:text-sm text-base">
-                Quick tip
-              </h3>
-              <p className="md:text-xs text-sm text-gray-600">
-                You can drag and drop files directly into this area, or use the
-                upload button to browse your device.
-              </p>
-            </div>
-          ) : null}
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-foreground mb-1">
+                    Quick Tip
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Drag and drop files directly, or click the upload button to
+                    browse your device.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
       )}
     </>

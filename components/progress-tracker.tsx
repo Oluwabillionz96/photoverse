@@ -43,9 +43,9 @@ const ProgressTracker = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full left-0 right-0 px-2 md:px-0 bg-black/50 backdrop-blur-md bottom-0 flex justify-center items-center fixed top-0"
+      className="w-full left-0 right-0 px-2 md:px-0 glass backdrop-blur-xl bottom-0 flex justify-center items-center fixed top-0"
     >
-      <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl border border-gray-200 p-6">
+      <div className="glass border border-border/30 w-full max-w-sm rounded-2xl shadow-2xl p-6">
         {/* Icon and Header */}
         <div className="flex items-center gap-4 mb-6">
           <motion.div
@@ -62,27 +62,25 @@ const ProgressTracker = ({
               duration: 2,
               ease: "easeInOut",
             }}
-            className={`flex-shrink-0 w-12 h-12 bg-gradient-to-br ${isError ? "from-red-50 to-red-100" : "from-green-50 to-green-100 "} rounded-xl flex items-center justify-center text-2xl shadow-sm`}
+            className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg ${
+              isError
+                ? "bg-linear-to-br from-red-500/20 to-red-600/20 border border-red-500/30"
+                : "bg-linear-to-br from-primary/20 to-accent/20 border border-primary/30"
+            }`}
           >
             {isError ? "❌" : isComplete ? "✓" : "📸"}
           </motion.div>
 
           <div className="flex-1 min-w-0">
             <h2
-              className={`text-lg font-bold ${isError ? "text-red-700" : "text-green-700"} mb-1`}
+              className={`text-lg font-bold mb-1 ${
+                isError
+                  ? "text-red-400"
+                  : "bg-linear-to-r from-primary to-accent bg-clip-text text-transparent"
+              }`}
             >
               {isError ? "Upload Failed" : "Uploading Photos"}
             </h2>
-            {/* <motion.p
-              key={uploadedPhotos}
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-sm text-gray-600"
-            >
-              {isComplete
-                ? `${totalPhotos} photos uploaded`
-                : `${uploadedPhotos} of ${totalPhotos} photos`}
-            </motion.p> */}
           </div>
         </div>
 
@@ -90,7 +88,7 @@ const ProgressTracker = ({
         {!isError && (
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-medium text-gray-500">
+              <span className="text-xs font-medium text-muted-foreground">
                 Progress
               </span>
               <motion.span
@@ -98,18 +96,18 @@ const ProgressTracker = ({
                 initial={{ scale: 1.3, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.2 }}
-                className="text-sm font-bold text-green-700"
+                className="text-sm font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent"
               >
                 {progress}%
               </motion.span>
             </div>
 
-            <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="relative h-2 glass rounded-full overflow-hidden border border-border/30">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 via-green-600 to-green-700 rounded-full"
+                className="absolute top-0 left-0 h-full bg-linear-to-r from-primary to-accent rounded-full shadow-lg shadow-primary/50"
               />
               <motion.div
                 animate={{
@@ -120,7 +118,7 @@ const ProgressTracker = ({
                   duration: 1.5,
                   ease: "linear",
                 }}
-                className="absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                className="absolute top-0 left-0 h-full w-1/3 bg-linear-to-r from-transparent via-white/40 to-transparent"
               />
             </div>
           </div>
@@ -134,7 +132,7 @@ const ProgressTracker = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-gray-50 rounded-lg mb-4"
+              className="flex items-center justify-center gap-2 py-3 px-4 glass border border-border/30 rounded-lg mb-4"
             >
               <motion.div
                 animate={{ rotate: 360 }}
@@ -143,9 +141,9 @@ const ProgressTracker = ({
                   duration: 1,
                   ease: "linear",
                 }}
-                className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full"
+                className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full"
               />
-              <span className="text-sm text-gray-600 font-medium">
+              <span className="text-sm text-foreground font-medium">
                 Uploading...
               </span>
             </motion.div>
@@ -155,7 +153,7 @@ const ProgressTracker = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center justify-center gap-4 py-3 px-4 bg-gray-50 rounded-lg mb-4"
+              className="flex items-center justify-center gap-4 py-3 px-4 glass border border-border/30 rounded-lg mb-4"
             >
               <motion.div
                 animate={{ rotate: 360 }}
@@ -164,9 +162,9 @@ const ProgressTracker = ({
                   duration: 1,
                   ease: "linear",
                 }}
-                className="w-8 aspect-square border-2 border-green-500 rounded-full border-t-transparent"
+                className="w-8 aspect-square border-2 border-primary rounded-full border-t-transparent"
               />
-              <span className="text-xs text-gray-600 font-medium">
+              <span className="text-xs text-muted-foreground font-medium">
                 Your files are being processed. This may take a moment.
               </span>
             </motion.div>
@@ -176,7 +174,7 @@ const ProgressTracker = ({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="py-3 px-4 bg-red-50 border border-red-200 rounded-lg mb-4 text-center"
+              className="py-3 px-4 glass border border-red-500/30 rounded-lg mb-4 text-center"
             >
               <motion.div
                 animate={{
@@ -190,7 +188,7 @@ const ProgressTracker = ({
               >
                 💀
               </motion.div>
-              <p className="text-sm text-red-800 font-semibold">
+              <p className="text-sm text-red-400 font-semibold">
                 Upload Failed: An Error Occured
               </p>
             </motion.div>
@@ -200,7 +198,7 @@ const ProgressTracker = ({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="py-3 px-4 bg-green-50 border border-green-200 rounded-lg mb-4 text-center"
+              className="py-3 px-4 glass border border-primary/30 rounded-lg mb-4 text-center"
             >
               <motion.div
                 animate={{
@@ -214,7 +212,7 @@ const ProgressTracker = ({
               >
                 🎉
               </motion.div>
-              <p className="text-sm text-green-800 font-semibold">
+              <p className="text-sm bg-linear-to-r from-primary to-accent bg-clip-text text-transparent font-semibold">
                 Upload complete!
               </p>
             </motion.div>
@@ -229,7 +227,11 @@ const ProgressTracker = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleDone}
-            className={`w-full py-2.5 px-4 rounded-lg font-semibold ${isError ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white transition-all duration-200 text-sm shadow-sm`}
+            className={`w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-200 text-sm shadow-lg ${
+              isError
+                ? "bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-red-500/50"
+                : "bg-linear-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-primary/50"
+            }`}
           >
             {isError ? "Back" : " Done"}
           </motion.button>
