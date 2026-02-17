@@ -25,12 +25,6 @@ const FolderCard = ({
   const router = useRouter();
   const [openSideModal, setOpenSideModal] = useState(false);
 
-  // Get first photo from folder's photos array
-  const firstPhoto =
-    Array.isArray(folder.photos) && folder.photos.length > 0
-      ? folder.photos[0]
-      : null;
-
   // Get consistent gradient for this folder
   const gradient = getRandomGradient(folder._id);
 
@@ -82,10 +76,10 @@ const FolderCard = ({
             </DropdownMenu>
           </div>
 
-          {firstPhoto ? (
+          {folder.photos && folder.photos.length > 0 ? (
             // Show first photo as folder thumbnail
             <Image
-              src={firstPhoto.link}
+              src={folder.photos[folder.photos.length - 1].link}
               alt={folder.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

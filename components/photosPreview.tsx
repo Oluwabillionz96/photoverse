@@ -9,6 +9,8 @@ import ProgressTracker from "./progress-tracker";
 import { handlePhotosUploads } from "@/lib/utils/handlePhotoUpload";
 import { useDispatch } from "react-redux";
 import { PhotoverseAPI } from "@/services/api";
+import { handleImageError, handleImageLoad } from "@/lib/utils";
+import PlaceHolder from "./placeholder";
 
 export function formatFileSize(bytes: number) {
   if (bytes === 0) return "0 bytes";
@@ -38,10 +40,18 @@ const PhotosPreview = ({
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const [isError, setIsError] = useState(false);
+  const [imageStates, setImageStates] = useState<
+    Record<string, "loading" | "loaded" | "error">
+  >({});
 
   useEffect(() => {
     const urls = files.map((item) => URL.createObjectURL(item));
     setPreview(urls);
+    const initialStates: Record<string, "loading" | "loaded" | "error"> = {};
+    urls.forEach((_, index) => {
+      initialStates[`Image${index}`] = "loading";
+    });
+    setImageStates(initialStates);
 
     return () => urls.forEach((item) => URL.revokeObjectURL(item));
   }, [files]);
@@ -128,42 +138,65 @@ const PhotosPreview = ({
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   <AnimatePresence mode="sync">
-                    {files.map((item, index) => (
-                      <motion.div
-                        key={`${item.name} ${item.lastModified}`}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className="relative group"
-                      >
+                    {files.map((item, index) => {
+                      const imageState =
+                        imageStates[`image${index}`] || "loading";
+                      const showPlaceholder = imageState !== "loaded";
+                      return (
                         <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          className="aspect-square rounded-xl overflow-hidden glass border border-border/30 hover:border-primary/50 transition-all relative"
+                          key={`${item.name} ${item.lastModified}`}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                          className="relative group"
                         >
-                          <Image
-                            src={preview[index]}
-                            alt={files[index].name || "Uploaded image preview"}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            fill
-                          />
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            className="aspect-square rounded-xl overflow-hidden glass border border-border/30 hover:border-primary/50 transition-all relative"
+                          >
+                            {showPlaceholder && (
+                              <PlaceHolder imageState={imageState} />
+                            )}
+                            <Image
+                              src={preview[index]}
+                              alt={
+                                files[index].name || "Uploaded image preview"
+                              }
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              fill
+                              onLoad={(e) => {
+                                handleImageLoad(
+                                  `image${index}`,
+                                  e,
+                                  setImageStates,
+                                );
+                              }}
+                              onError={() => {
+                                handleImageError(
+                                  `image${index}`,
+                                  setImageStates,
+                                );
+                              }}
+                            />
+                          </motion.div>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => {
+                              const newFiles = [...files];
+                              newFiles.splice(index, 1);
+                              setFiles([...newFiles]);
+                            }}
+                            disabled={isLoading}
+                            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
+                          >
+                            <XIcon className="w-4 h-4 text-white" />
+                          </motion.button>
                         </motion.div>
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => {
-                            const newFiles = [...files];
-                            newFiles.splice(index, 1);
-                            setFiles([...newFiles]);
-                          }}
-                          disabled={isLoading}
-                          className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
-                        >
-                          <XIcon className="w-4 h-4 text-white" />
-                        </motion.button>
-                      </motion.div>
-                    ))}
+                      );
+                    })}
                   </AnimatePresence>
                 </div>
               </div>

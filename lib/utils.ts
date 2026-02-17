@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { Dispatch, SetStateAction, SyntheticEvent } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -33,6 +34,33 @@ export const PLACEHOLDER_GRADIENTS = [
  * @returns Tailwind gradient class string
  */
 export function getRandomGradient(id: string): string {
-  const index = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % PLACEHOLDER_GRADIENTS.length;
+  const index =
+    id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+    PLACEHOLDER_GRADIENTS.length;
   return PLACEHOLDER_GRADIENTS[index];
 }
+
+export const handleImageLoad = (
+  imageId: string,
+  event: SyntheticEvent<HTMLImageElement>,
+  setImageStates: Dispatch<
+    SetStateAction<Record<string, "loading" | "loaded" | "error">>
+  >,
+) => {
+  // Check if image actually loaded with valid dimensions
+  const img = event.currentTarget;
+  if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+    setImageStates((prev) => ({ ...prev, [imageId]: "loaded" }));
+  } else {
+    setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
+  }
+};
+
+  export const handleImageError = (
+    imageId: string,
+    setImageStates: Dispatch<
+      SetStateAction<Record<string, "loading" | "loaded" | "error">>
+    >,
+  ) => {
+    setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
+  };

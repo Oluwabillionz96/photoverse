@@ -1,6 +1,6 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { MouseEvent, SyntheticEvent, useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,10 +10,11 @@ import {
 } from "@/lib/slices/photoSlice";
 import { FaHeart } from "react-icons/fa";
 import { Rootstate } from "@/lib/store";
-import { motion } from "framer-motion";
-import Logo from "./Logo";
-import { getRandomGradient } from "@/lib/utils";
-import ShimmerSweep from "./shimmer-sweep";
+import {
+  handleImageError,
+  handleImageLoad,
+} from "@/lib/utils";
+import PlaceHolder from "./placeholder";
 
 export const cloudinaryLoader = ({
   src,
@@ -81,23 +82,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     month[uploadDate].push(item);
   });
 
-  const handleImageLoad = (
-    imageId: string,
-    event: SyntheticEvent<HTMLImageElement>,
-  ) => {
-    // Check if image actually loaded with valid dimensions
-    const img = event.currentTarget;
-    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-      setImageStates((prev) => ({ ...prev, [imageId]: "loaded" }));
-    } else {
-      setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
-    }
-  };
-
-  const handleImageError = (imageId: string) => {
-    setImageStates((prev) => ({ ...prev, [imageId]: "error" }));
-  };
-
   return (
     <>
       <div className="space-y-4">
@@ -123,23 +107,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                     >
                       {/* Placeholder - shows while loading or on error */}
                       {showPlaceholder && (
-                        <div
-                          className={`absolute inset-0 bg-linear-to-br ${getRandomGradient(item._id)} z-10 flex items-center justify-center`}
-                        >
-                          {/* Logo in center */}
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 0.4, scale: 1 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <Logo className="text-foreground/30" size="lg" />
-                          </motion.div>
-
-                          {/* Shimmer effect for loading */}
-                          {imageState === "loading" && (
-                            <ShimmerSweep duration={1.5} via="via-white/10" />
-                          )}
-                        </div>
+                        <PlaceHolder id={item._id} imageState={imageState} />
                       )}
 
                       <Image
@@ -152,8 +120,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                         }`}
                         sizes="33vw"
                         loader={cloudinaryLoader}
-                        onLoad={(e) => handleImageLoad(item._id, e)}
-                        onError={() => handleImageError(item._id)}
+                        onLoad={(e) =>
+                          handleImageLoad(item._id, e, setImageStates)
+                        }
+                        onError={() =>
+                          handleImageError(item._id, setImageStates)
+                        }
                       />
 
                       {item.isFavourite && (
