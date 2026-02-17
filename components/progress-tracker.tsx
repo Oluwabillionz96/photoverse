@@ -198,7 +198,7 @@ const ProgressTracker = ({
 
         {/* Reset Button */}
         {(isComplete && !isLoading) ||
-          (isError && (
+          (isError) && 
             <motion.button
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -213,7 +213,7 @@ const ProgressTracker = ({
             >
               {isError ? "Back" : " Done"}
             </motion.button>
-          ))}
+          }
       </div>
     </motion.div>
   );
