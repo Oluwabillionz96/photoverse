@@ -29,7 +29,7 @@ export async function handlePhotosUploads(
     const response = await axiosInstance.post("photos/add", formData, {
       onUploadProgress: (e: AxiosProgressEvent) => {
         if (e.progress !== undefined) {
-          setProgress(e.progress * 100);
+          setProgress(Math.floor(e.progress * 100));
         }
       },
     });
