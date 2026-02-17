@@ -197,22 +197,23 @@ const ProgressTracker = ({
         </AnimatePresence>
 
         {/* Reset Button */}
-        {isError || (isComplete && !isLoading) && (
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleDone}
-            className={`w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-200 text-sm shadow-lg ${
-              isError
-                ? "bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-red-500/50"
-                : "bg-linear-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-primary/50"
-            }`}
-          >
-            {isError ? "Back" : " Done"}
-          </motion.button>
-        )}
+        {(isComplete && !isLoading) ||
+          (isError && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDone}
+              className={`w-full py-2.5 px-4 rounded-lg font-semibold transition-all duration-200 text-sm shadow-lg ${
+                isError
+                  ? "bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-red-500/50"
+                  : "bg-linear-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-primary/50"
+              }`}
+            >
+              {isError ? "Back" : " Done"}
+            </motion.button>
+          ))}
       </div>
     </motion.div>
   );
