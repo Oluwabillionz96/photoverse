@@ -189,7 +189,7 @@ export function ImageModal({
         {loading || isLoading ? (
           <div className="w-full h-full grid place-items-center">
             <motion.div
-              className="relative w-64 h-64 rounded-2xl bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center overflow-hidden"
+              className="relative w-64 h-64 rounded-2xl bg-linear-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center overflow-hidden"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
