@@ -5,7 +5,7 @@ import { getCsrfToken } from "./utils";
 const axiosInstance = axios.create({
   baseURL: "/api/v1",
   withCredentials: true,
-  timeout: 10000,
+  timeout: 15000,
 });
 
 function reRoute() {
