@@ -15,29 +15,6 @@ const ProgressTracker = ({
   //   const [uploadedPhotos, setUploadedPhotos] = useState(0);
   const isComplete = progress === 100;
 
-  //   useEffect(() => {
-  //     if (isComplete) return;
-
-  //     const progressInterval = setInterval(() => {
-  //       setProgress((prev) => {
-  //         const newProgress = prev + 1;
-
-  //         // const photosUploaded = Math.floor((newProgress / 100) * totalPhotos);
-  //         // setUploadedPhotos(photosUploaded);
-
-  //         if (newProgress >= 100) {
-  //           setIsComplete(true);
-  //           clearInterval(progressInterval);
-  //           return 100;
-  //         }
-
-  //         return newProgress;
-  //       });
-  //     }, 60);
-
-  //     return () => clearInterval(progressInterval);
-  //   }, [isComplete, totalPhotos]);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -126,7 +103,7 @@ const ProgressTracker = ({
 
         {/* Status Message */}
         <AnimatePresence mode="wait">
-          {!isComplete ? (
+          {!isComplete && !isError ? (
             <motion.div
               key="uploading"
               initial={{ opacity: 0 }}
