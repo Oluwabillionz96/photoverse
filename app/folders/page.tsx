@@ -4,20 +4,16 @@ import FolderLoader from "@/components/loaders/FolderLoader";
 import Pagination from "@/components/Pagination";
 // import { Rootstate } from "@/lib/store";
 import { useGetFoldersQuery, useRenameFolderMutation } from "@/services/api";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 // import { useSelector } from "react-redux";
 import FolderCard from "@/components/FolderCard";
 import RenameFolderModal from "@/components/modals/RenameFolderModal";
 import toast from "react-hot-toast";
+import useCurrentPage from "@/hooks/useCurrentPage";
+import { useState } from "react";
 
 const Folders = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(
-    Number.parseInt(searchParams.get("page") || "1")
-  );
+  const { currentPage, setCurrentPage } = useCurrentPage();
+
   const [isRenameModalOpen, setIsRenamModalOpen] = useState(false);
   const [folderId, setFolderId] = useState("");
   const [renameFolder, { isLoading: isRenaming }] = useRenameFolderMutation();
@@ -43,12 +39,6 @@ const Folders = () => {
     }
     setIsRenamModalOpen(false);
   }
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", currentPage.toString());
-    router.replace(`${pathname}?${params.toString()}`);
-  }, [pathname, router, currentPage]);
 
   const { data, isLoading, isFetching } = useGetFoldersQuery({
     page: currentPage,

@@ -4,22 +4,11 @@ import EmptyFavourite from "@/components/EmptyStates/EmptyFavourite";
 import ImageGrid from "@/components/ImageGrid";
 import PhotoLoder from "@/components/loaders/PhotoLoader";
 import Pagination from "@/components/Pagination";
+import useCurrentPage from "@/hooks/useCurrentPage";
 import { useGetFavouriteQuery } from "@/services/api";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const FavouritesPage = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(
-    Number.parseInt(searchParams.get("page") || "1")
-  );
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", currentPage.toString());
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [currentPage, pathname, router]);
+  const { currentPage, setCurrentPage } = useCurrentPage();
   const { data, isLoading, isFetching } = useGetFavouriteQuery({ page: 1 });
   const photos = data?.photos;
   return (
