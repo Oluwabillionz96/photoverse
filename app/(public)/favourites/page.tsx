@@ -9,7 +9,9 @@ import { useGetFavouriteQuery } from "@/services/api";
 
 const FavouritesPage = () => {
   const { currentPage, setCurrentPage } = useCurrentPage();
-  const { data, isLoading, isFetching } = useGetFavouriteQuery({ page: 1 });
+  const { data, isLoading, isFetching } = useGetFavouriteQuery({
+    page: currentPage,
+  });
   const photos = data?.photos;
   return (
     <section className="px-2">

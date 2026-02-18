@@ -13,12 +13,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { X, FolderEdit } from "lucide-react";
 import Spinner from "../loaders/Spinner";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import FolderNameInput from "../FolderNameInput";
 
 const RenameFolderModal = ({
   isOpen,
@@ -34,14 +33,14 @@ const RenameFolderModal = ({
   loading: boolean;
 }) => {
   const [value, setValue] = useState("");
-  
+
   useEffect(() => {
     if (!isOpen) {
       setValue("");
       return;
     }
   }, [isOpen]);
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-md glass border-border/30 backdrop-blur-xl">
@@ -53,42 +52,20 @@ const RenameFolderModal = ({
             <DialogTitle className="text-xl">Rename Folder</DialogTitle>
           </div>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="folder_name" className="text-sm font-medium">
-              New folder name
-            </Label>
-            <Input
-              id="folder_name"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setValue(e.target.value)
-              }
-              value={value}
-              disabled={loading}
-              placeholder="Enter folder name..."
-              className="glass border-border/30 focus:border-primary/50 transition-all"
-              autoFocus
-            />
-            <AnimatePresence>
-              {value.trim() && value.length < 3 && (
-                <motion.p
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="text-xs text-red-400"
-                >
-                  Folder name must be at least 3 characters
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
+          <FolderNameInput
+            value={value}
+            onChange={setValue}
+            label="New folder name"
+            disabled={loading}
+          />
         </div>
-        
+
         <DialogFooter className="flex-row gap-2">
-          <motion.div 
+          <motion.div
             className="flex-1"
-            whileHover={{ scale: 1.02 }} 
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             <Button
@@ -103,7 +80,7 @@ const RenameFolderModal = ({
               {!loading ? "Rename" : "Renaming..."}
             </Button>
           </motion.div>
-          
+
           <DialogClose asChild>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
