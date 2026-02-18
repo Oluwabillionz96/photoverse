@@ -2,7 +2,7 @@
 import {
   ChangeEvent,
   ClipboardEvent,
-  FormEvent,
+  SubmitEvent,
   useEffect,
   useRef,
   useState,
@@ -19,7 +19,7 @@ const VerifyEmail = ({
   type,
 }: {
   email: string;
-  verifyOTP: (e: FormEvent, inputValue: string[]) => void;
+  verifyOTP: (e: SubmitEvent, inputValue: string[]) => void;
   isVerifying: boolean;
   type: "account_verification" | "account_recovery";
 }) => {
@@ -92,7 +92,7 @@ const VerifyEmail = ({
       <form
         className="grid grid-cols-6 gap-3 w-full"
         onPaste={handlePaste}
-        onSubmit={(e: FormEvent) => {
+        onSubmit={(e: SubmitEvent) => {
           verifyOTP(e, inputValue);
         }}
         id="email_verification"
@@ -135,7 +135,7 @@ const VerifyEmail = ({
         ))}
       </form>
       <Button
-        className="w-full h-12 rounded-xl text-primary-foreground font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all duration-300"
+        className="w-full h-12 rounded-xl text-primary-foreground font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all duration-300"
         disabled={
           inputValue.join("").length !== 6 ||
           !inputValue.join("").trim() ||

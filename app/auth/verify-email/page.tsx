@@ -3,20 +3,22 @@ import VerifyEmail from "@/components/VerifyEmail";
 import { Rootstate } from "@/lib/store";
 import { authApi } from "@/services/auth";
 import { AxiosError } from "axios";
-import { Mail, ArrowLeft, Shield } from "lucide-react";
+import { Mail, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useState, SubmitEvent } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import Logo from "@/components/Logo";
 import { motion } from "framer-motion";
+import AnimatedBackground from "@/components/animated-background";
+import BackButton from "@/components/back-button";
 
 export default function VerifyEmailPage() {
   const { email } = useSelector((state: Rootstate) => state.auth);
   const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
-  
-  const verifyOTP = async (e: FormEvent, inputValue: string[]) => {
+
+  const verifyOTP = async (e: SubmitEvent, inputValue: string[]) => {
     e.preventDefault();
     setIsVerifying(true);
     try {
@@ -36,51 +38,17 @@ export default function VerifyEmailPage() {
     }
   };
 
-   if (!email.trim()) {
-     router.push("/auth/login");
-   }
+  if (!email.trim()) {
+    router.push("/auth/login");
+  }
 
   return (
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Animated background */}
-      <div className="absolute inset-0 bg-background">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-        {Array.from({ length: 3 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-primary/5"
-            style={{
-              width: `${300 + i * 100}px`,
-              height: `${300 + i * 100}px`,
-              left: `${20 + i * 30}%`,
-              top: `${10 + i * 20}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      <AnimatedBackground />
 
       {/* Back Button */}
-      <motion.button
-        onClick={() => router.back()}
-        className="absolute top-6 left-6 z-50 p-3 rounded-xl glass border border-border/30 hover:border-primary/50 transition-all duration-300 group"
-        aria-label="Go back"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <ArrowLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-      </motion.button>
+      <BackButton handleClick={() => router.back()} />
 
       {/* Content */}
       <div className="w-full flex items-center justify-center p-6 sm:p-12 relative z-10">
@@ -113,7 +81,7 @@ export default function VerifyEmailPage() {
             >
               <Mail className="w-8 h-8 text-primary" />
             </motion.div>
-            
+
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
               Check your email
             </h2>
