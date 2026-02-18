@@ -41,6 +41,36 @@ A modern, cloud-based photo management platform built with Next.js 15, featuring
 
 **Photoverse** is a full-featured cloud photo management application that allows users to upload, organize, and access their photos from anywhere. Built with modern web technologies, it offers a beautiful dark-themed interface with smooth animations and an intuitive user experience.
 
+### 📸 Screenshots
+
+<div align="center">
+
+#### Landing Page
+![Hero Section](./public/screenshots/hero-section.png)
+
+#### Photo Gallery
+![Photo Gallery](./public/screenshots/photo-gallery.png)
+
+#### Folder Management
+![Folder Management](./public/screenshots/folder-management.png)
+
+#### Authentication
+<table>
+  <tr>
+    <td><img src="./public/screenshots/login-page.png" alt="Login Page" /></td>
+    <td><img src="./public/screenshots/register-page.png" alt="Register Page" /></td>
+  </tr>
+  <tr>
+    <td align="center">Login Page</td>
+    <td align="center">Register Page</td>
+  </tr>
+</table>
+
+#### Photo Upload
+![Photo Upload](./public/screenshots/photo-upload.png)
+
+</div>
+
 ### Why Photoverse?
 
 - **100% Free** - No hidden costs or premium tiers
