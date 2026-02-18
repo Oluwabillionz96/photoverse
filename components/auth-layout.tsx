@@ -122,7 +122,6 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
                   Or continue with email
                 </span>
               </div>
-              n
             </div>
             {children}
           </motion.div>
