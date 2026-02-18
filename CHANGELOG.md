@@ -89,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RTK Query caching
 
 ### Technical Stack
-- Next.js 15 with App Router
+- Next.js 16 with App Router
 - React 19
 - TypeScript 5
 - Tailwind CSS 4

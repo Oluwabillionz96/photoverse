@@ -18,7 +18,7 @@ Comprehensive guide to Photoverse's architecture, design patterns, and technical
 ### Technology Stack
 
 #### Frontend Core
-- **Next.js 15**: React framework with App Router
+- **Next.js 16**: React framework with App Router
 - **React 19**: UI library
 - **TypeScript 5**: Type-safe development
 - **Tailwind CSS 4**: Utility-first styling
