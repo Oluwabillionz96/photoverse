@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Photoverse Logo](./public/logo-with-text.png)
+![Photoverse Logo](./public/logo.png)
 
 **Your photos, everywhere you need them**
 
@@ -46,15 +46,19 @@ A modern, cloud-based photo management platform built with Next.js 15, featuring
 <div align="center">
 
 #### Landing Page
+
 ![Hero Section](./public/screenshots/hero-section.png)
 
 #### Photo Gallery
+
 ![Photo Gallery](./public/screenshots/photo-gallery.png)
 
 #### Folder Management
+
 ![Folder Management](./public/screenshots/folder-management.png)
 
 #### Authentication
+
 <table>
   <tr>
     <td><img src="./public/screenshots/login-page.png" alt="Login Page" /></td>
@@ -67,6 +71,7 @@ A modern, cloud-based photo management platform built with Next.js 15, featuring
 </table>
 
 #### Photo Upload
+
 ![Photo Upload](./public/screenshots/photo-upload.png)
 
 </div>
@@ -409,6 +414,7 @@ Photoverse provides a seamless photo upload experience:
 5. **Folder Assignment**: Upload directly to specific folders
 
 **Implementation Details:**
+
 - Uses `handleFileChange` utility for file validation
 - Cloudinary loader for optimized image delivery
 - Redux state management for upload progress
@@ -425,6 +431,7 @@ Organize your photos with a flexible folder system:
 5. **Folder Navigation**: Browse photos by folder
 
 **Implementation Details:**
+
 - RTK Query for folder CRUD operations
 - Optimistic updates for instant UI feedback
 - Folder validation with Zod schemas
@@ -455,6 +462,7 @@ Secure authentication with multiple flows:
    - Secure logout
 
 **Implementation Details:**
+
 - JWT tokens with HTTP-only cookies
 - CSRF tokens in request headers
 - Automatic token refresh on 401 errors
@@ -472,6 +480,7 @@ Beautiful photo grid with advanced features:
 6. **Grouped by Date**: Photos organized by upload month
 
 **Implementation Details:**
+
 - CSS Grid for responsive layout
 - Next.js Image component for optimization
 - Cloudinary loader for custom image sizes
@@ -488,10 +497,10 @@ The app uses Axios with automatic token refresh:
 ```typescript
 // lib/axios.ts
 const axiosInstance = axios.create({
-  baseURL: '/api/v1',
+  baseURL: "/api/v1",
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -499,7 +508,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   const csrfToken = getCsrfToken();
   if (csrfToken) {
-    config.headers['X-XSRF-TOKEN'] = csrfToken;
+    config.headers["X-XSRF-TOKEN"] = csrfToken;
   }
   return config;
 });
@@ -512,13 +521,13 @@ API endpoints are defined using RTK Query:
 ```typescript
 // services/api.ts
 export const PhotoverseAPI = createApi({
-  reducerPath: 'photoverse API',
+  reducerPath: "photoverse API",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['folders', 'photos', 'favourite'],
+  tagTypes: ["folders", "photos", "favourite"],
   endpoints: (builder) => ({
     getPhotos: builder.query<GetPhotoResponse, { page: number }>({
       query: ({ page }) => `photos?limit=60&page=${page}`,
-      providesTags: ['photos'],
+      providesTags: ["photos"],
     }),
     // ... more endpoints
   }),
@@ -622,10 +631,10 @@ Photoverse uses a custom dark theme with:
 ### Theme Colors
 
 ```css
---primary: oklch(0.72 0.28 240);     /* Electric blue */
---accent: oklch(0.68 0.22 180);      /* Cyan */
---background: oklch(0.16 0.03 240);  /* Dark blue-black */
---foreground: oklch(0.95 0.01 240);  /* Crisp white */
+--primary: oklch(0.72 0.28 240); /* Electric blue */
+--accent: oklch(0.68 0.22 180); /* Cyan */
+--background: oklch(0.16 0.03 240); /* Dark blue-black */
+--foreground: oklch(0.95 0.01 240); /* Crisp white */
 ```
 
 ### Custom Animations
