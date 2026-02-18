@@ -8,6 +8,7 @@ import ResetPassword from "@/components/forgot-password/reset-password";
 import PasswordResetSuccess from "@/components/forgot-password/password-reset-success";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
+import AnimatedBackground from "@/components/animated-background";
 
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState<
@@ -21,42 +22,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Animated background */}
-      <div className="absolute inset-0 bg-background">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10" />
-
-        {/* Floating circles */}
-        {Array.from({ length: 4 }).map((_, i) => (
-          <motion.div
-            key={`circle-${i}`}
-            className="absolute rounded-full bg-primary/8"
-            style={{
-              width: `${250 + i * 100}px`,
-              height: `${250 + i * 100}px`,
-              left: `${10 + i * 25}%`,
-              top: `${5 + i * 20}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.4, 0.7, 0.4],
-            }}
-            transition={{
-              duration: 8 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, oklch(var(--primary) / 0.4) 1px, transparent 1px)",
-            backgroundSize: "30px 30px",
-          }}
-        />
-      </div>
+      <AnimatedBackground />
 
       {/* Content */}
       <div className="w-full flex items-center justify-center p-6 sm:p-12 relative z-10">
