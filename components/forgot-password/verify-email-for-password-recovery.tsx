@@ -4,9 +4,9 @@ import VerifyEmail from "../VerifyEmail";
 import { useVerifyForgotPasswordOTPMutation } from "@/services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import toast from "react-hot-toast";
 import { Dispatch, FormEvent, SetStateAction } from "react";
 import { updateVerificationId } from "@/lib/slices/authSlice";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const VerifyPasswordRecoveryEmail = ({
   setStep,
@@ -22,41 +22,21 @@ const VerifyPasswordRecoveryEmail = ({
 
   async function verifyOTP(e: FormEvent, inputValue: string[]) {
     e.preventDefault();
-    try {
-      const response = await verifyForgotPasswordOTP({
+
+    const result = await handleApiMutation(
+      verifyForgotPasswordOTP({
         email,
         otp: inputValue.join(""),
-      });
+      })
+    );
 
-      if ("data" in response) {
-        toast.success(response?.data?.message);
-        dispatch(updateVerificationId(response?.data?.verificationId));
-        setStep("choice");
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
-
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred.";
-
-      toast.error(errorMessage);
-      console.error(
-        "Error in forgot password OTP verification request:",
-        error
+    if (result.success && result.data) {
+      dispatch(
+        updateVerificationId(
+          (result.data as { verificationId: string }).verificationId
+        )
       );
+      setStep("choice");
     }
   }
 

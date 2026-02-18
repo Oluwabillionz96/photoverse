@@ -9,8 +9,8 @@ import {
 } from "react";
 import { Button } from "./ui/button";
 import { useResendOTPMutation } from "@/services/api";
-import toast from "react-hot-toast";
 import Spinner from "./loaders/Spinner";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const VerifyEmail = ({
   email,
@@ -63,25 +63,11 @@ const VerifyEmail = ({
   }
 
   const resendOTP = async () => {
-    const response = await resend({ email, type });
-    if ("data" in response) {
-      toast.success(response?.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
+    const result = await handleApiMutation(resend({ email, type }));
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
+    if (result.success) {
+      setResendCode(60);
     }
-    setResendCode(60);
-    return;
   };
 
   return (

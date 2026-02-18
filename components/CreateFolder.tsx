@@ -6,6 +6,7 @@ import ImagePreviewModal from "./modals/ImagePreviewModal";
 import { handleFileChange } from "@/lib/utils/handleInputChange";
 import { useCreateFolderMutation } from "@/services/api";
 import toast from "react-hot-toast";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const CreateFolder = ({
   folderName,
@@ -32,38 +33,20 @@ const CreateFolder = ({
       return;
     }
 
-    try {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      files.forEach((file) => {
-        formData.append("images", file);
-      });
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
 
-      formData.append("name", folderName);
+    formData.append("name", folderName);
 
-      const response = await createNewFolder(formData);
+    const result = await handleApiMutation(createNewFolder(formData));
 
-      if ("data" in response) {
-        setFiles([]);
-        setFolderName("");
-        setModalStatus("");
-        toast.success(response.data?.message);
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
-
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-    } catch (error) {
-      console.log(error);
+    if (result.success) {
+      setFiles([]);
+      setFolderName("");
+      setModalStatus("");
     }
   }
 

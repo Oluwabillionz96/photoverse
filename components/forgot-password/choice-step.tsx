@@ -5,9 +5,9 @@ import { KeyRound, ArrowRight } from "lucide-react";
 import { useContinueToAccountMutation } from "@/services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import toast from "react-hot-toast";
 import { updateVerificationId } from "@/lib/slices/authSlice";
 import { useRouter } from "next/navigation";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 interface ChoiceStepProps {
   setStep: Dispatch<
@@ -21,34 +21,13 @@ const ChoiceStep = ({ setStep }: ChoiceStepProps) => {
   const { verificationId } = useSelector((state: Rootstate) => state.auth);
   const dispatch = useDispatch();
   const handleProceedToAccount = async () => {
-    try {
-      const response = await continueToAccount({ verificationId });
-      if ("data" in response) {
-        toast.success(response?.data?.message);
-        dispatch(updateVerificationId(""));
-        router.push("/folders");
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
+    const result = await handleApiMutation(
+      continueToAccount({ verificationId })
+    );
 
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred.";
-
-      toast.error(errorMessage);
-      console.error("Error in forgot password authentication request:", error);
+    if (result.success) {
+      dispatch(updateVerificationId(""));
+      router.push("/folders");
     }
   };
 

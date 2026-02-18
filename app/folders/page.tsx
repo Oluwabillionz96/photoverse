@@ -2,14 +2,12 @@
 import EmptyFolder from "@/components/EmptyStates/EmptyFolder";
 import FolderLoader from "@/components/loaders/FolderLoader";
 import Pagination from "@/components/Pagination";
-// import { Rootstate } from "@/lib/store";
 import { useGetFoldersQuery, useRenameFolderMutation } from "@/services/api";
-// import { useSelector } from "react-redux";
 import FolderCard from "@/components/FolderCard";
 import RenameFolderModal from "@/components/modals/RenameFolderModal";
-import toast from "react-hot-toast";
 import useCurrentPage from "@/hooks/useCurrentPage";
 import { useState } from "react";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const Folders = () => {
   const { currentPage, setCurrentPage } = useCurrentPage();
@@ -19,36 +17,19 @@ const Folders = () => {
   const [renameFolder, { isLoading: isRenaming }] = useRenameFolderMutation();
 
   async function handleRenameFolder(folderId: string, foldername: string) {
-    const payload = { id: folderId, foldername: foldername };
-    const response = await renameFolder(payload);
-    if ("data" in response) {
-      toast.success(response?.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
-      };
+    const result = await handleApiMutation(
+      renameFolder({ id: folderId, foldername })
+    );
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
+    if (result.success) {
+      setIsRenamModalOpen(false);
     }
-    setIsRenamModalOpen(false);
   }
 
   const { data, isLoading, isFetching } = useGetFoldersQuery({
     page: currentPage,
   });
   const folders = data?.folders;
-  // const { authenticated } = useSelector((state: Rootstate) => state.auth);
-
-  // if (!authenticated) {
-  //   return <FolderLoader />;
-  // }
 
   return (
     <section className=" pt-5 mx-2 h-fit md:py-20">

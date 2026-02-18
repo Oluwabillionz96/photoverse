@@ -9,9 +9,9 @@ import PasswordInput from "../Input/password-input";
 import { useResetPasswordMutation } from "@/services/api";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import toast from "react-hot-toast";
 import { Dispatch, SetStateAction } from "react";
 import { updateVerificationId } from "@/lib/slices/authSlice";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const ResetPassword = ({
   setStep,
@@ -52,38 +52,16 @@ const ResetPassword = ({
   const dispatch = useDispatch();
 
   const onSubmit = async (data: z.infer<typeof PasswordSchema>) => {
-    try {
-      const response = await resetPassword({
+    const result = await handleApiMutation(
+      resetPassword({
         verificationId,
         password: data.password,
-      });
+      })
+    );
 
-      if ("data" in response) {
-        toast.success(response?.data?.message);
-        dispatch(updateVerificationId(""));
-        setStep("success");
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
-
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred.";
-
-      toast.error(errorMessage);
-      console.error("Error in forgot password reset request:", error);
+    if (result.success) {
+      dispatch(updateVerificationId(""));
+      setStep("success");
     }
   };
 

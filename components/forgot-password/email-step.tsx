@@ -8,10 +8,10 @@ import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import toast from "react-hot-toast";
 import { Dispatch, SetStateAction } from "react";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 const EmailStep = ({
   setStep,
@@ -37,36 +37,11 @@ const EmailStep = ({
   const dispatch = useDispatch();
 
   async function onSubmit(data: z.infer<typeof EmailSchema>) {
-    try {
-      const response = await getForgotPasswordOTP(data);
+    const result = await handleApiMutation(getForgotPasswordOTP(data));
 
-      if ("data" in response) {
-        toast.success(response?.data?.message);
-        setStep("code");
-        dispatch(updateEmail(data.email));
-      } else if ("error" in response) {
-        const error = response.error as {
-          status?: number | string;
-          data?: { error: string };
-        };
-
-        const message =
-          error?.data?.error ||
-          (error?.status === "FETCH_ERROR"
-            ? "Network error. Please check your connection."
-            : "An unexpected error occurred.");
-
-        toast.error(message);
-      }
-    } catch (error) {
-      // Handle unexpected errors (network errors, runtime errors, etc.)
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An unexpected error occurred.";
-
-      toast.error(errorMessage);
-      console.error("Error in forgot password OTP request:", error);
+    if (result.success) {
+      setStep("code");
+      dispatch(updateEmail(data.email));
     }
   }
 

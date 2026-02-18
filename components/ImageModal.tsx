@@ -11,9 +11,9 @@ import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import { useToggleFavouriteMutation } from "@/services/api";
-import toast from "react-hot-toast";
 import Logo from "./Logo";
 import ShimmerSweep from "./shimmer-sweep";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 // interface Photo {
 //   id: number;
@@ -46,30 +46,15 @@ export function ImageModal({
   const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
 
   async function toggleIsFavourite() {
-    const payload = {
-      id: photo?._id,
-      isFavourite: !photo?.isFavourite,
-      folder: photo?.folder,
-    };
-
-    const response = await toggleFavourite(payload);
-    if ("data" in response) {
-      toast.success(response.data?.message);
-    } else if ("error" in response) {
-      const error = response.error as {
-        status?: number | string;
-        data?: { error: string };
+      const payload = {
+        id: photo?._id,
+        isFavourite: !photo?.isFavourite,
+        folder: photo?.folder,
       };
 
-      const message =
-        error?.data?.error ||
-        (error?.status === "FETCH_ERROR"
-          ? "Network error. Please check your connection."
-          : "An unexpected error occurred.");
-
-      toast.error(message);
+      await handleApiMutation(toggleFavourite(payload));
     }
-  }
+
 
   const handler = useSwipeable({
     onSwipedRight: () => {
