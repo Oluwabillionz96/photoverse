@@ -10,18 +10,22 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, FolderIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
+import Pagination from "@/components/Pagination";
+import useCurrentPage from "@/hooks/useCurrentPage";
 
 const Folder = () => {
   const params = useParams();
+    const { currentPage, setCurrentPage } = useCurrentPage();
   const foldername = Array.isArray(params.folderName)
     ? params.folderName[0]
     : params.folderName;
   const { data, isLoading, isFetching } = useGetFolderPhotosQuery({
     foldername: foldername?.replace("%20", " ") ?? "",
+    page: currentPage,
   });
   const { files, setFiles, ref } = useInputContext();
   const photos = data?.photos;
-  const { push} = useRouter();
+  const { push } = useRouter();
   const size = photos
     ? photos
         .map((item) => item.size)
@@ -29,6 +33,8 @@ const Folder = () => {
           return initial + current;
         }, 0)
     : 0;
+
+
 
   return (
     <section className="mx-2 h-fit md:py-4">
@@ -77,7 +83,14 @@ const Folder = () => {
         ) : isLoading || isFetching ? (
           <PhotoLoader />
         ) : photos && photos.length > 0 ? (
-          <ImageGrid photos={photos} route={`folders/${foldername}`} />
+          <>
+            <ImageGrid photos={photos} route={`folders/${foldername}`} />
+            <Pagination
+              totalPages={data?.totalPages}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </>
         ) : photos && photos.length < 1 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}

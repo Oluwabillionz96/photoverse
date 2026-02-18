@@ -100,7 +100,7 @@ const HeroSection = () => {
       <motion.div
         className="fixed w-[500px] h-[500px] pointer-events-none z-0"
         style={{
-          background: `radial-gradient(circle, oklch(0.72 0.28 240 / 0.06) 0%, oklch(0.68 0.22 180 / 0.04) 40%, transparent 70%)`,
+          background: `radial-linear(circle, oklch(0.72 0.28 240 / 0.06) 0%, oklch(0.68 0.22 180 / 0.04) 40%, transparent 70%)`,
         }}
         animate={{
           x: mousePosition.x - 250,
@@ -126,7 +126,7 @@ const HeroSection = () => {
               >
                 Your photos,
                 <motion.span
-                  className="text-gradient-primary"
+                  className="text-linear-primary"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
@@ -249,7 +249,7 @@ const HeroSection = () => {
                   ].map((imageUrl, i) => (
                     <motion.div
                       key={i}
-                      className="aspect-square rounded-xl relative border border-border/30 backdrop-blur-sm overflow-hidden relative group"
+                      className="aspect-square rounded-xl relative border border-border/30 backdrop-blur-sm overflow-hidden group"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.6 + i * 0.1, duration: 0.5 }}
@@ -265,29 +265,29 @@ const HeroSection = () => {
                         className="w-full h-full object-cover"
                         fill
                         onError={(e) => {
-                          // Fallback to gradient if image doesn't load
+                          // Fallback to linear if image doesn't load
                           const target = e.target as HTMLImageElement;
                           target.style.display = "none";
                           const parent = target.parentElement;
                           if (parent) {
                             parent.classList.add(
                               i === 0
-                                ? "bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500"
+                                ? "bg-linear-to-br from-blue-400 via-purple-500 to-pink-500"
                                 : i === 1
-                                  ? "bg-gradient-to-br from-green-400 via-blue-500 to-purple-600"
+                                  ? "bg-linear-to-br from-green-400 via-blue-500 to-purple-600"
                                   : i === 2
-                                    ? "bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500"
+                                    ? "bg-linear-to-br from-yellow-400 via-orange-500 to-red-500"
                                     : i === 3
-                                      ? "bg-gradient-to-br from-pink-400 via-red-500 to-yellow-500"
+                                      ? "bg-linear-to-br from-pink-400 via-red-500 to-yellow-500"
                                       : i === 4
-                                        ? "bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-500"
+                                        ? "bg-linear-to-br from-indigo-400 via-purple-500 to-pink-500"
                                         : i === 5
-                                          ? "bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500"
+                                          ? "bg-linear-to-br from-teal-400 via-cyan-500 to-blue-500"
                                           : i === 6
-                                            ? "bg-gradient-to-br from-orange-400 via-pink-500 to-red-500"
+                                            ? "bg-linear-to-br from-orange-400 via-pink-500 to-red-500"
                                             : i === 7
-                                              ? "bg-gradient-to-br from-violet-400 via-purple-500 to-indigo-500"
-                                              : "bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500",
+                                              ? "bg-linear-to-br from-violet-400 via-purple-500 to-indigo-500"
+                                              : "bg-linear-to-br from-emerald-400 via-teal-500 to-cyan-500",
                             );
                           }
                         }}
@@ -323,7 +323,7 @@ const HeroSection = () => {
 
               {/* Floating badge */}
               <motion.div
-                className="absolute -top-4 -right-4 bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg"
+                className="absolute -top-4 -right-4 bg-linear-to-r from-primary to-accent text-primary-foreground px-4 py-2 rounded-full text-sm font-medium shadow-lg"
                 initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}

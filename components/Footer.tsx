@@ -30,7 +30,7 @@ const Footer = () => {
           </p>
 
           {/* Divider */}
-          <div className="w-full max-w-xs h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <div className="w-full max-w-xs h-px bg-linear-to-r from-transparent via-border to-transparent" />
 
           {/* Copyright */}
           <div className="text-center text-sm text-muted-foreground">

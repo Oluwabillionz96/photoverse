@@ -53,7 +53,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="border-b border-border/20 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b border-border/20 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center space-x-3 group">
@@ -84,7 +84,7 @@ const Header = () => {
                   {item.label}
                   {/* Active indicator */}
                   {activeSection === item.id && (
-                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-linear-to-r from-primary to-accent rounded-full" />
                   )}
                 </button>
               ))}
@@ -103,7 +103,7 @@ const Header = () => {
               <Link href={user.isAuthenticated ? "/photos" : "/auth/register"}>
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 hover:cursor-pointer"
+                  className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 hover:cursor-pointer"
                 >
                   {user.isAuthenticated ? "Photos" : "Sign Up Free"}
                 </Button>

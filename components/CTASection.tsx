@@ -52,7 +52,7 @@ const CTASection = () => {
             viewport={{ once: true }}
           >
             Ready to organize your photos{" "}
-            <span className="text-gradient-primary">for free?</span>
+            <span className="text-linear-primary">for free?</span>
           </motion.h2>
 
           <motion.p
@@ -83,7 +83,7 @@ const CTASection = () => {
               >
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r cursor-pointer from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-lg px-8 py-6 animate-pulse-glow"
+                  className="bg-linear-to-r cursor-pointer from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-lg px-8 py-6 animate-pulse-glow"
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
                   {user.isAuthenticated ? "Create a folder" : "Sign Up Free"}
@@ -129,7 +129,7 @@ const CTASection = () => {
                 transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">
+                <div className="w-12 h-12 bg-linear-to-br from-primary/20 to-accent/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">
                   {item.icon}
                 </div>
                 <span className="text-muted-foreground font-medium">

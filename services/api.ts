@@ -114,8 +114,12 @@ export const PhotoverseAPI = createApi({
       query: ({ page }) => `folders?limit=12&page=${page}`,
       providesTags: ["folders"],
     }),
-    getFolderPhotos: builder.query<GetPhotoResponse, { foldername: string }>({
-      query: ({ foldername }) => `photos/${foldername}`,
+    getFolderPhotos: builder.query<
+      GetPhotoResponse,
+      { foldername: string; page: string | number }
+    >({
+      query: ({ foldername, page }) =>
+        `photos/${foldername}?limit=60&page=${page}`,
       providesTags: ["photos"],
     }),
     getOnePhoto: builder.query<Photo, { id: string }>({

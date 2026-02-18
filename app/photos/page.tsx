@@ -6,22 +6,11 @@ import Pagination from "@/components/Pagination";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import useCurrentPage from "@/hooks/useCurrentPage";
 
 const Photos = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(
-    Number.parseInt(searchParams.get("page") || "1"),
-  );
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", currentPage.toString());
-    router.replace(`${pathname}?${params.toString()}`);
-  }, [router, pathname, currentPage]);
+  const { currentPage, setCurrentPage } = useCurrentPage();
 
   const { files, setFiles, ref, openFileDialog } = useInputContext();
   const { data, isLoading, isFetching } = useGetPhotosQuery({

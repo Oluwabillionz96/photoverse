@@ -63,7 +63,7 @@ const FeaturesSection = () => {
             viewport={{ once: true }}
           >
             Everything you need for your{" "}
-            <span className="text-gradient-primary">photos</span>
+            <span className="text-linear-primary">photos</span>
           </motion.h2>
           <motion.p
             className="text-lg sm:text-xl text-muted-foreground text-pretty max-w-3xl mx-auto leading-relaxed"
@@ -91,11 +91,11 @@ const FeaturesSection = () => {
                 <CardContent className="p-6 space-y-4 h-full flex flex-col relative">
                   {/* Subtle shimmer effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-shimmer" />
+                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-primary/5 to-transparent animate-shimmer" />
                   </div>
 
                   <motion.div
-                    className="w-14 h-14 bg-gradient-to-br from-primary/30 to-accent/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 relative z-10"
+                    className="w-14 h-14 bg-linear-to-br from-primary/30 to-accent/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 relative z-10"
                     whileHover={{ rotate: 5 }}
                   >
                     <feature.icon className="h-7 w-7 text-primary" />
@@ -112,7 +112,7 @@ const FeaturesSection = () => {
 
                   {/* Enhanced hover effect */}
                   <motion.div
-                    className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="h-px bg-linear-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={{ scaleX: 0 }}
                     whileHover={{ scaleX: 1 }}
                     transition={{ duration: 0.3 }}
