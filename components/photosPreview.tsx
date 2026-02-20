@@ -12,6 +12,7 @@ import { PhotoverseAPI } from "@/services/api";
 import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import DragAndDropOverlay from "./drag-and-drop-overlay";
 
 export function formatFileSize(bytes: number) {
   if (bytes === 0) return "0 bytes";
@@ -139,24 +140,7 @@ const PhotosPreview = ({
 
               {/* Content - Scrollable */}
               <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                {/* Drag overlay inside preview */}
-                <AnimatePresence>
-                  {isDragging && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 z-10 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-2xl pointer-events-none"
-                    >
-                      <div className="glass border-2 border-dashed border-primary/50 rounded-2xl p-8 flex flex-col items-center gap-3">
-                        <UploadIcon className="w-16 h-16 text-primary" />
-                        <p className="text-lg font-semibold text-foreground">
-                          Drop to add more photos
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <DragAndDropOverlay isDragging={isDragging} isPreview />
 
                 <div className="flex items-center gap-2 mb-4">
                   <EyeIcon className="w-5 h-5 text-primary" />

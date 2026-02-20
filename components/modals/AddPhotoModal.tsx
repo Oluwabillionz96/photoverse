@@ -1,10 +1,7 @@
-"use client"
+"use client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { FolderOpen, Upload } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
-import { useDragAndDrop } from "@/hooks/useDragAndDrop";
-import { motion, AnimatePresence } from "framer-motion";
-import useInputContext from "@/hooks/useInputContext";
 // import { handleFileChange } from "@/lib/utils/handleInputChange";
 
 const AddPhotoModal = ({
@@ -18,16 +15,6 @@ const AddPhotoModal = ({
   handleUpload: () => void;
   setModalStatus: (arg: "" | "preview" | "select" | "foldername") => void;
 }) => {
-  const { setFiles, files } = useInputContext();
-
-  const { isDragging, dragHandlers } = useDragAndDrop({
-    onFilesDropped: (droppedFiles) => {
-      setFiles(droppedFiles);
-      setModalStatus("");
-    },
-    existingFiles: files,
-  });
-
   return (
     <>
       <Dialog
@@ -39,26 +26,7 @@ const AddPhotoModal = ({
           // setOpen(isOpen);
         }}
       >
-        <DialogContent className="sm:max-w-md glass border-border/30 backdrop-blur-xl" {...dragHandlers}>
-          {/* Drag overlay */}
-          <AnimatePresence>
-            {isDragging && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-lg pointer-events-none"
-              >
-                <div className="glass border-2 border-dashed border-primary/50 rounded-2xl p-8 flex flex-col items-center gap-3">
-                  <Upload className="w-16 h-16 text-primary" />
-                  <p className="text-lg font-semibold text-foreground">
-                    Drop photos here
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
+        <DialogContent className="sm:max-w-md glass border-border/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-xl">Add Images to Folder</DialogTitle>
           </DialogHeader>

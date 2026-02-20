@@ -7,16 +7,17 @@ import { Button } from "@/components/ui/button";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetFolderPhotosQuery } from "@/services/api";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, FolderIcon, Upload } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, FolderIcon } from "lucide-react";
+import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
 import Pagination from "@/components/Pagination";
 import useCurrentPage from "@/hooks/useCurrentPage";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import DragAndDropOverlay from "@/components/drag-and-drop-overlay";
 
 const Folder = () => {
   const params = useParams();
-    const { currentPage, setCurrentPage } = useCurrentPage();
+  const { currentPage, setCurrentPage } = useCurrentPage();
   const foldername = Array.isArray(params.folderName)
     ? params.folderName[0]
     : params.folderName;
@@ -42,39 +43,11 @@ const Folder = () => {
     existingFiles: files,
   });
 
-
-
   return (
     <section className="mx-2 h-fit md:py-4" {...dragHandlers}>
       <>
         {/* Drag and Drop Overlay */}
-        <AnimatePresence>
-          {isDragging && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-60 flex items-center justify-center bg-background/80 backdrop-blur-md pointer-events-none"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="glass border-2 border-dashed border-primary/50 rounded-3xl p-12 flex flex-col items-center gap-4"
-              >
-                <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                  <Upload className="w-12 h-12 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground">
-                  Drop your photos here
-                </h3>
-                <p className="text-muted-foreground">
-                  Release to add photos to {foldername?.replaceAll("%20", " ")}
-                </p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <DragAndDropOverlay isDragging={isDragging} />
 
         {files.length < 1 && (
           <motion.div

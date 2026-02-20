@@ -6,10 +6,10 @@ import Pagination from "@/components/Pagination";
 import PhotosPreview from "@/components/photosPreview";
 import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import useCurrentPage from "@/hooks/useCurrentPage";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
-import { Upload } from "lucide-react";
+import DragAndDropOverlay from "@/components/drag-and-drop-overlay";
 
 const Photos = () => {
   const { currentPage, setCurrentPage } = useCurrentPage();
@@ -136,33 +136,7 @@ const Photos = () => {
 
       <>
         {/* Drag and Drop Overlay */}
-        <AnimatePresence>
-          {isDragging && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-60 flex items-center justify-center bg-background/80 backdrop-blur-md pointer-events-none"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="glass border-2 border-dashed border-primary/50 rounded-3xl p-12 flex flex-col items-center gap-4"
-              >
-                <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                  <Upload className="w-12 h-12 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground">
-                  Drop your photos here
-                </h3>
-                <p className="text-muted-foreground">
-                  Release to add photos to your collection
-                </p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <DragAndDropOverlay isDragging={isDragging} />
 
         {files.length > 0 ? (
           <PhotosPreview files={files} setFiles={setFiles} ref={ref} />
