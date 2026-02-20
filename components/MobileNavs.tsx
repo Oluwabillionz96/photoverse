@@ -3,7 +3,13 @@ import useInputContext from "@/hooks/useInputContext";
 import useModalContext from "@/hooks/useModalContext";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { FaFolder, FaPlus, FaRegHeart, FaTrashAlt } from "react-icons/fa";
+import {
+  FaFolder,
+  FaPlus,
+  FaRegHeart,
+  FaTrashAlt,
+  FaCog,
+} from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import { motion } from "framer-motion";
 
@@ -56,7 +62,8 @@ const MobileNavs = ({
       {(pathName.startsWith("/folders") ||
         pathName.startsWith("/photos") ||
         pathName.startsWith("/trash") ||
-        pathName.startsWith("/favourites")) &&
+        pathName.startsWith("/favourites") ||
+        pathName.startsWith("/settings")) &&
         files.length < 1 && (
           <motion.nav
             className="fixed bottom-0 left-0 right-0 glass border-t border-border/30 flex justify-around items-center px-6 py-4 md:hidden z-50"
@@ -111,6 +118,19 @@ const MobileNavs = ({
             >
               <FaFolder className="w-6 h-6" />
               <span className="text-xs font-semibold">Folders</span>
+            </motion.button>
+
+            <motion.button
+              className={`flex flex-col items-center gap-1 transition-all ${
+                pathName.startsWith("/settings")
+                  ? "text-primary scale-110"
+                  : "text-muted-foreground"
+              }`}
+              onClick={() => router.push("/settings")}
+              whileTap={{ scale: 0.9 }}
+            >
+              <FaCog className="w-6 h-6" />
+              <span className="text-xs font-semibold">Settings</span>
             </motion.button>
           </motion.nav>
         )}

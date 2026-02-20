@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
+import { FaRegHeart, FaTrashAlt, FaCog } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { IoHome } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
@@ -35,6 +35,13 @@ export const navLinks = [
     ),
     label: "Trash",
     url: "/trash",
+  },
+  {
+    icon: ({ className, size, color }: Icon) => (
+      <FaCog className={className} size={size} color={color} />
+    ),
+    label: "Settings",
+    url: "/settings",
   },
 ];
 
