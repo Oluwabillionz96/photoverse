@@ -12,10 +12,12 @@ import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
 import Pagination from "@/components/Pagination";
 import useCurrentPage from "@/hooks/useCurrentPage";
+import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import DragAndDropOverlay from "@/components/drag-and-drop-overlay";
 
 const Folder = () => {
   const params = useParams();
-    const { currentPage, setCurrentPage } = useCurrentPage();
+  const { currentPage, setCurrentPage } = useCurrentPage();
   const foldername = Array.isArray(params.folderName)
     ? params.folderName[0]
     : params.folderName;
@@ -34,11 +36,19 @@ const Folder = () => {
         }, 0)
     : 0;
 
-
+  const { isDragging, dragHandlers } = useDragAndDrop({
+    onFilesDropped: (droppedFiles) => {
+      setFiles((prev) => [...prev, ...droppedFiles]);
+    },
+    existingFiles: files,
+  });
 
   return (
-    <section className="mx-2 h-fit md:py-4">
+    <section className="mx-2 h-fit md:py-4" {...dragHandlers}>
       <>
+        {/* Drag and Drop Overlay */}
+        <DragAndDropOverlay isDragging={isDragging} />
+
         {files.length < 1 && (
           <motion.div
             className="flex mb-6 items-center gap-4"

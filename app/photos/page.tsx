@@ -8,6 +8,8 @@ import useInputContext from "@/hooks/useInputContext";
 import { useGetPhotosQuery } from "@/services/api";
 import { motion } from "framer-motion";
 import useCurrentPage from "@/hooks/useCurrentPage";
+import { useDragAndDrop } from "@/hooks/useDragAndDrop";
+import DragAndDropOverlay from "@/components/drag-and-drop-overlay";
 
 const Photos = () => {
   const { currentPage, setCurrentPage } = useCurrentPage();
@@ -18,8 +20,18 @@ const Photos = () => {
   });
   const photos = data?.photos;
 
+  const { isDragging, dragHandlers } = useDragAndDrop({
+    onFilesDropped: (droppedFiles) => {
+      setFiles((prev) => [...prev, ...droppedFiles]);
+    },
+    existingFiles: files,
+  });
+
   return (
-    <section className="relative pt-5 mx-2 h-fit md:py-20 overflow-hidden">
+    <section
+      className="relative pt-5 mx-2 h-fit md:py-20 overflow-hidden"
+      {...dragHandlers}
+    >
       {/* Background Patterns */}
       <div className="fixed inset-0 pointer-events-none opacity-30 -z-10">
         {/* Floating Circles */}
@@ -123,6 +135,9 @@ const Photos = () => {
       </div>
 
       <>
+        {/* Drag and Drop Overlay */}
+        <DragAndDropOverlay isDragging={isDragging} />
+
         {files.length > 0 ? (
           <PhotosPreview files={files} setFiles={setFiles} ref={ref} />
         ) : isLoading || isFetching ? (
