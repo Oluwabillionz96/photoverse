@@ -1,6 +1,5 @@
 "use client";
 import NotFond from "@/components/NotFond";
-import { motion } from "framer-motion";
 
 const NotFoundPage = () => {
   return (
