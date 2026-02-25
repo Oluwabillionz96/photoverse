@@ -1,13 +1,10 @@
 "use client";
-import { FolderIcon, ImageIcon, ImagePlusIcon, Sparkles } from "lucide-react";
+import { FolderIcon, ImagePlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
 import { RefObject } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import Logo from "../Logo";
-import ShimmerSweep from "../shimmer-sweep";
 
 const EmptyPhotos = ({
   handleUpload,
@@ -133,8 +130,8 @@ const EmptyPhotos = ({
             transition={{ delay: 0.3 }}
             className="text-muted-foreground mb-8 max-w-md text-base md:text-lg z-10 relative"
           >
-            Start building your collection by uploading your first photos.
-            All formats supported.
+            Start building your collection by uploading your first photos. All
+            formats supported.
           </motion.p>
 
           {/* Action Buttons */}

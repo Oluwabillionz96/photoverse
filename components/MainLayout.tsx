@@ -49,11 +49,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
-  // const [logs, setLogs] = useState<DebugLog[]>([]);
-  // const addLog = (message: string, type: DebugLog["type"] = "info") => {
-  //   const timestamp = new Date().toLocaleTimeString();
-  //   setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
-  // };
+
   const initialize = async () => {
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {

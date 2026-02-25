@@ -59,7 +59,7 @@ const MobileNavs = ({
         pathName.startsWith("/favourites")) &&
         files.length < 1 && (
           <motion.nav
-            className="fixed bottom-0 left-0 right-0 glass border-t border-border/30 flex justify-around items-center px-6 py-4 md:hidden z-50"
+            className="fixed bottom-0 left-0 right-0 bg-background border-t border-border/30 flex justify-around items-center px-6 py-4 md:hidden z-50"
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
