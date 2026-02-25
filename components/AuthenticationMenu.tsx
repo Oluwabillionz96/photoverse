@@ -1,4 +1,3 @@
-import { motion, MotionConfig } from "framer-motion";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { Button } from "./ui/button";
@@ -58,42 +57,30 @@ const AuthenticationMenu = ({
   ];
 
   return (
-    <MotionConfig transition={{ duration: 0.4, ease: "easeInOut" }}>
-      {/* Beautiful backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 backdrop-blur-xl bg-background/80 z-50"
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 animate-in fade-in duration-200"
         onClick={() => setShowMenu(false)}
       />
 
-      {/* Beautiful sliding menu */}
-      <motion.div
-        className="w-full h-auto glass rounded-b-3xl z-50 fixed top-0 right-0 border-b border-border/30 shadow-2xl"
-        initial={{ y: -300, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -300, opacity: 0 }}
-      >
+      {/* Sliding menu */}
+      <div className="w-full h-auto bg-card rounded-b-2xl z-50 fixed top-0 right-0 border-b border-border shadow-lg animate-in slide-in-from-top duration-300">
         {/* Header with logo and close button */}
-        <div className="flex items-center justify-between p-6 border-b border-border/20">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center space-x-3">
-            <Logo className="text-primary" size="sm" />
-            <span className="text-lg font-bold text-foreground">
-              Photoverse
-            </span>
+            <Logo className="text-foreground" size="sm" />
+            <span className="text-lg font-bold">Photoverse</span>
           </div>
-          <motion.button
-            className="p-2 rounded-full hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+          <button
+            className="p-2 rounded-full hover:bg-secondary transition-colors"
             onClick={() => setShowMenu(false)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
           >
             <IoIosClose size={28} />
-          </motion.button>
+          </button>
         </div>
 
-        {/* Navigation links with indicators */}
+        {/* Navigation links */}
         <div className="p-6 space-y-4">
           <nav className="space-y-3 mb-6">
             {navItems.map((item) => (
@@ -107,73 +94,48 @@ const AuthenticationMenu = ({
                       ?.scrollIntoView({ behavior: "smooth" });
                   }, 300);
                 }}
-                className={`flex items-center justify-between w-full text-left py-3 px-4 rounded-xl transition-all duration-300 ${
+                className={`flex items-center justify-between w-full text-left py-3 px-4 rounded-lg transition-colors ${
                   activeSection === item.id
-                    ? "text-primary bg-primary/10 border border-primary/20"
-                    : "text-muted-foreground hover:text-primary hover:bg-muted/30"
+                    ? "text-foreground bg-secondary border border-border"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
                 }`}
               >
                 <span className="text-lg font-medium">{item.label}</span>
 
                 {/* Active indicator */}
-                <motion.div
-                  className={`flex items-center space-x-2 ${
-                    activeSection === item.id ? "opacity-100" : "opacity-0"
-                  }`}
-                  animate={{ opacity: activeSection === item.id ? 1 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                  <span className="text-xs font-semibold text-primary">
-                    ACTIVE
-                  </span>
-                </motion.div>
+                {activeSection === item.id && (
+                  <span className="text-xs font-semibold">ACTIVE</span>
+                )}
               </button>
             ))}
           </nav>
 
           {/* Action buttons */}
           <div className="space-y-3">
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 py-4 text-lg font-semibold"
-                onClick={() => {
-                  setShowMenu(false);
-                  onLoginClick();
-                }}
-              >
-                {user.isAuthenticated ? "Folders" : "Login"}
-              </Button>
-            </motion.div>
+            <Button
+              className="w-full py-4 text-lg font-semibold"
+              onClick={() => {
+                setShowMenu(false);
+                onLoginClick();
+              }}
+            >
+              {user.isAuthenticated ? "Folders" : "Sign In"}
+            </Button>
 
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                variant="outline"
-                className="w-full border-primary/30 hover:border-primary/60 hover:bg-primary/5 py-4 text-lg font-semibold"
-                onClick={() => {
-                  setShowMenu(false);
-                  onRegisterClick();
-                }}
-              >
-                {user.isAuthenticated ? "Photos" : "Sign Up Free"}
-              </Button>
-            </motion.div>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="flex justify-center space-x-6 pt-4 text-sm text-muted-foreground">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span>100% Free</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-              <span>Secure</span>
-            </div>
+            <Button
+              variant="outline"
+              className="w-full py-4 text-lg font-semibold"
+              onClick={() => {
+                setShowMenu(false);
+                onRegisterClick();
+              }}
+            >
+              {user.isAuthenticated ? "Photos" : "Get Started"}
+            </Button>
           </div>
         </div>
-      </motion.div>
-    </MotionConfig>
+      </div>
+    </>
   );
 };
 

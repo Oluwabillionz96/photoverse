@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
-import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
@@ -50,11 +49,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isCollapsed]);
   const { loading, user } = useSelector((state: Rootstate) => state.auth);
   const pathname = usePathname();
-  // const [logs, setLogs] = useState<DebugLog[]>([]);
-  // const addLog = (message: string, type: DebugLog["type"] = "info") => {
-  //   const timestamp = new Date().toLocaleTimeString();
-  //   setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
-  // };
+
   const initialize = async () => {
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {
@@ -144,27 +139,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     setFiles: setFiles,
                   }}
                 >
-                  <motion.header
-                    className="glass border-b border-border/30 fixed top-0 left-0 right-0 z-50"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                  >
+                  <header className="bg-[#18181b] border-b border-border fixed top-0 left-0 right-0 z-50">
                     <div className="flex justify-between items-center px-6 py-4">
                       {/* Left: Logo & Brand */}
-                      <Link href="/" className="flex items-center gap-3 group">
-                        <motion.div
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.6 }}
-                        >
-                          <Logo className="text-primary" size="md" />
-                        </motion.div>
+                      <Link href="/" className="flex items-center gap-3">
+                        <Logo className="text-white" size="md" />
                         <div className="hidden sm:block">
-                          <span className="text-xl font-bold text-foreground block">
+                          <span className="text-xl font-bold block">
                             Photoverse
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            Your photos, everywhere
                           </span>
                         </div>
                       </Link>
@@ -173,26 +155,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                       <div className="md:hidden">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <Button
-                                variant="outline"
-                                size="icon"
-                                className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 transition-all"
-                              >
-                                <FaUser className="w-4 h-4" />
-                              </Button>
-                            </motion.div>
+                            <Button variant="outline" size="icon">
+                              <FaUser className="w-4 h-4" />
+                            </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            className="glass border-border/30"
-                            align="end"
-                          >
+                          <DropdownMenuContent align="end">
                             <DropdownMenuItem
                               onClick={logout}
-                              className="cursor-pointer hover:bg-primary/10 hover:text-primary"
+                              className="cursor-pointer"
                             >
                               Log out
                             </DropdownMenuItem>
@@ -200,7 +170,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         </DropdownMenu>
                       </div>
                     </div>
-                  </motion.header>
+                  </header>
                   <SideNav collapsed={collapsed} setCollapsed={setCollapsed} />
                   <MobileNavs collapsed={collapsed}>{children}</MobileNavs>
                   <input

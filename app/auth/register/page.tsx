@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
 import { AxiosError } from "axios";
-import { motion } from "framer-motion";
 import AuthLayout from "@/components/auth-layout";
 
 const RegistrationPage = () => {
@@ -61,7 +60,7 @@ const RegistrationPage = () => {
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <FieldGroup>
           <Controller
             name="email"
@@ -147,26 +146,14 @@ const RegistrationPage = () => {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 cursor-pointer bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+          className="w-full h-12 font-semibold"
         >
           {loading ? (
-            <>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              >
-                <Sparkles className="w-4 h-4" />
-              </motion.div>
-              Creating account...
-            </>
+            "Creating account..."
           ) : (
             <>
               Sign up
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 ml-2" />
             </>
           )}
         </Button>

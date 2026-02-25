@@ -2,7 +2,6 @@
 import { RefObject, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EyeIcon, TrashIcon, UploadIcon, XIcon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Spinner from "./loaders/Spinner";
 import ProgressTracker from "./progress-tracker";
@@ -83,31 +82,23 @@ const PhotosPreview = ({
   };
 
   return (
-    <AnimatePresence>
+    <>
       {files.length > 0 && (
         <>
           {/* Backdrop with blur */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/80 backdrop-blur-md z-60"
+          <div
+            className="fixed inset-0 bg-background/80 backdrop-blur-md z-60 animate-in fade-in duration-200"
             onClick={handleClose}
           />
 
           {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: "spring", duration: 0.5 }}
-            className="fixed inset-4 md:inset-8 lg:inset-16 z-70 flex items-center justify-center"
+          <div className="fixed inset-4 md:inset-8 lg:inset-16 z-70 flex items-center justify-center animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300"
           >
             <div className="w-full h-full max-w-6xl glass border border-border/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
               {/* Header */}
               <div className="p-4 md:p-6 border-b border-border/30 flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl md:text-2xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground">
                     Ready to Upload
                   </h2>
                   <p className="text-sm md:text-base text-muted-foreground mt-1">
@@ -115,15 +106,13 @@ const PhotosPreview = ({
                     {formatFileSize(size)}
                   </p>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
+                <button
                   onClick={handleClose}
                   disabled={isLoading}
                   className="w-10 h-10 rounded-full glass border border-border/30 hover:border-red-500/50 hover:bg-red-500/10 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <XIcon className="w-5 h-5" />
-                </motion.button>
+                </button>
               </div>
 
               {/* Content - Scrollable */}
@@ -137,23 +126,16 @@ const PhotosPreview = ({
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  <AnimatePresence mode="sync">
                     {files.map((item, index) => {
                       const imageState =
                         imageStates[`image${index}`] || "loading";
                       const showPlaceholder = imageState !== "loaded";
                       return (
-                        <motion.div
+                        <div
                           key={`${item.name} ${item.lastModified}`}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
                           className="relative group"
                         >
-                          <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            className="aspect-square rounded-xl overflow-hidden glass border border-border/30 hover:border-primary/50 transition-all relative"
+                          <div className="aspect-square rounded-xl overflow-hidden glass border border-border/30 hover:border-primary/50 transition-all relative"
                           >
                             {showPlaceholder && (
                               <PlaceHolder imageState={imageState} />
@@ -180,10 +162,8 @@ const PhotosPreview = ({
                                 );
                               }}
                             />
-                          </motion.div>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                          </div>
+                          <button
                             onClick={() => {
                               const newFiles = [...files];
                               newFiles.splice(index, 1);
@@ -193,77 +173,60 @@ const PhotosPreview = ({
                             className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:opacity-0 md:group-hover:opacity-100"
                           >
                             <XIcon className="w-4 h-4 text-white" />
-                          </motion.button>
-                        </motion.div>
+                          </button>
+                        </div>
                       );
                     })}
-                  </AnimatePresence>
                 </div>
               </div>
 
               {/* Footer Actions */}
               <div className="p-4 md:p-6 border-t border-border/30 flex flex-col md:flex-row gap-3">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <Button
+                  variant="outline"
+                  className="w-full md:w-auto glass border-border/30 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={handleClose}
+                  disabled={isLoading}
                 >
-                  <Button
-                    variant="outline"
-                    className="w-full md:w-auto glass border-border/30 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-                    onClick={handleClose}
-                    disabled={isLoading}
-                  >
-                    <TrashIcon className="w-4 h-4 mr-2" />
-                    Clear All
-                  </Button>
-                </motion.div>
+                  <TrashIcon className="w-4 h-4 mr-2" />
+                  Clear All
+                </Button>
 
                 {files.length < 10 && (
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <Button
+                    onClick={() => ref.current?.click()}
+                    className="w-full md:w-auto glass bg-white border border-white hover:bg-white hover:border-white disabled:opacity-50"
+                    disabled={isLoading}
                   >
-                    <Button
-                      onClick={() => ref.current?.click()}
-                      className="w-full md:w-auto glass bg-primary/10 border border-primary/30 hover:bg-primary/20 hover:border-primary/50 disabled:opacity-50"
-                      disabled={isLoading}
-                    >
-                      <UploadIcon className="w-4 h-4 mr-2" />
-                      Add More Photos
-                    </Button>
-                  </motion.div>
+                    <UploadIcon className="w-4 h-4 mr-2" />
+                    Add More Photos
+                  </Button>
                 )}
 
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="md:ml-auto"
+                <Button
+                  className="w-full md:w-auto bg-white text-black hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg md:ml-auto"
+                  disabled={files.length < 1 || isLoading}
+                  onClick={() => {
+                    handlePhotosUploads(
+                      files,
+                      folder,
+                      setIsLoading,
+                      setProgress,
+                      setIsError,
+                    );
+                  }}
                 >
-                  <Button
-                    className="w-full md:w-auto bg-linear-to-r from-primary to-accent hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                    disabled={files.length < 1 || isLoading}
-                    onClick={() => {
-                      handlePhotosUploads(
-                        files,
-                        folder,
-                        setIsLoading,
-                        setProgress,
-                        setIsError,
-                      );
-                    }}
-                  >
-                    {isLoading ? (
-                      <Spinner />
-                    ) : (
-                      <UploadIcon className="w-4 h-4 mr-2" />
-                    )}
-                    {isLoading ? "Uploading" : "Upload"} {files.length} file
-                    {files.length > 1 && "s"}
-                  </Button>
-                </motion.div>
+                  {isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <UploadIcon className="w-4 h-4 mr-2" />
+                  )}
+                  {isLoading ? "Uploading" : "Upload"} {files.length} file
+                  {files.length > 1 && "s"}
+                </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Progress Tracker */}
           {progress > 0 && (
@@ -278,7 +241,7 @@ const PhotosPreview = ({
           )}
         </>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 

@@ -6,15 +6,15 @@ import HeroSection from "./Hero";
 
 const LandingPage = () => {
   return (
-    <>
+    <div className="min-h-screen">
       <Header />
-      <main>
+      <main className="pt-16">
         <HeroSection />
         <FeaturesSection />
         <CTASection />
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 
