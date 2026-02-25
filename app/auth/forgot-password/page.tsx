@@ -9,7 +9,7 @@ import PasswordResetSuccess from "@/components/forgot-password/password-reset-su
 import Logo from "@/components/Logo";
 import BackButton from "@/components/back-button";
 import { useRouter } from "next/navigation";
-import BackgroundPattern from "@/components/background-pattern";
+import BackgroundPattern from "@/components/background-patterns";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex relative bg-background overflow-hidden">
       {/* Background Pattern */}
       <BackgroundPattern />
-      
+
       {/* Back Button */}
       <BackButton handleClick={() => router.push("/auth/login")} />
 
@@ -70,7 +70,12 @@ export default function ForgotPasswordPage() {
                         key={stepName}
                         className="relative"
                         style={{
-                          left: index === 0 ? "0" : index === steps.length - 1 ? "auto" : "auto",
+                          left:
+                            index === 0
+                              ? "0"
+                              : index === steps.length - 1
+                                ? "auto"
+                                : "auto",
                           right: index === steps.length - 1 ? "0" : "auto",
                         }}
                       >
@@ -92,7 +97,9 @@ export default function ForgotPasswordPage() {
                         <div className="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
                           <span
                             className={`text-[10px] font-medium ${
-                              isCompleted ? "text-foreground" : "text-muted-foreground"
+                              isCompleted
+                                ? "text-foreground"
+                                : "text-muted-foreground"
                             }`}
                           >
                             {stepName === "email"
@@ -117,7 +124,9 @@ export default function ForgotPasswordPage() {
           {/* Steps */}
           <div>
             {step === "email" && <EmailStep setStep={setStep} />}
-            {step === "code" && <VerifyPasswordRecoveryEmail setStep={setStep} />}
+            {step === "code" && (
+              <VerifyPasswordRecoveryEmail setStep={setStep} />
+            )}
             {step === "choice" && <ChoiceStep setStep={setStep} />}
             {step === "reset" && <ResetPassword setStep={setStep} />}
             {step === "success" && <PasswordResetSuccess />}

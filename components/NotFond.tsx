@@ -3,7 +3,7 @@ import { Home, ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import BackgroundPattern from "./background-pattern";
+import BackgroundPattern from "./background-patterns";
 
 const NotFond = () => {
   const router = useRouter();
