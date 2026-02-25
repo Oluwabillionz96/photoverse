@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import useScreenSize from "@/hooks/useScreenSize";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,7 +54,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   //   const timestamp = new Date().toLocaleTimeString();
   //   setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
   // };
-  const initialize = useCallback(async () => {
+  const initialize = async () => {
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {
       return;
@@ -99,11 +99,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     } finally {
       dispatch(updateLoading(false));
     }
-  },[dispatch,pathname,router, user]);
+  };
 
   useEffect(() => {
     initialize();
-  }, [initialize]);
+  }, []);
 
   const isMobile = useScreenSize();
 
@@ -143,11 +143,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     setFiles: setFiles,
                   }}
                 >
-                  <header className="bg-background border-b border-border fixed top-0 left-0 right-0 z-50">
+                  <header className="bg-[#18181b] border-b border-border fixed top-0 left-0 right-0 z-50">
                     <div className="flex justify-between items-center px-6 py-4">
                       {/* Left: Logo & Brand */}
                       <Link href="/" className="flex items-center gap-3">
-                        <Logo className="text-foreground" size="md" />
+                        <Logo className="text-white" size="md" />
                         <div className="hidden sm:block">
                           <span className="text-xl font-bold block">
                             Photoverse
