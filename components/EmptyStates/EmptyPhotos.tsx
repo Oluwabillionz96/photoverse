@@ -1,10 +1,13 @@
 "use client";
-import { FolderIcon, ImagePlusIcon } from "lucide-react";
+import { FolderIcon, ImageIcon, ImagePlusIcon, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
 import { RefObject } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import ShimmerSweep from "../shimmer-sweep";
+import Logo from "../Logo";
 
 const EmptyPhotos = ({
   handleUpload,
@@ -70,7 +73,7 @@ const EmptyPhotos = ({
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="w-32 h-32 rounded-3xl bg-linear-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center glass border border-border/30 shadow-2xl relative overflow-hidden"
+              className="w-32 h-32 rounded-3xl bg-primary/20 flex items-center justify-center bg-secondary border border-border shadow-2xl relative overflow-hidden"
             >
               <Logo className="text-primary relative z-10" size="lg" />
 
@@ -90,7 +93,7 @@ const EmptyPhotos = ({
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-linear-to-br from-accent/30 to-primary/30 flex items-center justify-center glass border border-accent/30 shadow-lg"
+              className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center bg-secondary border border-accent shadow-lg"
             >
               <Sparkles className="w-5 h-5 text-accent" />
             </motion.div>
@@ -107,7 +110,7 @@ const EmptyPhotos = ({
                 ease: "easeInOut",
                 delay: 0.5,
               }}
-              className="absolute -bottom-2 -left-2 w-10 h-10 rounded-xl bg-linear-to-br from-primary/30 to-accent/30 flex items-center justify-center glass border border-primary/30 shadow-lg"
+              className="absolute -bottom-2 -left-2 w-10 h-10 rounded-xl bg-primary/30 flex items-center justify-center bg-secondary border border-primary shadow-lg"
             >
               <ImageIcon className="w-5 h-5 text-primary" />
             </motion.div>
@@ -143,7 +146,7 @@ const EmptyPhotos = ({
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
-                className="w-full sm:w-auto bg-linear-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-lg shadow-primary/50 px-8 py-6 text-base"
+                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/50 px-8 py-6 text-base"
                 onClick={() => {
                   handleUpload(ref);
                 }}
@@ -156,7 +159,7 @@ const EmptyPhotos = ({
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outline"
-                className="w-full sm:w-auto glass border-border/30 hover:border-primary/50 hover:bg-primary/10 px-8 py-6 text-base"
+                className="w-full sm:w-auto bg-secondary border-border hover:border-primary hover:bg-primary/10 px-8 py-6 text-base"
                 onClick={() => {
                   router.push("/folders");
                 }}
@@ -173,10 +176,10 @@ const EmptyPhotos = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 p-6 glass border border-border/30 rounded-2xl max-w-md z-10 relative"
+              className="mt-12 p-6 bg-secondary border border-border rounded-2xl max-w-md z-10 relative"
             >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
                   <Sparkles className="w-5 h-5 text-primary" />
                 </div>
                 <div className="text-left">

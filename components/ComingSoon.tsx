@@ -272,7 +272,7 @@ const ComingSoon = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="w-full h-full rounded-3xl bg-linear-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center glass border border-border/30 shadow-2xl relative overflow-hidden"
+            className="w-full h-full rounded-3xl bg-primary/20 flex items-center justify-center bg-secondary border border-border shadow-2xl relative overflow-hidden"
           >
             <Trash2 className="w-16 h-16 text-primary relative z-10" />
 
@@ -302,7 +302,7 @@ const ComingSoon = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-linear-to-br from-accent/30 to-primary/30 flex items-center justify-center glass border border-accent/30 shadow-lg"
+            className="absolute -top-2 -right-2 w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center bg-secondary border border-accent shadow-lg"
           >
             <Sparkles className="w-5 h-5 text-accent" />
           </motion.div>
@@ -318,7 +318,7 @@ const ComingSoon = () => {
               ease: "easeInOut",
               delay: 0.5,
             }}
-            className="absolute -bottom-2 -left-2 w-10 h-10 rounded-xl bg-linear-to-br from-primary/30 to-accent/30 flex items-center justify-center glass border border-primary/30 shadow-lg"
+            className="absolute -bottom-2 -left-2 w-10 h-10 rounded-xl bg-primary/30 flex items-center justify-center bg-secondary border border-primary shadow-lg"
           >
             <Clock className="w-5 h-5 text-primary" />
           </motion.div>
@@ -329,7 +329,7 @@ const ComingSoon = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-border/30 text-sm font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border text-sm font-medium"
         >
           <Sparkles className="w-4 h-4 text-primary" />
           Feature in Development
@@ -362,7 +362,7 @@ const ComingSoon = () => {
           transition={{ delay: 0.4 }}
           className="pt-8"
         >
-          <div className="inline-flex items-center gap-2 px-6 py-3 glass border border-border/30 rounded-2xl">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-secondary border border-border rounded-2xl">
             <Logo className="text-primary" size="sm" />
             <span className="text-sm text-muted-foreground">
               Stay tuned for updates

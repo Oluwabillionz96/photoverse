@@ -40,7 +40,7 @@ const Photos = () => {
             setFiles={setFiles}
             ref={ref}
           />
-        )}
+         )} 
       </>
     </section>
   );
