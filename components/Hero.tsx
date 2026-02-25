@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Image as ImageIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import BackgroundPattern from "./background-pattern";
 
 const HeroSection = () => {
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
