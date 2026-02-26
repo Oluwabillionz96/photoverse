@@ -85,8 +85,10 @@ const CreateFolder = ({
         multiple
         ref={fileInput}
         onChange={async (e) => {
-          await handleFileChange(e, files, setFiles);
-          setModalStatus("preview");
+          const success = await handleFileChange(e, files, setFiles);
+          if (success) {
+            setModalStatus("preview");
+          }
         }}
       />
     </>
