@@ -47,6 +47,9 @@ export const useDragAndDrop = ({
       const oversizedFiles: string[] = [];
       let limitReached = false;
 
+      // Track signatures of files in the current batch to detect duplicates within the batch
+      const batchSignatures = new Set<string>();
+
       // Check if adding these files would exceed the limit
       const availableSlots = maxFiles - existingFiles.length;
 
@@ -73,12 +76,23 @@ export const useDragAndDrop = ({
           return;
         }
 
-        // Check if file is not a duplicate
+        // Create a stable signature for the file
+        const signature = `${file.name}-${file.size}-${file.lastModified}`;
+
+        // Check if file is a duplicate of existing files
         if (isDuplicate(file)) {
           duplicateFiles.push(file.name);
           return;
         }
 
+        // Check if file is a duplicate within the current batch
+        if (batchSignatures.has(signature)) {
+          duplicateFiles.push(file.name);
+          return;
+        }
+
+        // Add to batch signatures and valid files
+        batchSignatures.add(signature);
         validFiles.push(file);
       });
 
