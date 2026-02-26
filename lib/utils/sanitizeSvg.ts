@@ -80,12 +80,14 @@ export const sanitizeSvg = async (file: File): Promise<File> => {
     const dataUriAttrs = ["href", "xlink:href", "src"];
     dataUriAttrs.forEach((attr) => {
       const value = element.getAttribute(attr);
-      if (
-        value &&
-        value.trim().toLowerCase().startsWith("data:") &&
-        (value.includes("script") || value.includes("javascript"))
-      ) {
-        element.removeAttribute(attr);
+      if (value) {
+        const lowerValue = value.trim().toLowerCase();
+        if (
+          lowerValue.startsWith("data:") &&
+          (lowerValue.includes("script") || lowerValue.includes("javascript"))
+        ) {
+          element.removeAttribute(attr);
+        }
       }
     });
   });
