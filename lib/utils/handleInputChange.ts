@@ -45,9 +45,9 @@ export const handleFileChange = async (
     uniqueNewFiles.length === 0
   ) {
     if (selectedFiles.length > 1) {
-      toast.error("The files you selected already exsists");
+      toast.error("The files you selected already exist");
     } else {
-      toast.error("The file you selected already exsists");
+      toast.error("The file you selected already exists");
     }
   } else if (uniqueNewFiles.length < selectedFiles.length) {
     toast.error("Some files were skipped because they already exist");

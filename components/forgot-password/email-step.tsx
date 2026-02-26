@@ -55,7 +55,7 @@ const EmailStep = ({
           Forgot password?
         </h1>
         <p className="text-muted-foreground">
-          Enter your email and to help us confirm you account exsists
+          Enter your email and to help us confirm your account exists
         </p>
       </div>
 
