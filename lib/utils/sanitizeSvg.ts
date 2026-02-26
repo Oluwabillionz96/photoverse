@@ -29,7 +29,9 @@ export const sanitizeSvg = async (file: File): Promise<File> => {
 
   dangerousElements.forEach((tagName) => {
     const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => el.remove());
+    elements.forEach((el) => {
+      el.remove();
+    });
   });
 
   const allElements = doc.querySelectorAll("*");
