@@ -1,4 +1,4 @@
-import { useState, useCallback, DragEvent } from "react";
+import { useState, useCallback, useRef, DragEvent } from "react";
 import toast from "react-hot-toast";
 import { sanitizeFiles } from "@/lib/utils/sanitizeSvg";
 
@@ -23,6 +23,7 @@ export const useDragAndDrop = ({
   existingFiles = [],
 }: UseDragAndDropProps) => {
   const [isDragging, setIsDragging] = useState(false);
+  const dragCounterRef = useRef(0);
 
   const isDuplicate = useCallback(
     (file: File): boolean => {
@@ -156,7 +157,10 @@ export const useDragAndDrop = ({
         return;
       }
 
-      setIsDragging(true);
+      dragCounterRef.current++;
+      if (dragCounterRef.current > 0) {
+        setIsDragging(true);
+      }
     },
     [existingFiles.length],
   );
@@ -165,8 +169,8 @@ export const useDragAndDrop = ({
     e.preventDefault();
     e.stopPropagation();
 
-    // Only set dragging to false if we're leaving the drop zone entirely
-    if (e.currentTarget === e.target) {
+    dragCounterRef.current--;
+    if (dragCounterRef.current === 0) {
       setIsDragging(false);
     }
   }, []);
@@ -180,6 +184,9 @@ export const useDragAndDrop = ({
     async (e: DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      
+      // Reset drag state
+      dragCounterRef.current = 0;
       setIsDragging(false);
 
       const files = validateFiles(e.dataTransfer.files);
