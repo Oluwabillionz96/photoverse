@@ -1,12 +1,13 @@
 import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 import toast from "react-hot-toast";
+import { sanitizeFiles } from "@/lib/utils/sanitizeSvg";
 
-export const handleFileChange = (
+export const handleFileChange = async (
   e: ChangeEvent<HTMLInputElement>,
   files: File[],
   setFiles: Dispatch<SetStateAction<File[]>>,
-) => {
-  if (!e.target.files) return;
+): Promise<boolean> => {
+  if (!e.target.files) return false;
   const selectedFiles = Array.from(e.target.files);
 
   if (files.length + selectedFiles.length > 10) {
@@ -19,15 +20,17 @@ export const handleFileChange = (
   );
 
   if (invalidFiles.length > 0) {
+    e.target.value = "";
     toast.error("Some file exceed 5MB limit");
-    return;
+    return false;
   }
   const invalidTypes = selectedFiles.filter(
     (file) => !file.type.startsWith("image/"),
   );
   if (invalidTypes.length > 0) {
+    e.target.value = "";
     toast.error("Only image files are allowed");
-    return;
+    return false;
   }
 
   const uniqueNewFiles = selectedFiles.filter(
@@ -44,16 +47,27 @@ export const handleFileChange = (
     uniqueNewFiles.length === 0
   ) {
     if (selectedFiles.length > 1) {
-      toast.error("The files you selected already exsists");
+      toast.error("The files you selected already exist");
     } else {
-      toast.error("The file you selected already exsists");
+      toast.error("The file you selected already exists");
     }
+    e.target.value = "";
+    return false;
   } else if (uniqueNewFiles.length < selectedFiles.length) {
     toast.error("Some files were skipped because they already exist");
   }
 
-  setFiles((prev) => [...prev, ...uniqueNewFiles]);
-  e.target.value = "";
+  try {
+    const sanitizedFiles = await sanitizeFiles(uniqueNewFiles);
+    setFiles((prev) => [...prev, ...sanitizedFiles]);
+    e.target.value = "";
+    return true;
+  } catch (error) {
+    toast.error("Failed to process files");
+    console.error("File sanitization error:", error);
+    e.target.value = "";
+    return false;
+  }
 };
 
 export const openFileDialog = (ref: RefObject<HTMLInputElement | null>) => {

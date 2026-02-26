@@ -3,7 +3,7 @@ import { FolderIcon, ImageIcon, ImagePlusIcon, Sparkles } from "lucide-react";
 import { Button } from "../ui/button";
 import useScreenSize from "@/hooks/useScreenSize";
 import PhotosPreview from "../photosPreview";
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ShimmerSweep from "../shimmer-sweep";
@@ -18,7 +18,7 @@ const EmptyPhotos = ({
   handleUpload: (arg: RefObject<HTMLInputElement | null>) => void;
   files: File[];
   ref: RefObject<HTMLInputElement | null>;
-  setFiles: (arg: File[]) => void;
+  setFiles: Dispatch<SetStateAction<File[]>>;
 }) => {
   const isMobile = useScreenSize();
   const router = useRouter();

@@ -177,8 +177,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     type="file"
                     className="hidden"
                     ref={fileInput}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      handleFileChange(e, files, setFiles);
+                    onChange={async (e: ChangeEvent<HTMLInputElement>) => {
+                      await handleFileChange(e, files, setFiles);
                     }}
                     accept="image/*"
                     multiple
