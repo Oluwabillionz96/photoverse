@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import SideNav from "./SideNav";
 import { motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
@@ -55,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   //   const timestamp = new Date().toLocaleTimeString();
   //   setLogs((prev) => [...prev, { timestamp, message, type }].slice(-100)); // Keep last 10 logs
   // };
-  const initialize = async () => {
+  const initialize = useCallback(async () => {
     // IMPORTANT: Skip initialize if user is already authenticated
     if (user.isAuthenticated) {
       return;
@@ -100,11 +100,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     } finally {
       dispatch(updateLoading(false));
     }
-  };
+  },[user, dispatch, pathname, router]);
 
   useEffect(() => {
     initialize();
-  }, []);
+  }, [initialize]);
 
   const isMobile = useScreenSize();
 
