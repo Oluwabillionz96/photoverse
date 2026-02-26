@@ -6,7 +6,7 @@ const Spinner = () => {
   return (
     <motion.div
       animate={{ rotate: 360 }}
-      transition={{ duration: 0.5, repeat: Infinity }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
     >
       <CgSpinnerAlt />
     </motion.div>

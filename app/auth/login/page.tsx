@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,14 +15,12 @@ import z from "zod";
 import { LoginData } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PasswordInput from "@/components/Input/password-input";
-// import { useState } from "react";
 import { authApi } from "@/services/auth";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { updateEmail } from "@/lib/slices/authSlice";
 import { AxiosError } from "axios";
-import { motion } from "framer-motion";
 import AuthLayout from "@/components/auth-layout";
 
 const LoginPage = () => {
@@ -67,7 +65,7 @@ const LoginPage = () => {
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <FieldGroup>
           <Controller
             name="email"
@@ -134,26 +132,14 @@ const LoginPage = () => {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-12 cursor-pointer bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+          className="w-full h-12 font-semibold"
         >
           {loading ? (
-            <>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              >
-                <Sparkles className="w-4 h-4" />
-              </motion.div>
-              Signing in...
-            </>
+            "Signing in..."
           ) : (
             <>
               Sign in
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 ml-2" />
             </>
           )}
         </Button>
@@ -166,7 +152,7 @@ const LoginPage = () => {
           href="/auth/register"
           className="text-primary hover:text-primary/80 font-semibold transition-colors"
         >
-          Sign up for free
+          Sign up
         </Link>
       </p>
     </AuthLayout>

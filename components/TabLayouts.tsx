@@ -77,7 +77,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
               {pathname.startsWith(`/folders`) && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-lg"
+                  className="absolute inset-0 bg-linear-to-r from-primary to-accent rounded-lg"
                   transition={{ type: "spring", duration: 0.5 }}
                 />
               )}

@@ -18,7 +18,7 @@ const Folders = () => {
 
   async function handleRenameFolder(folderId: string, foldername: string) {
     const result = await handleApiMutation(
-      renameFolder({ id: folderId, foldername })
+      renameFolder({ id: folderId, foldername }),
     );
 
     if (result.success) {
@@ -32,12 +32,11 @@ const Folders = () => {
   const folders = data?.folders;
 
   return (
-    <section className=" pt-5 mx-2 h-fit md:py-20">
+    <section className="pt-5 mx-2 h-fit md:py-20">
       {isLoading || isFetching ? (
         <FolderLoader />
       ) : folders && folders?.length > 0 ? (
         <>
-          {" "}
           <div className="grid md:grid-cols-3 md:gap-6 lg:grid-cols-4 grid-cols-2 lg:gap-8 gap-4">
             {folders?.map((folder) => (
               <FolderCard
