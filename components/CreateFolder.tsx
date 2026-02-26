@@ -84,8 +84,8 @@ const CreateFolder = ({
         accept="image/*"
         multiple
         ref={fileInput}
-        onChange={(e) => {
-          handleFileChange(e, files, setFiles);
+        onChange={async (e) => {
+          await handleFileChange(e, files, setFiles);
           setModalStatus("preview");
         }}
       />

@@ -1,5 +1,6 @@
 import { useState, useCallback, DragEvent } from "react";
 import toast from "react-hot-toast";
+import { sanitizeFiles } from "@/lib/utils/sanitizeSvg";
 
 interface UseDragAndDropProps {
   onFilesDropped: (files: File[]) => void;
@@ -162,14 +163,20 @@ export const useDragAndDrop = ({
   }, []);
 
   const handleDrop = useCallback(
-    (e: DragEvent<HTMLDivElement>) => {
+    async (e: DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
       setIsDragging(false);
 
       const files = validateFiles(e.dataTransfer.files);
       if (files.length > 0) {
-        onFilesDropped(files);
+        try {
+          const sanitizedFiles = await sanitizeFiles(files);
+          onFilesDropped(sanitizedFiles);
+        } catch (error) {
+          toast.error("Failed to process files");
+          console.error("File sanitization error:", error);
+        }
       }
     },
     [onFilesDropped, validateFiles],

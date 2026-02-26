@@ -1,7 +1,8 @@
 import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 import toast from "react-hot-toast";
+import { sanitizeFiles } from "@/lib/utils/sanitizeSvg";
 
-export const handleFileChange = (
+export const handleFileChange = async (
   e: ChangeEvent<HTMLInputElement>,
   files: File[],
   setFiles: Dispatch<SetStateAction<File[]>>,
@@ -52,7 +53,14 @@ export const handleFileChange = (
     toast.error("Some files were skipped because they already exist");
   }
 
-  setFiles((prev) => [...prev, ...uniqueNewFiles]);
+  try {
+    const sanitizedFiles = await sanitizeFiles(uniqueNewFiles);
+    setFiles((prev) => [...prev, ...sanitizedFiles]);
+  } catch (error) {
+    toast.error("Failed to process files");
+    console.error("File sanitization error:", error);
+  }
+  
   e.target.value = "";
 };
 
