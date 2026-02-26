@@ -32,7 +32,7 @@ const PhotosPreview = ({
   folder = "General",
 }: {
   files: File[];
-  setFiles: (arg: File[]) => void;
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
   ref: RefObject<HTMLInputElement | null>;
   folder?: string;
 }) => {
@@ -47,7 +47,7 @@ const PhotosPreview = ({
 
   const { isDragging, dragHandlers } = useDragAndDrop({
     onFilesDropped: (droppedFiles) => {
-      setFiles([...files, ...droppedFiles]);
+      setFiles((prev) => [...prev, ...droppedFiles]);
     },
     existingFiles: files,
   });
