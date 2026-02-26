@@ -32,41 +32,17 @@ export const sanitizeSvg = async (file: File): Promise<File> => {
     elements.forEach((el) => el.remove());
   });
 
-  // Remove event handler attributes and other dangerous attributes
-  const dangerousAttributes = [
-    "onload",
-    "onerror",
-    "onclick",
-    "onmouseover",
-    "onmouseout",
-    "onmousemove",
-    "onmouseenter",
-    "onmouseleave",
-    "onfocus",
-    "onblur",
-    "onchange",
-    "oninput",
-    "onsubmit",
-    "onkeydown",
-    "onkeyup",
-    "onkeypress",
-    "ontouchstart",
-    "ontouchend",
-    "ontouchmove",
-    "onanimationstart",
-    "onanimationend",
-    "onanimationiteration",
-    "ontransitionend",
-  ];
-
   const allElements = doc.querySelectorAll("*");
   allElements.forEach((element) => {
-    // Remove event handler attributes
-    dangerousAttributes.forEach((attr) => {
-      if (element.hasAttribute(attr)) {
-        element.removeAttribute(attr);
+    // Remove all event handler attributes (any attribute starting with "on")
+    const attributesToRemove: string[] = [];
+    for (let i = 0; i < element.attributes.length; i++) {
+      const attr = element.attributes[i];
+      if (attr.name.toLowerCase().startsWith("on")) {
+        attributesToRemove.push(attr.name);
       }
-    });
+    }
+    attributesToRemove.forEach((attr) => element.removeAttribute(attr));
 
     // Check href and xlink:href for javascript: protocol
     ["href", "xlink:href"].forEach((attr) => {
