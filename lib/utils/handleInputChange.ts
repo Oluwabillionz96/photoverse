@@ -20,6 +20,7 @@ export const handleFileChange = async (
   );
 
   if (invalidFiles.length > 0) {
+    e.target.value = "";
     toast.error("Some file exceed 5MB limit");
     return false;
   }
@@ -27,6 +28,7 @@ export const handleFileChange = async (
     (file) => !file.type.startsWith("image/"),
   );
   if (invalidTypes.length > 0) {
+    e.target.value = "";
     toast.error("Only image files are allowed");
     return false;
   }
