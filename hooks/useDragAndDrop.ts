@@ -68,7 +68,7 @@ export const useDragAndDrop = ({
         }
 
         // Check if file type is accepted
-        if (!acceptedTypes.some((type) => file.type.match(type))) {
+        if (!acceptedTypes.includes(file.type)) {
           invalidTypeFiles.push(file.name);
           return;
         }
