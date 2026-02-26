@@ -41,12 +41,11 @@ export const useDragAndDrop = ({
     (files: FileList | null): File[] => {
       if (!files) return [];
 
-      let filesToProcess = Array.from(files);
+      const filesToProcess = Array.from(files);
       const validFiles: File[] = [];
       const duplicateFiles: string[] = [];
       const invalidTypeFiles: string[] = [];
       const oversizedFiles: string[] = [];
-      let limitReached = false;
 
       // Track signatures of files in the current batch to detect duplicates within the batch
       const batchSignatures = new Set<string>();
@@ -59,11 +58,7 @@ export const useDragAndDrop = ({
         return [];
       }
 
-      if (filesToProcess.length > availableSlots) {
-        filesToProcess = filesToProcess.slice(0, availableSlots);
-        limitReached = true;
-      }
-
+      // Validate all files first
       filesToProcess.forEach((file) => {
         // Check file size first
         if (file.size > maxFileSize) {
@@ -96,6 +91,14 @@ export const useDragAndDrop = ({
         batchSignatures.add(signature);
         validFiles.push(file);
       });
+
+      // Apply slot limit to valid files after validation
+      let limitReached = false;
+      let truncatedValidFiles = validFiles;
+      if (validFiles.length > availableSlots) {
+        truncatedValidFiles = validFiles.slice(0, availableSlots);
+        limitReached = true;
+      }
 
       // Show toast notifications in priority order
       if (limitReached) {
@@ -184,7 +187,7 @@ export const useDragAndDrop = ({
     async (e: DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       // Reset drag state
       dragCounterRef.current = 0;
       setIsDragging(false);
