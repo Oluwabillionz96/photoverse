@@ -139,13 +139,13 @@ export const useDragAndDrop = ({
       }
 
       // Show success message if files were added
-      if (validFiles.length > 0) {
+      if (truncatedValidFiles.length > 0) {
         toast.success(
-          `${validFiles.length} ${validFiles.length === 1 ? "file" : "files"} added`,
+          `${truncatedValidFiles.length} ${truncatedValidFiles.length === 1 ? "file" : "files"} added`,
         );
       }
 
-      return validFiles;
+      return truncatedValidFiles;
     },
     [isDuplicate, existingFiles.length],
   );
