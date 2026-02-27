@@ -60,7 +60,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const PhotoverseAPI = createApi({
   reducerPath: "phoverseAPI",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["folders", "photos", "favourite"],
+  tagTypes: ["folders", "photos", "favourite", "trash"],
 
   endpoints: (builder) => ({
     getForgotPasswordOTP: builder.mutation({
@@ -154,6 +154,10 @@ export const PhotoverseAPI = createApi({
       }),
       invalidatesTags: ["folders", "photos"],
     }),
+    getTrashedPhotos: builder.query<void, { page: string | number }>({
+      query: ({ page }) => `photos/trash?limit=60&page=${page}`,
+      providesTags: ["trash", "photos"],
+    }),
   }),
 });
 
@@ -172,4 +176,5 @@ export const {
   useGetFavouriteQuery,
   useRenameFolderMutation,
   useMovePhotoToTrashMutation,
+  useGetTrashedPhotosQuery,
 } = PhotoverseAPI;
