@@ -9,6 +9,7 @@ import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
 import {
+  useDeletePhotoMutation,
   useMovePhotoToTrashMutation,
   useRestoreTrashedPhotoMutation,
 } from "@/services/api";
@@ -35,6 +36,8 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const [trash, { isLoading }] = useMovePhotoToTrashMutation();
   const [restore, { isLoading: isRestoring }] =
     useRestoreTrashedPhotoMutation();
+  const [permanentlyDelete, { isLoading: isDeleting }] =
+    useDeletePhotoMutation();
 
   async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
@@ -48,6 +51,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     const payload = { photos };
 
     await handleApiMutation(restore(payload));
+  }
+
+  async function deletePhoto(photos: string[], e?: MouseEvent) {
+    e?.stopPropagation();
+    const payload = { photos };
+    await handleApiMutation(permanentlyDelete(payload));
   }
 
   function handleImageSelection(item: Photo, e?: MouseEvent) {
@@ -101,7 +110,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
 
   return (
     <>
-      {isLoading || isRestoring ? (
+      {isLoading || isRestoring || isDeleting ? (
         <></>
       ) : (
         <div className="space-y-4">
@@ -141,6 +150,9 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                           }}
                           handleRestore={(e) => {
                             restoretrashedPhoto([item._id], e);
+                          }}
+                          handleDelete={(e) => {
+                            deletePhoto([item._id], e);
                           }}
                         >
                           <Image

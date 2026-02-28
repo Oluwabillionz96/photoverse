@@ -169,6 +169,14 @@ export const PhotoverseAPI = createApi({
       query: ({ page }) => `photos/trash?limit=60&page=${page}`,
       providesTags: ["trash", "photos"],
     }),
+    deletePhoto: builder.mutation({
+      query: (body) => ({
+        url: "photos/delete",
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: ["folders", "photos", "trash"],
+    }),
   }),
 });
 
@@ -189,4 +197,5 @@ export const {
   useMovePhotoToTrashMutation,
   useGetTrashedPhotosQuery,
   useRestoreTrashedPhotoMutation,
+  useDeletePhotoMutation,
 } = PhotoverseAPI;

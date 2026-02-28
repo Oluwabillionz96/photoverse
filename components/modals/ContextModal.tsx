@@ -26,6 +26,7 @@ export default function ContextModal({
   removeFavOption,
   handleMoveToTrash,
   handleRestore,
+  handleDelete,
 }: {
   children: ReactNode;
   handleSelectImage: (arg: MouseEvent) => void;
@@ -36,6 +37,7 @@ export default function ContextModal({
   removeFavOption: boolean;
   handleMoveToTrash: (arg: MouseEvent) => void;
   handleRestore: (arg: MouseEvent) => void;
+  handleDelete: (arg: MouseEvent) => void;
 }) {
   const pathname = usePathname();
   console.log({ pathname });
@@ -63,22 +65,32 @@ export default function ContextModal({
             </ContextMenuItem>
           </>
         )}
-        {!removeFavOption && (
-          <>
-            <ContextMenuSeparator />
-            <ContextMenuItem>Mark as Favourite</ContextMenuItem>
-          </>
-        )}
+        {!removeFavOption ||
+          (!pathname.startsWith("/trash") && (
+            <>
+              <ContextMenuSeparator />
+              <ContextMenuItem>Mark as Favourite</ContextMenuItem>
+            </>
+          ))}
         <ContextMenuSeparator />
         {!pathname.startsWith("/trash") ? (
-          <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
-            Move To Trash
-          </ContextMenuItem>
+          <>
+            <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
+              Move To Trash
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem>Download Image</ContextMenuItem>
+          </>
         ) : (
-          <ContextMenuItem onClick={handleRestore}>Restore</ContextMenuItem>
+          <>
+            <ContextMenuItem onClick={handleRestore}>Restore</ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive" onClick={handleDelete}>
+              Delete
+            </ContextMenuItem>
+          </>
         )}
-        <ContextMenuSeparator />
-        <ContextMenuItem>Download Image</ContextMenuItem>
+
         {/* <ContextMenuSub>
           <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
           <ContextMenuSubContent className="w-44">
