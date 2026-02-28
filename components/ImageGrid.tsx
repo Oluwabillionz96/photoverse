@@ -2,19 +2,12 @@ import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
 import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  removeSelectedPhoto,
-  updatePhotoId,
-  updateSelectedPhotosIds,
-} from "@/lib/slices/photoSlice";
+import { useDispatch } from "react-redux";
+import { updatePhotoId } from "@/lib/slices/photoSlice";
 import { FaHeart } from "react-icons/fa";
-import { Rootstate } from "@/lib/store";
-import {
-  handleImageError,
-  handleImageLoad,
-} from "@/lib/utils";
+import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
+import ContextModal from "./modals/ContextModal";
 
 export const cloudinaryLoader = ({
   src,
@@ -30,16 +23,18 @@ export const cloudinaryLoader = ({
 
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const dispatch = useDispatch();
-  const { selectedPhotosIds } = useSelector((state: Rootstate) => state.photo);
   const [imageStates, setImageStates] = useState<
     Record<string, "loading" | "loaded" | "error">
   >({});
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
 
-  function handleImageSelection(item: Photo) {
-    if (selectedPhotosIds.includes(item._id)) {
-      dispatch(removeSelectedPhoto([item._id]));
+  function handleImageSelection(item: Photo, e?: MouseEvent) {
+    e?.stopPropagation();
+
+    if (selectedPhotoIds.includes(item._id)) {
+      setSelectedPhotoIds((prev) => prev.filter((id) => id !== item._id));
     } else {
-      dispatch(updateSelectedPhotosIds([item._id]));
+      setSelectedPhotoIds((prev) => [...prev, item._id]);
     }
   }
 
@@ -93,14 +88,14 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 {month[key].map((item) => {
                   const imageState = imageStates[item._id] || "loading";
                   const showPlaceholder = imageState !== "loaded";
-
+                  const isSelected = selectedPhotoIds.includes(item._id);
                   return (
                     <Link
                       key={item._id}
                       className="relative aspect-square overflow-hidden group bg-border/10"
                       href={`/${route}/${item._id}`}
                       onClick={(e: MouseEvent) => {
-                        if (selectedPhotosIds.length > 0) {
+                        if (selectedPhotoIds.length > 0) {
                           e.preventDefault();
                         }
                       }}
@@ -109,24 +104,30 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                       {showPlaceholder && (
                         <PlaceHolder id={item._id} imageState={imageState} />
                       )}
-
-                      <Image
-                        src={item?.link}
-                        alt="photo"
-                        fill
-                        loading="lazy"
-                        className={`object-cover object-top transition-opacity duration-500 ${
-                          imageState === "loaded" ? "opacity-100" : "opacity-0"
-                        }`}
-                        sizes="33vw"
-                        loader={cloudinaryLoader}
-                        onLoad={(e) =>
-                          handleImageLoad(item._id, e, setImageStates)
-                        }
-                        onError={() =>
-                          handleImageError(item._id, setImageStates)
-                        }
-                      />
+                      <ContextModal
+                        handleSelectImage={(e) => handleImageSelection(item, e)}
+                        isSelected={isSelected}
+                      >
+                        <Image
+                          src={item?.link}
+                          alt="photo"
+                          fill
+                          loading="lazy"
+                          className={`object-cover object-top transition-opacity duration-500 ${
+                            imageState === "loaded"
+                              ? "opacity-100"
+                              : "opacity-0"
+                          }`}
+                          sizes="33vw"
+                          loader={cloudinaryLoader}
+                          onLoad={(e) =>
+                            handleImageLoad(item._id, e, setImageStates)
+                          }
+                          onError={() =>
+                            handleImageError(item._id, setImageStates)
+                          }
+                        />
+                      </ContextModal>
 
                       {item.isFavourite && (
                         <div className="absolute top-2 right-2 text-pink-500">
@@ -134,12 +135,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                         </div>
                       )}
 
-                      {selectedPhotosIds.length > 0 && (
+                      {selectedPhotoIds.length > 0 && (
                         <input
                           type="checkbox"
                           id={item._id}
                           value={item._id}
-                          checked={selectedPhotosIds?.includes(item._id)}
+                          checked={isSelected}
                           className="z-50 absolute top-2 left-2 w-4 h-4"
                           onClick={(e: MouseEvent) => {
                             e.stopPropagation();
