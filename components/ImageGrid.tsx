@@ -8,7 +8,10 @@ import { FaHeart } from "react-icons/fa";
 import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
-import { useMovePhotoToTrashMutation } from "@/services/api";
+import {
+  useMovePhotoToTrashMutation,
+  useRestoreTrashedPhotoMutation,
+} from "@/services/api";
 import { handleApiMutation } from "@/hooks/useApiMutation";
 
 export const cloudinaryLoader = ({
@@ -30,12 +33,21 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   >({});
   const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
   const [trash, { isLoading }] = useMovePhotoToTrashMutation();
+  const [restore, { isLoading: isRestoring }] =
+    useRestoreTrashedPhotoMutation();
 
   async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
     const payload = { photos };
 
     await handleApiMutation(trash(payload));
+  }
+
+  async function restoretrashedPhoto(photos: string[], e?: MouseEvent) {
+    e?.stopPropagation();
+    const payload = { photos };
+
+    await handleApiMutation(restore(payload));
   }
 
   function handleImageSelection(item: Photo, e?: MouseEvent) {
@@ -89,88 +101,97 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
 
   return (
     <>
-      <div className="space-y-4">
-        {Object.keys(month).map((key, index) => {
-          return (
-            <div key={index}>
-              {route !== "trash" && (
-                <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
-              )}
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-                {month[key].map((item) => {
-                  const imageState = imageStates[item._id] || "loading";
-                  const showPlaceholder = imageState !== "loaded";
-                  const isSelected = selectedPhotoIds.includes(item._id);
-                  return (
-                    <Link
-                      key={item._id}
-                      className="relative aspect-square overflow-hidden group bg-border/10"
-                      href={`/${route}/${item._id}`}
-                      onClick={(e: MouseEvent) => {
-                        if (selectedPhotoIds.length > 0) {
-                          e.preventDefault();
-                        }
-                      }}
-                    >
-                      {/* Placeholder - shows while loading or on error */}
-                      {(showPlaceholder || isLoading) && (
-                        <PlaceHolder id={item._id} imageState={imageState} />
-                      )}
-                      <ContextModal
-                        handleSelectImage={(e) => handleImageSelection(item, e)}
-                        isSelected={isSelected}
-                        handleMoveToTrash={(e) => {
-                          movePhotoTotrash([item._id], e);
+      {isLoading || isRestoring ? (
+        <></>
+      ) : (
+        <div className="space-y-4">
+          {Object.keys(month).map((key, index) => {
+            return (
+              <div key={index}>
+                {route !== "trash" && (
+                  <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
+                )}
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
+                  {month[key].map((item) => {
+                    const imageState = imageStates[item._id] || "loading";
+                    const showPlaceholder = imageState !== "loaded";
+                    const isSelected = selectedPhotoIds.includes(item._id);
+                    return (
+                      <Link
+                        key={item._id}
+                        className="relative aspect-square overflow-hidden group bg-border/10"
+                        href={`/${route}/${item._id}`}
+                        onClick={(e: MouseEvent) => {
+                          if (selectedPhotoIds.length > 0) {
+                            e.preventDefault();
+                          }
                         }}
                       >
-                        <Image
-                          src={item?.link}
-                          alt="photo"
-                          fill
-                          loading="lazy"
-                          className={`object-cover object-top transition-opacity duration-500 ${
-                            imageState === "loaded"
-                              ? "opacity-100"
-                              : "opacity-0"
-                          }`}
-                          sizes="33vw"
-                          loader={cloudinaryLoader}
-                          onLoad={(e) =>
-                            handleImageLoad(item._id, e, setImageStates)
+                        {/* Placeholder - shows while loading or on error */}
+                        {showPlaceholder && (
+                          <PlaceHolder id={item._id} imageState={imageState} />
+                        )}
+                        <ContextModal
+                          handleSelectImage={(e) =>
+                            handleImageSelection(item, e)
                           }
-                          onError={() =>
-                            handleImageError(item._id, setImageStates)
-                          }
-                        />
-                      </ContextModal>
-
-                      {item.isFavourite && (
-                        <div className="absolute top-2 right-2 text-pink-500">
-                          <FaHeart />
-                        </div>
-                      )}
-
-                      {selectedPhotoIds.length > 0 && (
-                        <input
-                          type="checkbox"
-                          id={item._id}
-                          value={item._id}
-                          checked={isSelected}
-                          className="z-50 absolute top-2 left-2 w-4 h-4"
-                          onClick={(e: MouseEvent) => {
-                            e.stopPropagation();
+                          isSelected={isSelected}
+                          handleMoveToTrash={(e) => {
+                            movePhotoTotrash([item._id], e);
                           }}
-                          onChange={() => handleImageSelection(item)}
-                        />
-                      )}
-                    </Link>
-                  );
-                })}
+                          handleRestore={(e) => {
+                            restoretrashedPhoto([item._id], e);
+                          }}
+                        >
+                          <Image
+                            src={item?.link}
+                            alt="photo"
+                            fill
+                            loading="lazy"
+                            className={`object-cover object-top transition-opacity duration-500 ${
+                              imageState === "loaded"
+                                ? "opacity-100"
+                                : "opacity-0"
+                            }`}
+                            sizes="33vw"
+                            loader={cloudinaryLoader}
+                            onLoad={(e) =>
+                              handleImageLoad(item._id, e, setImageStates)
+                            }
+                            onError={() =>
+                              handleImageError(item._id, setImageStates)
+                            }
+                          />
+                        </ContextModal>
+
+                        {item.isFavourite && (
+                          <div className="absolute top-2 right-2 text-pink-500">
+                            <FaHeart />
+                          </div>
+                        )}
+
+                        {selectedPhotoIds.length > 0 && (
+                          <input
+                            type="checkbox"
+                            id={item._id}
+                            value={item._id}
+                            checked={isSelected}
+                            className="z-50 absolute top-2 left-2 w-4 h-4"
+                            onClick={(e: MouseEvent) => {
+                              e.stopPropagation();
+                            }}
+                            onChange={() => handleImageSelection(item)}
+                          />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 };

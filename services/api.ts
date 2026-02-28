@@ -154,6 +154,14 @@ export const PhotoverseAPI = createApi({
       }),
       invalidatesTags: ["folders", "photos", "trash"],
     }),
+    restoreTrashedPhoto: builder.mutation({
+      query: (body) => ({
+        url: "photos/restore",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["folders", "photos", "trash"],
+    }),
     getTrashedPhotos: builder.query<
       GetPhotoResponse,
       { page: string | number }
@@ -180,4 +188,5 @@ export const {
   useRenameFolderMutation,
   useMovePhotoToTrashMutation,
   useGetTrashedPhotosQuery,
+  useRestoreTrashedPhotoMutation,
 } = PhotoverseAPI;
