@@ -1,19 +1,13 @@
 import { Photo } from "@/lib/apiTypes";
 import Image from "next/image";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent } from "react";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { updatePhotoId } from "@/lib/slices/photoSlice";
 import { FaHeart } from "react-icons/fa";
 import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
-import {
-  useDeletePhotoMutation,
-  useMovePhotoToTrashMutation,
-  useRestoreTrashedPhotoMutation,
-} from "@/services/api";
-import { handleApiMutation } from "@/hooks/useApiMutation";
+
+import useImageHandler from "@/hooks/useImageHandler";
 
 export const cloudinaryLoader = ({
   src,
@@ -28,89 +22,18 @@ export const cloudinaryLoader = ({
 };
 
 const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
-  const dispatch = useDispatch();
-  const [imageStates, setImageStates] = useState<
-    Record<string, "loading" | "loaded" | "error">
-  >({});
-  const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
-  const [trash, { isLoading }] = useMovePhotoToTrashMutation();
-  const [restore, { isLoading: isRestoring }] =
-    useRestoreTrashedPhotoMutation();
-  const [permanentlyDelete, { isLoading: isDeleting }] =
-    useDeletePhotoMutation();
-
-  async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
-    e?.stopPropagation();
-    const payload = { photos };
-
-    await handleApiMutation(trash(payload));
-  }
-
-  async function restoretrashedPhoto(photos: string[], e?: MouseEvent) {
-    e?.stopPropagation();
-    const payload = { photos };
-
-    await handleApiMutation(restore(payload));
-  }
-
-  async function deletePhoto(photos: string[], e?: MouseEvent) {
-    e?.stopPropagation();
-    const payload = { photos };
-    await handleApiMutation(permanentlyDelete(payload));
-  }
-
-  function handleImageSelection(item: Photo, e?: MouseEvent) {
-    e?.stopPropagation();
-
-    if (selectedPhotoIds.includes(item._id)) {
-      setSelectedPhotoIds((prev) => prev.filter((id) => id !== item._id));
-    } else {
-      setSelectedPhotoIds((prev) => [...prev, item._id]);
-    }
-  }
-
-  useEffect(() => {
-    const imageIds = photos?.map((item) => item._id);
-    dispatch(updatePhotoId(imageIds));
-
-    // Initialize all images as loading
-    const initialStates: Record<string, "loading" | "loaded" | "error"> = {};
-    photos.forEach((photo) => {
-      initialStates[photo._id] = "loading";
-    });
-    setImageStates(initialStates);
-  }, [dispatch, photos]);
-
-  function getUploadDate(time: string) {
-    const uploadDate = new Date(time);
-
-    const isEqualYear =
-      new Date(Date.now()).getFullYear() === uploadDate.getFullYear();
-
-    return isEqualYear
-      ? uploadDate.toLocaleString("en-US", {
-          month: "long",
-        })
-      : uploadDate.toLocaleString("en-US", {
-          month: "long",
-          year: "numeric",
-        });
-  }
-
-  const month: Record<string, Photo[]> = {};
-
-  photos.map((item) => {
-    const uploadDate = getUploadDate(item.uploadedAt);
-    if (!month[uploadDate]) {
-      month[uploadDate] = [];
-    }
-
-    month[uploadDate].push(item);
-  });
-
+  const {
+    loading,
+    month,
+    imageStates,
+    setImageStates,
+    selectedPhotoIds,
+    mutations: { movePhotoTotrash, restoretrashedPhoto, deletePhoto },
+    handleImageSelection,
+  } = useImageHandler(photos);
   return (
     <>
-      {isLoading || isRestoring || isDeleting ? (
+      {loading ? (
         <></>
       ) : (
         <div className="space-y-4">
