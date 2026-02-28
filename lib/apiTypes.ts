@@ -12,6 +12,10 @@ export interface Photo {
   folder: Folder | string;
   uploadedAt: string;
   isFavourite: boolean;
+  isTrashed: boolean;
+  scheduledDeleteAt: string;
+  trashedAt: string;
+  qstashMessageId: string;
 }
 
 export interface GetFolderResponse {

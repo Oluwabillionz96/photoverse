@@ -8,6 +8,8 @@ import { FaHeart } from "react-icons/fa";
 import { handleImageError, handleImageLoad } from "@/lib/utils";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
+import { useMovePhotoToTrashMutation } from "@/services/api";
+import { handleApiMutation } from "@/hooks/useApiMutation";
 
 export const cloudinaryLoader = ({
   src,
@@ -27,6 +29,14 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     Record<string, "loading" | "loaded" | "error">
   >({});
   const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
+  const [trash, { isLoading }] = useMovePhotoToTrashMutation();
+
+  async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
+    e?.stopPropagation();
+    const payload = { photos };
+
+    await handleApiMutation(trash(payload));
+  }
 
   function handleImageSelection(item: Photo, e?: MouseEvent) {
     e?.stopPropagation();
@@ -83,7 +93,9 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
         {Object.keys(month).map((key, index) => {
           return (
             <div key={index}>
-              <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
+              {route !== "trash" && (
+                <p className="text-sm md:text-xl font-semibold my-4">{key}</p>
+              )}
               <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
                 {month[key].map((item) => {
                   const imageState = imageStates[item._id] || "loading";
@@ -101,12 +113,15 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                       }}
                     >
                       {/* Placeholder - shows while loading or on error */}
-                      {showPlaceholder && (
+                      {(showPlaceholder || isLoading) && (
                         <PlaceHolder id={item._id} imageState={imageState} />
                       )}
                       <ContextModal
                         handleSelectImage={(e) => handleImageSelection(item, e)}
                         isSelected={isSelected}
+                        handleMoveToTrash={(e) => {
+                          movePhotoTotrash([item._id], e);
+                        }}
                       >
                         <Image
                           src={item?.link}

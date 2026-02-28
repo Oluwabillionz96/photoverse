@@ -2,25 +2,29 @@
 
 import { motion } from "framer-motion";
 import ShimmerSweep from "../shimmer-sweep";
+import { usePathname } from "next/navigation";
 
 const PhotoLoader = () => {
+  const pathname = usePathname();
   return (
     <div className="space-y-8 pt-5 mx-2">
       {/* Show 2-3 month sections */}
       {Array.from({ length: 3 }).map((_, monthIndex) => (
         <div key={monthIndex} className="space-y-4">
           {/* Month header skeleton */}
-          <motion.div
-            className="h-7 w-40 bg-border/40 rounded-lg"
-            animate={{
-              opacity: [0.4, 0.7, 0.4],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
+          {!pathname.startsWith("trash") && (
+            <motion.div
+              className="h-7 w-40 bg-border/40 rounded-lg"
+              animate={{
+                opacity: [0.4, 0.7, 0.4],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          )}
 
           {/* Photo grid skeleton */}
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">

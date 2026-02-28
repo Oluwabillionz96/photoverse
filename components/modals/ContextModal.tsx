@@ -13,6 +13,7 @@ import {
   // ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { usePathname } from "next/navigation";
 import { MouseEvent, ReactNode } from "react";
 
 export default function ContextModal({
@@ -24,6 +25,7 @@ export default function ContextModal({
   handleAllSelection,
   removeFavOption,
   handleMoveToTrash,
+  handleRestore,
 }: {
   children: ReactNode;
   handleSelectImage: (arg: MouseEvent) => void;
@@ -32,8 +34,11 @@ export default function ContextModal({
   allIsSelected: boolean;
   handleAllSelection: (arg: MouseEvent) => void;
   removeFavOption: boolean;
-  handleMoveToTrash: () => void;
+  handleMoveToTrash: (arg: MouseEvent) => void;
+  handleRestore: (arg: MouseEvent) => void;
 }) {
+  const pathname = usePathname();
+  console.log({ pathname });
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
@@ -65,9 +70,13 @@ export default function ContextModal({
           </>
         )}
         <ContextMenuSeparator />
-        <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
-          Move To Trash
-        </ContextMenuItem>
+        {!pathname.startsWith("/trash") ? (
+          <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
+            Move To Trash
+          </ContextMenuItem>
+        ) : (
+          <ContextMenuItem onClick={handleRestore}>Restore</ContextMenuItem>
+        )}
         <ContextMenuSeparator />
         <ContextMenuItem>Download Image</ContextMenuItem>
         {/* <ContextMenuSub>

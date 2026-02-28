@@ -149,12 +149,15 @@ export const PhotoverseAPI = createApi({
     movePhotoToTrash: builder.mutation({
       query: (body) => ({
         url: "photos/trash",
-        method: "DELETE",
+        method: "PATCH",
         body,
       }),
-      invalidatesTags: ["folders", "photos"],
+      invalidatesTags: ["folders", "photos", "trash"],
     }),
-    getTrashedPhotos: builder.query<void, { page: string | number }>({
+    getTrashedPhotos: builder.query<
+      GetPhotoResponse,
+      { page: string | number }
+    >({
       query: ({ page }) => `photos/trash?limit=60&page=${page}`,
       providesTags: ["trash", "photos"],
     }),
