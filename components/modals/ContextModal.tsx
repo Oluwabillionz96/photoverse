@@ -13,8 +13,10 @@ import {
   // ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { Rootstate } from "@/lib/store";
 import { usePathname } from "next/navigation";
 import { MouseEvent, ReactNode } from "react";
+import { useSelector } from "react-redux";
 
 export default function ContextModal({
   children,
@@ -40,7 +42,8 @@ export default function ContextModal({
   handleDelete: (arg: MouseEvent) => void;
 }) {
   const pathname = usePathname();
-  console.log({ pathname });
+  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
+  if (selectedPhotoIds.length > 0) return <>{children}</>;
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
