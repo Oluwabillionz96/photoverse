@@ -122,6 +122,7 @@ const useImageHandler = (photos?: Photo[]) => {
       toggleIsFavourite,
     },
     handleImageSelection,
+    photos,
     month,
     selectedPhotoIds,
     setImageStates,
