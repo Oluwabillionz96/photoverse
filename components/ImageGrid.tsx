@@ -9,6 +9,7 @@ import ContextModal from "./modals/ContextModal";
 
 import useImageHandler from "@/hooks/useImageHandler";
 import PhotoLoader from "./loaders/PhotoLoader";
+import { usePathname } from "next/navigation";
 
 export const cloudinaryLoader = ({
   src,
@@ -29,9 +30,9 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     imageStates,
     setImageStates,
     selectedPhotoIds,
-    mutations: { movePhotoTotrash, restoretrashedPhoto, deletePhoto },
     handleImageSelection,
   } = useImageHandler(photos);
+  const pathname = usePathname();
   return (
     <>
       {loading ? (
@@ -65,19 +66,8 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                           <PlaceHolder id={item._id} imageState={imageState} />
                         )}
                         <ContextModal
-                          handleSelectImage={(e) =>
-                            handleImageSelection(item, e)
-                          }
-                          isSelected={isSelected}
-                          handleMoveToTrash={(e) => {
-                            movePhotoTotrash([item._id], e);
-                          }}
-                          handleRestore={(e) => {
-                            restoretrashedPhoto([item._id], e);
-                          }}
-                          handleDelete={(e) => {
-                            deletePhoto([item._id], e);
-                          }}
+                          photoId={item._id}
+                          isFavourite={item.isFavourite}
                         >
                           {selectedPhotoIds.length > 0 && (
                             <input
@@ -89,7 +79,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                               onClick={(e: MouseEvent) => {
                                 e.stopPropagation();
                               }}
-                              onChange={() => handleImageSelection(item)}
+                              onChange={() => handleImageSelection(item._id)}
                             />
                           )}
                           <Image
@@ -113,7 +103,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                           />
                         </ContextModal>
 
-                        {item.isFavourite && (
+                        {item.isFavourite && !pathname.startsWith("/trash") && (
                           <div className="absolute top-2 right-2 text-pink-500">
                             <FaHeart />
                           </div>

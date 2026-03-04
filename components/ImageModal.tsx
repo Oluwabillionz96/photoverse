@@ -10,9 +10,8 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { GrDownload } from "react-icons/gr";
 import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
-import { useToggleFavouriteMutation } from "@/services/api";
-import { handleApiMutation } from "@/hooks/useApiMutation";
 import IndividualPhotoLoader from "./individual-photo-loader";
+import useImageHandler from "@/hooks/useImageHandler";
 
 // interface Photo {
 //   id: number;
@@ -41,18 +40,10 @@ export function ImageModal({
   loading,
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
-  // const [side, setSide] = useState<"" | "right" | "left">("");
-  const [toggleFavourite, { isLoading }] = useToggleFavouriteMutation();
-
-  async function toggleIsFavourite() {
-    const payload = {
-      id: photo?._id,
-      isFavourite: !photo?.isFavourite,
-      folder: photo?.folder,
-    };
-
-    await handleApiMutation(toggleFavourite(payload));
-  }
+  const {
+    mutations: { toggleIsFavourite },
+    loading: isLoading,
+  } = useImageHandler();
 
   const handler = useSwipeable({
     onSwipedRight: () => {
@@ -135,7 +126,9 @@ export function ImageModal({
 
               {/* Favorite Button */}
               <motion.button
-                onClick={toggleIsFavourite}
+                onClick={() => {
+                  toggleIsFavourite([photo?._id ?? ""]);
+                }}
                 disabled={isLoading}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

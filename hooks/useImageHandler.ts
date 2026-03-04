@@ -2,6 +2,7 @@ import {
   useDeletePhotoMutation,
   useMovePhotoToTrashMutation,
   useRestoreTrashedPhotoMutation,
+  useToggleFavouriteMutation,
 } from "@/services/api";
 import { MouseEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,8 +27,10 @@ const useImageHandler = (photos?: Photo[]) => {
     useRestoreTrashedPhotoMutation();
   const [permanentlyDelete, { isLoading: isDeleting }] =
     useDeletePhotoMutation();
+  const [toggleFavourite, { isLoading: isTogglingFavorite }] =
+    useToggleFavouriteMutation();
 
-  const loading = isLoading || isRestoring || isDeleting;
+  const loading = isLoading || isRestoring || isDeleting || isTogglingFavorite;
 
   async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
@@ -49,18 +52,26 @@ const useImageHandler = (photos?: Photo[]) => {
     await handleApiMutation(permanentlyDelete(payload));
   }
 
-  function handleImageSelection(item: Photo, e?: MouseEvent) {
+  async function toggleIsFavourite(photos: string[], e?: MouseEvent) {
+    e?.stopPropagation();
+    const payload = {
+      photos,
+    };
+
+    await handleApiMutation(toggleFavourite(payload));
+  }
+
+  function handleImageSelection(item_id: string, e?: MouseEvent) {
     e?.stopPropagation();
 
-    if (selectedPhotoIds.includes(item._id)) {
-      dispatch(removeSelectedPhoto([item._id]));
+    if (selectedPhotoIds.includes(item_id)) {
+      dispatch(removeSelectedPhoto([item_id]));
     } else {
-      dispatch(updateSelectedPhotosIds([item._id]));
+      dispatch(updateSelectedPhotosIds([item_id]));
     }
   }
 
   useEffect(() => {
-
     if (!photos) return;
 
     const imageIds = photos?.map((item) => item._id);
@@ -104,7 +115,12 @@ const useImageHandler = (photos?: Photo[]) => {
   return {
     imageStates,
     loading,
-    mutations: { movePhotoTotrash, restoretrashedPhoto, deletePhoto },
+    mutations: {
+      movePhotoTotrash,
+      restoretrashedPhoto,
+      deletePhoto,
+      toggleIsFavourite,
+    },
     handleImageSelection,
     month,
     selectedPhotoIds,

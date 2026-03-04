@@ -13,36 +13,37 @@ import {
   // ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { Rootstate } from "@/lib/store";
+import useImageHandler from "@/hooks/useImageHandler";
 import { usePathname } from "next/navigation";
 import { MouseEvent, ReactNode } from "react";
-import { useSelector } from "react-redux";
 
 export default function ContextModal({
   children,
-  handleSelectImage,
-  isSelected,
   canSelectAll,
   allIsSelected,
   handleAllSelection,
-  removeFavOption,
-  handleMoveToTrash,
-  handleRestore,
-  handleDelete,
+  isFavourite,
+  photoId,
 }: {
   children: ReactNode;
-  handleSelectImage: (arg: MouseEvent) => void;
-  isSelected: boolean;
-  canSelectAll: boolean;
-  allIsSelected: boolean;
-  handleAllSelection: (arg: MouseEvent) => void;
-  removeFavOption: boolean;
-  handleMoveToTrash: (arg: MouseEvent) => void;
-  handleRestore: (arg: MouseEvent) => void;
-  handleDelete: (arg: MouseEvent) => void;
+  canSelectAll?: boolean;
+  allIsSelected?: boolean;
+  handleAllSelection?: (arg: MouseEvent) => void;
+  isFavourite: boolean;
+  photoId: string;
 }) {
   const pathname = usePathname();
-  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
+  const {
+    mutations: {
+      toggleIsFavourite,
+      deletePhoto,
+      movePhotoTotrash,
+      restoretrashedPhoto,
+    },
+    handleImageSelection,
+    selectedPhotoIds,
+  } = useImageHandler();
+  const isSelected = selectedPhotoIds.includes(photoId);
   if (selectedPhotoIds.length > 0) return <>{children}</>;
   return (
     <ContextMenu>
@@ -56,7 +57,11 @@ export default function ContextModal({
           Forward
           <ContextMenuShortcut>⌘]</ContextMenuShortcut>
         </ContextMenuItem> */}
-        <ContextMenuItem onClick={handleSelectImage}>
+        <ContextMenuItem
+          onClick={(e) => {
+            handleImageSelection(photoId, e);
+          }}
+        >
           {!isSelected ? "Select Image" : "Remove Selection"}
           {/* <ContextMenuShortcut>⌘R</ContextMenuShortcut> */}
         </ContextMenuItem>
@@ -68,27 +73,46 @@ export default function ContextModal({
             </ContextMenuItem>
           </>
         )}
-        {!removeFavOption ||
-          (!pathname.startsWith("/trash") && (
-            <>
-              <ContextMenuSeparator />
-              <ContextMenuItem>Mark as Favourite</ContextMenuItem>
-            </>
-          ))}
+
         <ContextMenuSeparator />
         {!pathname.startsWith("/trash") ? (
           <>
-            <ContextMenuItem variant="destructive" onClick={handleMoveToTrash}>
+            <ContextMenuItem
+              variant="destructive"
+              onClick={(e) => {
+                movePhotoTotrash([photoId], e);
+              }}
+            >
               Move To Trash
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem
+              variant={isFavourite ? "destructive" : "default"}
+              onClick={(e) => {
+                toggleIsFavourite([photoId], e);
+              }}
+            >
+              {!isFavourite ? "Mark as " : "Remove from "}Favourite
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem>Download Image</ContextMenuItem>
           </>
         ) : (
           <>
-            <ContextMenuItem onClick={handleRestore}>Restore</ContextMenuItem>
+            <ContextMenuItem
+              onClick={(e) => {
+                restoretrashedPhoto([photoId], e);
+              }}
+            >
+              Restore
+            </ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem variant="destructive" onClick={handleDelete}>
+            <ContextMenuItem
+              variant="destructive"
+              onClick={(e) => {
+                deletePhoto([photoId], e);
+              }}
+            >
               Delete
             </ContextMenuItem>
           </>

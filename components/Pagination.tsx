@@ -56,7 +56,7 @@ const Pagination = ({
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
           variant="outline"
-          className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-border/30"
+          className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-border/30"
         >
           Prev
         </Button>
@@ -88,8 +88,8 @@ const Pagination = ({
               variant={isActive ? "default" : "outline"}
               className={`w-10 h-10 p-0 ${
                 isActive
-                  ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg shadow-primary/50 border-0"
-                  : "glass border-border/30 hover:border-primary/50 hover:bg-primary/10"
+                  ? "bg-linear-to-r from-primary to-accent text-primary-foreground shadow-lg shadow-primary/50 border-0"
+                  : "glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-white"
               }`}
             >
               {page}
@@ -104,7 +104,7 @@ const Pagination = ({
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={currentPage === totalPages}
           variant="outline"
-          className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-border/30"
+          className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-border/30"
         >
           Next
         </Button>

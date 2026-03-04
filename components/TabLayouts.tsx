@@ -19,7 +19,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
 import { useDispatch, useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
-import { Trash2 } from "lucide-react";
+import { Heart, Trash2 } from "lucide-react";
 import useImageHandler from "@/hooks/useImageHandler";
 import { removeSelectedPhoto } from "@/lib/slices/photoSlice";
 
@@ -34,7 +34,8 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
   const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
   const isSelected = selectedPhotoIds.length > 0;
   const {
-    mutations: { movePhotoTotrash },
+    mutations: { movePhotoTotrash, toggleIsFavourite },
+    loading,
   } = useImageHandler();
   const dispatch = useDispatch();
   return (
@@ -101,7 +102,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant={"outline"}
-                disabled={modalStatus === "foldername"}
+                disabled={(modalStatus === "foldername" || loading)}
                 className={`h-10 px-6 border-border hover:border-primary hover:bg-primary/10 hover:text-primary transition-all disabled:cursor-not-allowed font-semibold`}
                 onClick={() => {
                   if (isSelected) {
@@ -162,6 +163,24 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            {isSelected && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  variant="outline"
+                  className="h-10 px-6 border-border hover:border-primary hover:bg-primary/10 hover:text-primary transition-all font-semibold disabled:opacity-50"
+                  onClick={() => {
+                    toggleIsFavourite(selectedPhotoIds);
+                  }}
+                  disabled={loading}
+                >
+                  <Heart className="w-4 h-4" />
+                  Toggle Favourite
+                </Button>
+              </motion.div>
+            )}
           </div>
         </div>
       )}
