@@ -68,7 +68,7 @@ const HeroSection = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="text-base w-full sm:w-auto hover:scale-105 transition-transform duration-200"
+                className="text-base w-full sm:w-auto hover:scale-105 hover:text-white transition-transform duration-200"
               >
                 <ImageIcon className="w-4 h-4 mr-2" />
                 Sign In

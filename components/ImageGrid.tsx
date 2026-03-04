@@ -8,6 +8,7 @@ import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
 
 import useImageHandler from "@/hooks/useImageHandler";
+import PhotoLoader from "./loaders/PhotoLoader";
 
 export const cloudinaryLoader = ({
   src,
@@ -34,7 +35,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   return (
     <>
       {loading ? (
-        <></>
+        <PhotoLoader />
       ) : (
         <div className="space-y-4">
           {Object.keys(month).map((key, index) => {
@@ -78,6 +79,19 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                             deletePhoto([item._id], e);
                           }}
                         >
+                          {selectedPhotoIds.length > 0 && (
+                            <input
+                              type="checkbox"
+                              id={item._id}
+                              value={item._id}
+                              checked={isSelected}
+                              className="z-50 absolute cursor-pointer top-2 left-2 w-4 h-4"
+                              onClick={(e: MouseEvent) => {
+                                e.stopPropagation();
+                              }}
+                              onChange={() => handleImageSelection(item)}
+                            />
+                          )}
                           <Image
                             src={item?.link}
                             alt="photo"
@@ -103,20 +117,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                           <div className="absolute top-2 right-2 text-pink-500">
                             <FaHeart />
                           </div>
-                        )}
-
-                        {selectedPhotoIds.length > 0 && (
-                          <input
-                            type="checkbox"
-                            id={item._id}
-                            value={item._id}
-                            checked={isSelected}
-                            className="z-50 absolute top-2 left-2 w-4 h-4"
-                            onClick={(e: MouseEvent) => {
-                              e.stopPropagation();
-                            }}
-                            onChange={() => handleImageSelection(item)}
-                          />
                         )}
                       </Link>
                     );

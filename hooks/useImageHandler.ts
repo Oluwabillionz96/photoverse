@@ -4,17 +4,23 @@ import {
   useRestoreTrashedPhotoMutation,
 } from "@/services/api";
 import { MouseEvent, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleApiMutation } from "./useApiMutation";
 import { Photo } from "@/lib/apiTypes";
-import { updatePhotoId } from "@/lib/slices/photoSlice";
+import {
+  removeSelectedPhoto,
+  updatePhotoId,
+  updateSelectedPhotosIds,
+} from "@/lib/slices/photoSlice";
+import { Rootstate } from "@/lib/store";
 
-const useImageHandler = (photos: Photo[]) => {
+const useImageHandler = (photos?: Photo[]) => {
   const dispatch = useDispatch();
   const [imageStates, setImageStates] = useState<
     Record<string, "loading" | "loaded" | "error">
   >({});
-  const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
+  // const [selectedPhotoIds, setSelectedPhotoIds] = useState<string[]>([]);
+  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
   const [trash, { isLoading }] = useMovePhotoToTrashMutation();
   const [restore, { isLoading: isRestoring }] =
     useRestoreTrashedPhotoMutation();
@@ -25,7 +31,6 @@ const useImageHandler = (photos: Photo[]) => {
 
   async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
-    e?.preventDefault();
     const payload = { photos };
 
     await handleApiMutation(trash(payload));
@@ -33,7 +38,6 @@ const useImageHandler = (photos: Photo[]) => {
 
   async function restoretrashedPhoto(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
-    e?.preventDefault();
     const payload = { photos };
 
     await handleApiMutation(restore(payload));
@@ -41,29 +45,30 @@ const useImageHandler = (photos: Photo[]) => {
 
   async function deletePhoto(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
-    e?.preventDefault();
     const payload = { photos };
     await handleApiMutation(permanentlyDelete(payload));
   }
 
   function handleImageSelection(item: Photo, e?: MouseEvent) {
     e?.stopPropagation();
-    e?.preventDefault();
 
     if (selectedPhotoIds.includes(item._id)) {
-      setSelectedPhotoIds((prev) => prev.filter((id) => id !== item._id));
+      dispatch(removeSelectedPhoto([item._id]));
     } else {
-      setSelectedPhotoIds((prev) => [...prev, item._id]);
+      dispatch(updateSelectedPhotosIds([item._id]));
     }
   }
 
   useEffect(() => {
+
+    if (!photos) return;
+
     const imageIds = photos?.map((item) => item._id);
     dispatch(updatePhotoId(imageIds));
 
     // Initialize all images as loading
     const initialStates: Record<string, "loading" | "loaded" | "error"> = {};
-    photos.forEach((photo) => {
+    photos?.forEach((photo) => {
       initialStates[photo._id] = "loading";
     });
     setImageStates(initialStates);
@@ -87,7 +92,7 @@ const useImageHandler = (photos: Photo[]) => {
 
   const month: Record<string, Photo[]> = {};
 
-  photos.map((item) => {
+  photos?.map((item) => {
     const uploadDate = getUploadDate(item.uploadedAt);
     if (!month[uploadDate]) {
       month[uploadDate] = [];
@@ -103,6 +108,7 @@ const useImageHandler = (photos: Photo[]) => {
     handleImageSelection,
     month,
     selectedPhotoIds,
+    setImageStates,
   };
 };
 

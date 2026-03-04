@@ -15,8 +15,13 @@ import {
 import { IoSettingsSharp } from "react-icons/io5";
 import { Loading } from "./loaders/Loading";
 import useLogout from "@/hooks/useLogout";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
+import { useDispatch, useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
+import { Trash2 } from "lucide-react";
+import useImageHandler from "@/hooks/useImageHandler";
+import { removeSelectedPhoto } from "@/lib/slices/photoSlice";
 
 const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
   const pathname = usePathname();
@@ -26,14 +31,19 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
   const { logout } = useLogout();
   const isMobile = useScreenSize();
-
+  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
+  const isSelected = selectedPhotoIds.length > 0;
+  const {
+    mutations: { movePhotoTotrash },
+  } = useImageHandler();
+  const dispatch = useDispatch();
   return (
     <>
       {false ? (
         <Loading />
       ) : (
         <div
-          className={`md:flex justify-between items-center px-6 py-4 hidden glass border-b border-border/30 fixed top-20 z-40 transition-all duration-500 ${
+          className={`md:flex justify-between items-center px-6 py-4 hidden bg-background border-b border-border fixed top-16 z-40 transition-all duration-500 ${
             isMobile
               ? "left-0 right-0"
               : collapsed
@@ -42,7 +52,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
           }`}
         >
           {/* View Toggle */}
-          <div className="flex gap-2 p-1 glass rounded-xl border border-border/30">
+          <div className="flex gap-2 p-1 bg-secondary rounded-xl border border-border">
             <motion.button
               className={`px-6 py-2.5 rounded-lg flex items-center gap-2 font-semibold text-sm transition-all relative ${
                 pathname.startsWith(`/photos`)
@@ -56,7 +66,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
               {pathname.startsWith(`/photos`) && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-lg"
+                  className="absolute inset-0 bg-primary rounded-lg"
                   transition={{ type: "spring", duration: 0.5 }}
                 />
               )}
@@ -77,7 +87,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
               {pathname.startsWith(`/folders`) && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-linear-to-r from-primary to-accent rounded-lg"
+                  className="absolute inset-0 bg-primary rounded-lg"
                   transition={{ type: "spring", duration: 0.5 }}
                 />
               )}
@@ -90,10 +100,16 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
           <div className="flex items-center gap-3">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
-                variant="outline"
+                variant={"outline"}
                 disabled={modalStatus === "foldername"}
-                className="h-10 px-6 glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all disabled:cursor-not-allowed font-semibold"
+                className={`h-10 px-6 border-border hover:border-primary hover:bg-primary/10 hover:text-primary transition-all disabled:cursor-not-allowed font-semibold`}
                 onClick={() => {
+                  if (isSelected) {
+                    movePhotoTotrash(selectedPhotoIds);
+                    dispatch(removeSelectedPhoto(selectedPhotoIds));
+                    return;
+                  }
+
                   if (params.folderName || pathname === "/photos") {
                     openFileDialog(ref);
                     return;
@@ -101,32 +117,41 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
                   setModalStatus("foldername");
                 }}
               >
-                <FaPlus className="w-4 h-4 mr-2" />
-                {pathname === "/folders"
-                  ? "Create Folder"
-                  : params.folderName || pathname === "/photos"
-                    ? "Add Photo"
-                    : ""}
+                {isSelected ? <Trash2 /> : <FaPlus className="w-4 h-4 mr-2" />}
+                {isSelected
+                  ? "Move to Trash"
+                  : pathname === "/folders"
+                    ? "Create Folder"
+                    : params.folderName || pathname === "/photos"
+                      ? "Add Photo"
+                      : ""}
               </Button>
             </motion.div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="outline"
-                    className="h-10 px-6 glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all font-semibold"
-                  >
-                    <IoSettingsSharp className="w-4 h-4 mr-2" />
-                    Settings
-                  </Button>
-                </motion.div>
+                <AnimatePresence mode="wait">
+                  {!isSelected ? (
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                    >
+                      <Button
+                        variant="outline"
+                        className="h-10 px-6 border-border hover:border-primary hover:bg-primary/10 hover:text-primary transition-all font-semibold"
+                      >
+                        <IoSettingsSharp className="w-4 h-4 mr-2" />
+                        Settings
+                      </Button>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="glass border-border/30"
+                className="bg-popover border-border"
                 align="end"
               >
                 <DropdownMenuItem

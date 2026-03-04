@@ -32,7 +32,7 @@ const CTASection = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="text-base w-full sm:w-auto"
+                className="text-base w-full sm:w-auto hover:text-white"
               >
                 {user.isAuthenticated ? "Upload a photo" : "Sign In"}
               </Button>

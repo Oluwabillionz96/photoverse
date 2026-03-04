@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
   photoIds: string[];
-  selectedPhotosIds: string[];
+  selectedPhotoIds: string[];
 }
 
 const initialState: InitialState = {
   photoIds: [],
-  selectedPhotosIds: [],
+  selectedPhotoIds: [],
 };
 
 const photoSlice = createSlice({
@@ -19,12 +19,12 @@ const photoSlice = createSlice({
     },
     updateSelectedPhotosIds: (
       state,
-      action: PayloadAction<string[] | string>
+      action: PayloadAction<string[]>
     ) => {
-      state.selectedPhotosIds = [...state.selectedPhotosIds, ...action.payload];
+      state.selectedPhotoIds = [...state.selectedPhotoIds, ...action.payload];
     },
     removeSelectedPhoto: (state, action: PayloadAction<string[]>) => {
-      state.selectedPhotosIds = state.selectedPhotosIds.filter(
+      state.selectedPhotoIds = state.selectedPhotoIds.filter(
         (item) => !action.payload.includes(item)
       );
     },
