@@ -6,8 +6,12 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { FaFolder, FaPlus, FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import { MdOutlinePhotoSizeSelectActual } from "react-icons/md";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 import TabLayouts from "./TabLayouts";
+import { useEffect } from "react";
+import MobileTopNav from "./mobile-top-nav";
 
 const MobileNavs = ({
   children,
@@ -22,29 +26,7 @@ const MobileNavs = ({
   return (
     <>
       {/* Top Quick Actions */}
-      {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) && (
-        <nav className="flex justify-between gap-2 px-4 mb-4 md:hidden">
-          <Link href="/favourites" className="flex-1">
-            <motion.button
-              className="w-full h-11 glass border border-border/30 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm hover:border-primary/50 transition-all"
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaRegHeart className="text-primary w-4 h-4" />
-              Favourites
-            </motion.button>
-          </Link>
-
-          <Link href="/trash" className="flex-1">
-            <motion.button
-              className="w-full h-11 glass border border-border/30 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm hover:border-primary/50 transition-all"
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaTrashAlt className="text-primary w-4 h-4" />
-              Trash
-            </motion.button>
-          </Link>
-        </nav>
-      )}
+      <MobileTopNav />
 
       {(pathName.startsWith("/folders") || pathName.startsWith("/photos")) && (
         <TabLayouts collapsed={collapsed} />

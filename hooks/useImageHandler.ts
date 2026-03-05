@@ -11,6 +11,7 @@ import { Photo } from "@/lib/apiTypes";
 import {
   removeSelectedPhoto,
   updatePhotoId,
+  updatePhotoLoading,
   updateSelectedPhotosIds,
 } from "@/lib/slices/photoSlice";
 import { Rootstate } from "@/lib/store";
@@ -29,8 +30,9 @@ const useImageHandler = (photos?: Photo[]) => {
     useDeletePhotoMutation();
   const [toggleFavourite, { isLoading: isTogglingFavorite }] =
     useToggleFavouriteMutation();
-
-  const loading = isLoading || isRestoring || isDeleting || isTogglingFavorite;
+  const { photoLoading: loading } = useSelector(
+    (state: Rootstate) => state.photo,
+  );
 
   async function movePhotoTotrash(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
@@ -84,6 +86,14 @@ const useImageHandler = (photos?: Photo[]) => {
     });
     setImageStates(initialStates);
   }, [dispatch, photos]);
+
+  useEffect(() => {
+    dispatch(
+      updatePhotoLoading(
+        isLoading || isRestoring || isDeleting || isTogglingFavorite,
+      ),
+    );
+  }, [isLoading, isRestoring, isDeleting, isTogglingFavorite]);
 
   function getUploadDate(time: string) {
     const uploadDate = new Date(time);

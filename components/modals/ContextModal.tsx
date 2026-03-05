@@ -14,6 +14,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import useImageHandler from "@/hooks/useImageHandler";
+import useScreenSize from "@/hooks/useScreenSize";
 import { usePathname } from "next/navigation";
 import { MouseEvent, ReactNode } from "react";
 
@@ -33,6 +34,7 @@ export default function ContextModal({
   photoId: string;
 }) {
   const pathname = usePathname();
+  const isMobile = useScreenSize();
   const {
     mutations: {
       toggleIsFavourite,
@@ -44,7 +46,8 @@ export default function ContextModal({
     selectedPhotoIds,
   } = useImageHandler();
   const isSelected = selectedPhotoIds.includes(photoId);
-  if (selectedPhotoIds.length > 0) return <>{children}</>;
+  // On mobile, skip context menu so long-press can select photos instead
+  if (isMobile || selectedPhotoIds.length > 0) return <>{children}</>;
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>

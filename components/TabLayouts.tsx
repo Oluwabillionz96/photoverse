@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { IoSettingsSharp } from "react-icons/io5";
-import { Loading } from "./loaders/Loading";
+import TabLayoutLoader from "./loaders/TabLayoutLoader";
 import useLogout from "@/hooks/useLogout";
 import { AnimatePresence, motion } from "framer-motion";
 import useScreenSize from "@/hooks/useScreenSize";
@@ -31,7 +31,9 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
   const { modalStatus, changeModalStatus: setModalStatus } = useModalContext();
   const { logout } = useLogout();
   const isMobile = useScreenSize();
-  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
+  const { selectedPhotoIds, photoLoading } = useSelector(
+    (state: Rootstate) => state.photo,
+  );
   const isSelected = selectedPhotoIds.length > 0;
   const {
     mutations: { movePhotoTotrash, toggleIsFavourite },
@@ -40,8 +42,8 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
   const dispatch = useDispatch();
   return (
     <>
-      {false ? (
-        <Loading />
+      {loading ? (
+        <TabLayoutLoader collapsed={collapsed} />
       ) : (
         <div
           className={`md:flex justify-between items-center px-6 py-4 hidden bg-background border-b border-border fixed top-16 z-40 transition-all duration-500 ${
@@ -102,7 +104,7 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant={"outline"}
-                disabled={(modalStatus === "foldername" || loading)}
+                disabled={modalStatus === "foldername" || loading}
                 className={`h-10 px-6 border-border hover:border-primary hover:bg-primary/10 hover:text-primary transition-all disabled:cursor-not-allowed font-semibold`}
                 onClick={() => {
                   if (isSelected) {

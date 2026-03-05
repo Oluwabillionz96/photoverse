@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Dispatch, MouseEvent, SetStateAction } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useCallback, useRef } from "react";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
 import Image from "next/image";
@@ -10,6 +10,8 @@ import { Photo } from "@/lib/apiTypes";
 import { useSelector } from "react-redux";
 import { Rootstate } from "@/lib/store";
 import { cloudinaryLoader } from "./ImageGrid";
+
+const LONG_PRESS_DURATION = 500; // ms
 
 const ImageCard = ({
   route,
@@ -31,14 +33,56 @@ const ImageCard = ({
   const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
   const showPlaceholder = imageState !== "loaded";
   const isSelected = selectedPhotoIds.includes(item._id);
+
+  // Long-press state
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didLongPress = useRef(false);
+
+  const clearLongPress = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }, []);
+
+  const handleTouchStart = useCallback(() => {
+    didLongPress.current = false;
+    longPressTimer.current = setTimeout(() => {
+      didLongPress.current = true;
+      handleImageSelection(item._id);
+    }, LONG_PRESS_DURATION);
+  }, [handleImageSelection, item._id]);
+
+  const handleTouchEnd = useCallback(() => {
+    clearLongPress();
+  }, [clearLongPress]);
+
+  const handleTouchMove = useCallback(() => {
+    // Cancel long-press if the user scrolls / moves their finger
+    clearLongPress();
+  }, [clearLongPress]);
+
   return (
     <Link
       className="relative aspect-square overflow-hidden group bg-border/10"
       href={`/${route}/${item._id}`}
       onClick={(e: MouseEvent) => {
+        // Prevent navigation if a long-press just fired or photos are selected
+        if (didLongPress.current) {
+          e.preventDefault();
+          didLongPress.current = false;
+          return;
+        }
         if (selectedPhotoIds.length > 0) {
           e.preventDefault();
         }
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onContextMenu={(e) => {
+        // Prevent the browser context menu on mobile so it doesn't interfere
+        e.preventDefault();
       }}
     >
       {/* Placeholder - shows while loading or on error */}
@@ -82,3 +126,4 @@ const ImageCard = ({
 };
 
 export default ImageCard;
+
