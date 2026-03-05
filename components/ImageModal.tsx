@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { X, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ArrowLeft, Trash2 } from "lucide-react";
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "./ImageGrid";
 import { Button } from "./ui/button";
@@ -12,6 +12,7 @@ import { useSwipeable } from "react-swipeable";
 import { motion } from "framer-motion";
 import IndividualPhotoLoader from "./individual-photo-loader";
 import useImageHandler from "@/hooks/useImageHandler";
+import { useRouter, usePathname } from "next/navigation";
 
 // interface Photo {
 //   id: number;
@@ -41,9 +42,11 @@ export function ImageModal({
 }: ImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
   const {
-    mutations: { toggleIsFavourite },
+    mutations: { toggleIsFavourite, movePhotoTotrash },
     loading: isLoading,
   } = useImageHandler();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handler = useSwipeable({
     onSwipedRight: () => {
@@ -155,6 +158,23 @@ export function ImageModal({
                   <FaRegHeart className="w-5 h-5 text-white" />
                 )}
               </motion.button>
+              {/* Trash Button */}
+              {!pathname.startsWith("/trash") && (
+                <motion.button
+                  onClick={async () => {
+                    await movePhotoTotrash([photo?._id ?? ""]);
+                    onClose();
+                    router.back();
+                  }}
+                  disabled={isLoading}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-red-500/20 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Move to trash"
+                >
+                  <Trash2 className="w-5 h-5 text-white" />
+                </motion.button>
+              )}
             </div>
           </div>
         )}

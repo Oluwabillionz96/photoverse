@@ -109,7 +109,6 @@ const TabLayouts = ({ collapsed }: { collapsed: boolean }) => {
                 onClick={() => {
                   if (isSelected) {
                     movePhotoTotrash(selectedPhotoIds);
-                    dispatch(removeSelectedPhoto(selectedPhotoIds));
                     return;
                   }
 

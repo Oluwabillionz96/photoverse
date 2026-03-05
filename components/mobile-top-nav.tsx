@@ -80,7 +80,7 @@ const MobileTopNav = () => {
                 onClick={() => toggleIsFavourite(selectedPhotoIds)}
               >
                 <FaRegHeart />
-                <p>Add to favourites</p>
+                <p>Toggle favourites</p>
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"

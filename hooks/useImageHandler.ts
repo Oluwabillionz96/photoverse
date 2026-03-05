@@ -39,6 +39,7 @@ const useImageHandler = (photos?: Photo[]) => {
     const payload = { photos };
 
     await handleApiMutation(trash(payload));
+    dispatch(removeSelectedPhoto(photos));
   }
 
   async function restoretrashedPhoto(photos: string[], e?: MouseEvent) {
@@ -46,12 +47,14 @@ const useImageHandler = (photos?: Photo[]) => {
     const payload = { photos };
 
     await handleApiMutation(restore(payload));
+    dispatch(removeSelectedPhoto(photos));
   }
 
   async function deletePhoto(photos: string[], e?: MouseEvent) {
     e?.stopPropagation();
     const payload = { photos };
     await handleApiMutation(permanentlyDelete(payload));
+    dispatch(removeSelectedPhoto(photos));
   }
 
   async function toggleIsFavourite(photos: string[], e?: MouseEvent) {
@@ -61,6 +64,7 @@ const useImageHandler = (photos?: Photo[]) => {
     };
 
     await handleApiMutation(toggleFavourite(payload));
+    dispatch(removeSelectedPhoto(photos));
   }
 
   function handleImageSelection(item_id: string, e?: MouseEvent) {
