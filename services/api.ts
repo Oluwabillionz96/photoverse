@@ -43,7 +43,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
     if (refreshResult.data) {
       // Refresh successful - new tokens (JWT + CSRF) are now in cookies
-      console.log("Token refreshed successfully, retrying original request");
+      // console.log("Token refreshed successfully, retrying original request");
 
       // Retry the original request with new tokens
       result = await baseQuery(args, api, extraOptions);

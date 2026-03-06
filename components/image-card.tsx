@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { Dispatch, MouseEvent, SetStateAction, useCallback, useRef } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useCallback,
+  useRef,
+} from "react";
 import PlaceHolder from "./placeholder";
 import ContextModal from "./modals/ContextModal";
 import Image from "next/image";
@@ -18,16 +24,19 @@ const ImageCard = ({
   setImageStates,
   handleImageSelection,
   item,
-
+  onImageClick,
   imageState,
+  index,
 }: {
   setImageStates: Dispatch<
     SetStateAction<Record<string, "loading" | "loaded" | "error">>
   >;
   imageState: "loading" | "loaded" | "error";
   item: Photo;
-  route: string;
+  route?: string;
+  index?: number;
   handleImageSelection: (photoId: string, e?: MouseEvent) => void;
+  onImageClick?: (index: number) => void;
 }) => {
   const pathname = usePathname();
   const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
@@ -65,7 +74,7 @@ const ImageCard = ({
   return (
     <Link
       className="relative aspect-square overflow-hidden group bg-border/10"
-      href={`/${route}/${item._id}`}
+      href={route ? `/${route}/${item._id}` : "#"}
       onClick={(e: MouseEvent) => {
         // Prevent navigation if a long-press just fired or photos are selected
         if (didLongPress.current) {
@@ -75,6 +84,10 @@ const ImageCard = ({
         }
         if (selectedPhotoIds.length > 0) {
           e.preventDefault();
+        } else if (onImageClick && index !== undefined) {
+          e.preventDefault();
+          console.log("Here");
+          onImageClick(index);
         }
       }}
       onTouchStart={handleTouchStart}
@@ -126,4 +139,3 @@ const ImageCard = ({
 };
 
 export default ImageCard;
-

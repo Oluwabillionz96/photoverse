@@ -11,7 +11,6 @@ const TrashPage = () => {
   const { currentPage, setCurrentPage } = useCurrentPage();
   const { data, isLoading } = useGetTrashedPhotosQuery({ page: currentPage });
   const photos = data?.photos;
-  console.log({ photos });
   return (
     <section className="px-2">
       {isLoading ? (

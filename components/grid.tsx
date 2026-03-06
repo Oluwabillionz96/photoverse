@@ -8,18 +8,20 @@ const PhotoGrid = ({
   setImageStates,
   route,
   handleImageSelection,
+  onImageClick,
 }: {
   images: Photo[];
   imageStates: Record<string, "loading" | "loaded" | "error">;
   setImageStates: Dispatch<
     SetStateAction<Record<string, "loading" | "loaded" | "error">>
   >;
-  route: string;
+  route?: string;
   handleImageSelection: (photoId: string, e?: MouseEvent) => void;
+  onImageClick?: (index: number) => void;
 }) => {
   return (
     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
-      {images.map((item) => {
+      {images.map((item, index) => {
         const imageState = imageStates[item._id] || "loading";
 
         return (
@@ -28,8 +30,10 @@ const PhotoGrid = ({
             setImageStates={setImageStates}
             imageState={imageState}
             handleImageSelection={handleImageSelection}
+            onImageClick={onImageClick}
             route={route}
             item={item}
+            index={index}
           />
         );
       })}
