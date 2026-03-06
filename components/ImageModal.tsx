@@ -100,7 +100,7 @@ export function ImageModal({
               onClick={() => {
                 onClose();
               }}
-              className="p-2 bg-transparent hover:bg-white/10 text-white focus:outline-none border-0 rounded-full"
+              className="p-2 bg-black/50 backdrop-blur-md border border-white/10 hover:bg-black/70 text-white rounded-full transition-colors focus:outline-none"
             >
               <div className="lg:hidden">
                 <ArrowLeft className="w-8 h-8" />
@@ -121,7 +121,7 @@ export function ImageModal({
                 download
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-white/10 flex items-center justify-center transition-all"
+                className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-white/10 flex items-center justify-center transition-all"
                 title="Download"
               >
                 <GrDownload className="w-5 h-5 text-white" />
@@ -135,9 +135,9 @@ export function ImageModal({
                 disabled={isLoading}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`w-10 h-10 rounded-full glass border transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed ${
                   photo?.isFavourite
-                    ? "border-pink-500/50 bg-pink-500/20"
+                    ? "border-pink-500/50 hover:bg-pink-500/40"
                     : "border-white/20 hover:bg-white/10"
                 }`}
                 title={
@@ -169,7 +169,7 @@ export function ImageModal({
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-red-500/20 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-red-500/40 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Move to trash"
                 >
                   <Trash2 className="w-5 h-5 text-white" />

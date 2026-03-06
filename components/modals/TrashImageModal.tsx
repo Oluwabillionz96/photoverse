@@ -125,7 +125,7 @@ export default function TrashImageModal({
                 onClick={onClose}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-transparent hover:bg-white/10 text-white rounded-full transition-colors"
+                className="p-2 bg-black/50 backdrop-blur-md border border-white/10 hover:bg-black/70 text-white rounded-full transition-colors"
               >
                 <div className="lg:hidden">
                   <ArrowLeft className="w-7 h-7" />
@@ -139,7 +139,7 @@ export default function TrashImageModal({
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/20"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/20"
               >
                 <Clock className="w-4 h-4 text-orange-400" />
                 <span className="text-sm font-semibold text-white">
@@ -157,7 +157,7 @@ export default function TrashImageModal({
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-emerald-500/40 hover:border-emerald-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Restore"
                 >
                   <RotateCcw className="w-5 h-5 text-white" />
@@ -171,7 +171,7 @@ export default function TrashImageModal({
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full glass border border-white/20 hover:bg-red-500/20 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-red-500/40 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Delete Permanently"
                 >
                   <Trash2 className="w-5 h-5 text-white" />
@@ -188,7 +188,7 @@ export default function TrashImageModal({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="flex items-center gap-4 px-6 py-3 rounded-2xl glass border border-white/20"
+                className="flex items-center gap-4 px-6 py-3 rounded-2xl bg-black/50 backdrop-blur-md border border-white/20"
               >
                 {/* Restore Button */}
                 <motion.button
@@ -199,7 +199,7 @@ export default function TrashImageModal({
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/20 hover:border-emerald-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/40 hover:bg-emerald-500/40 border border-white/20 hover:border-emerald-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Restore
@@ -217,7 +217,7 @@ export default function TrashImageModal({
                   disabled={isLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-red-500/20 border border-white/20 hover:border-red-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/40 hover:bg-red-500/40 border border-white/20 hover:border-red-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete
@@ -282,22 +282,22 @@ export default function TrashImageModal({
                   opacity: { duration: 0.2 },
                 }}
               >
-              <Image
-                src={photo.link || "/placeholder.svg"}
-                alt="Trashed photo"
-                width={1200}
-                height={800}
-                className="min-w-full max-h-[80vh] object-contain"
-                priority
-                loader={cloudinaryLoader}
-                loading="eager"
-                onLoad={() => setImageLoading(false)}
-              />
-              {imageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <IndividualPhotoLoader />
-                </div>
-              )}
+                <Image
+                  src={photo.link || "/placeholder.svg"}
+                  alt="Trashed photo"
+                  width={1200}
+                  height={800}
+                  className="min-w-full max-h-[80vh] object-contain"
+                  priority
+                  loader={cloudinaryLoader}
+                  loading="eager"
+                  onLoad={() => setImageLoading(false)}
+                />
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <IndividualPhotoLoader />
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
