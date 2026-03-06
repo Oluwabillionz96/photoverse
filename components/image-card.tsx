@@ -26,7 +26,6 @@ const ImageCard = ({
   item,
   onImageClick,
   imageState,
-  index,
 }: {
   setImageStates: Dispatch<
     SetStateAction<Record<string, "loading" | "loaded" | "error">>
