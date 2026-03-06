@@ -20,6 +20,7 @@ import useImageHandler from "@/hooks/useImageHandler";
 import TrashTopBar from "./trash/TrashTopBar";
 import TrashMobileActions from "./trash/TrashMobileActions";
 import ModalNavigation from "./ModalNavigation";
+import ModalImage from "./ModalImage";
 
 interface TrashImageModalProps {
   photos: Photo[];
@@ -54,7 +55,6 @@ export default function TrashImageModal({
   onChangeIndex,
 }: TrashImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
-  const [imageLoading, setImageLoading] = useState(true);
   const [direction, setDirection] = useState(0);
   const {
     mutations: { restoretrashedPhoto, deletePhoto },
@@ -68,7 +68,6 @@ export default function TrashImageModal({
   const onNext = () => {
     if (!isLast) {
       setDirection(1);
-      setImageLoading(true);
       onChangeIndex(selectedIndex + 1);
     }
   };
@@ -76,7 +75,6 @@ export default function TrashImageModal({
   const onPrevious = () => {
     if (!isFirst) {
       setDirection(-1);
-      setImageLoading(true);
       onChangeIndex(selectedIndex - 1);
     }
   };
@@ -167,51 +165,13 @@ export default function TrashImageModal({
             {...handler}
           >
             <AnimatePresence initial={false} custom={direction}>
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center max-w-full max-h-full mx-2 md:mx-0"
-                key={photo._id}
-                custom={direction}
-                variants={{
-                  enter: (dir: number) => ({
-                    x: dir > 0 ? 300 : -300,
-                    opacity: 0,
-                  }),
-                  center: {
-                    zIndex: 1,
-                    x: 0,
-                    opacity: 1,
-                  },
-                  exit: (dir: number) => ({
-                    zIndex: 0,
-                    x: dir < 0 ? 300 : -300,
-                    opacity: 0,
-                  }),
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 },
-                }}
-              >
-                <Image
-                  src={photo.link || "/placeholder.svg"}
-                  alt="Trashed photo"
-                  width={1200}
-                  height={800}
-                  className="min-w-full max-h-[80vh] object-contain"
-                  priority
-                  loader={cloudinaryLoader}
-                  loading="eager"
-                  onLoad={() => setImageLoading(false)}
+              {photo && (
+                <ModalImage
+                  key={photo._id}
+                  photo={photo}
+                  direction={direction}
                 />
-                {imageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <IndividualPhotoLoader />
-                  </div>
-                )}
-              </motion.div>
+              )}
             </AnimatePresence>
           </div>
         )}

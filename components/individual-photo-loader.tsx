@@ -2,10 +2,14 @@ import { motion } from "framer-motion";
 import Logo from "./Logo";
 import ShimmerSweep from "./shimmer-sweep";
 
-const IndividualPhotoLoader = () => {
+const IndividualPhotoLoader = ({ inline = false }: { inline?: boolean }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+    <div
+      className={`flex items-center justify-center w-full h-full ${inline ? "absolute inset-0" : "fixed inset-0 z-50"}`}
+    >
+      {!inline && (
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+      )}
       <div className="w-full h-full grid place-items-center">
         <motion.div
           className="relative w-64 h-64 rounded-2xl bg-linear-to-br from-primary/20 via-accent/20 to-primary/20 flex items-center justify-center overflow-hidden"
