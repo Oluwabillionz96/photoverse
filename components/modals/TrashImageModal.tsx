@@ -14,7 +14,7 @@ import {
 import { Photo } from "@/lib/apiTypes";
 import { cloudinaryLoader } from "../ImageGrid";
 import { useSwipeable } from "react-swipeable";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import IndividualPhotoLoader from "../individual-photo-loader";
 import useImageHandler from "@/hooks/useImageHandler";
 
@@ -52,6 +52,7 @@ export default function TrashImageModal({
 }: TrashImageModalProps) {
   const [showOptions, setShowOptions] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
+  const [direction, setDirection] = useState(0);
   const {
     mutations: { restoretrashedPhoto, deletePhoto },
     loading: isLoading,
@@ -63,6 +64,7 @@ export default function TrashImageModal({
 
   const onNext = () => {
     if (!isLast) {
+      setDirection(1);
       setImageLoading(true);
       onChangeIndex(selectedIndex + 1);
     }
@@ -70,6 +72,7 @@ export default function TrashImageModal({
 
   const onPrevious = () => {
     if (!isFirst) {
+      setDirection(-1);
       setImageLoading(true);
       onChangeIndex(selectedIndex - 1);
     }
@@ -247,17 +250,38 @@ export default function TrashImageModal({
           <IndividualPhotoLoader />
         ) : (
           <div
-            className="relative w-full h-full flex items-center justify-center"
+            className="relative w-full h-full flex items-center justify-center overflow-hidden"
             {...handler}
           >
-            <motion.div
-              className="relative max-w-full max-h-full mx-2 md:mx-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              key={photo._id}
-            >
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center max-w-full max-h-full mx-2 md:mx-0"
+                key={photo._id}
+                custom={direction}
+                variants={{
+                  enter: (dir: number) => ({
+                    x: dir > 0 ? 300 : -300,
+                    opacity: 0,
+                  }),
+                  center: {
+                    zIndex: 1,
+                    x: 0,
+                    opacity: 1,
+                  },
+                  exit: (dir: number) => ({
+                    zIndex: 0,
+                    x: dir < 0 ? 300 : -300,
+                    opacity: 0,
+                  }),
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.2 },
+                }}
+              >
               <Image
                 src={photo.link || "/placeholder.svg"}
                 alt="Trashed photo"
@@ -274,7 +298,8 @@ export default function TrashImageModal({
                   <IndividualPhotoLoader />
                 </div>
               )}
-            </motion.div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         )}
       </div>

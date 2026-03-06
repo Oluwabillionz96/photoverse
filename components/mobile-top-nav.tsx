@@ -11,6 +11,8 @@ import {
 } from "./ui/dropdown-menu";
 import useImageHandler from "@/hooks/useImageHandler";
 import ShimmerSweep from "./shimmer-sweep";
+import { useDispatch } from "react-redux";
+import { removeSelectedPhoto } from "@/lib/slices/photoSlice";
 
 const MobileTopNavSkeleton = () => (
   <nav className="flex justify-between gap-2 px-4 my-4 md:hidden">
@@ -32,6 +34,7 @@ const MobileTopNavSkeleton = () => (
 
 const MobileTopNav = () => {
   const pathname = usePathname();
+  const dispatch = useDispatch();
   const {
     loading,
     mutations: { movePhotoTotrash, toggleIsFavourite },
@@ -68,7 +71,10 @@ const MobileTopNav = () => {
       ) : (
         <div className="flex justify-between items-center px-4 mb-4 md:hidden">
           <div className="flex items-center gap-2">
-            <X />
+            <X
+              className="cursor-pointer"
+              onClick={() => dispatch(removeSelectedPhoto(selectedPhotoIds))}
+            />
             <p>{selectedPhotoIds.length}</p>
           </div>
           <DropdownMenu>
@@ -87,7 +93,7 @@ const MobileTopNav = () => {
                 onClick={() => movePhotoTotrash(selectedPhotoIds)}
               >
                 <FaTrashAlt />
-                <p>Delete</p>
+                <p>Move To Trash</p>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
