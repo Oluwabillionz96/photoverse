@@ -19,7 +19,7 @@ import IndividualPhotoLoader from "../individual-photo-loader";
 import useImageHandler from "@/hooks/useImageHandler";
 import TrashTopBar from "./trash/TrashTopBar";
 import TrashMobileActions from "./trash/TrashMobileActions";
-import TrashNavigation from "./trash/TrashNavigation";
+import ModalNavigation from "./ModalNavigation";
 
 interface TrashImageModalProps {
   photos: Photo[];
@@ -149,7 +149,7 @@ export default function TrashImageModal({
               }}
             />
 
-            <TrashNavigation
+            <ModalNavigation
               onNext={onNext}
               onPrevious={onPrevious}
               isFirst={isFirst}

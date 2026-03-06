@@ -1,18 +1,18 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface TrashNavigationProps {
+interface ModalNavigationProps {
   onNext: () => void;
   onPrevious: () => void;
   isFirst: boolean;
   isLast: boolean;
 }
 
-export default function TrashNavigation({
+export default function ModalNavigation({
   onNext,
   onPrevious,
   isFirst,
   isLast,
-}: TrashNavigationProps) {
+}: ModalNavigationProps) {
   return (
     <div className="absolute bottom-20 lg:flex justify-center gap-6 w-full z-20 hidden">
       <button
