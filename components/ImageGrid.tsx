@@ -5,6 +5,7 @@ import PhotoGrid from "./grid";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import TrashImageModal from "./modals/TrashImageModal";
+import { ImageModal } from "./ImageModal";
 
 export const cloudinaryLoader = ({
   src,
@@ -25,9 +26,12 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setIsModalOpen(true);
+  const handleImageClick = (photoId: string) => {
+    const globalIndex = photos.findIndex((p) => p._id === photoId);
+    if (globalIndex !== -1) {
+      setSelectedImageIndex(globalIndex);
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -68,10 +72,37 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                     setImageStates={setImageStates}
                     route={route}
                     handleImageSelection={handleImageSelection}
+                    onImageClick={handleImageClick}
                   />
                 </div>
               );
             })
+          )}
+
+          {!pathname.startsWith("/trash") && (
+            <ImageModal
+              photo={photos[selectedImageIndex]}
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onNext={() => {
+                if (selectedImageIndex < photos.length - 1) {
+                  setSelectedImageIndex((prev) => prev + 1);
+                }
+              }}
+              onPrevious={() => {
+                if (selectedImageIndex > 0) {
+                  setSelectedImageIndex((prev) => prev - 1);
+                }
+              }}
+              disable={
+                selectedImageIndex === 0
+                  ? "left"
+                  : selectedImageIndex === photos.length - 1
+                    ? "right"
+                    : ""
+              }
+              loading={loading}
+            />
           )}
         </div>
       )}

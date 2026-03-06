@@ -17,7 +17,7 @@ const PhotoGrid = ({
   >;
   route?: string;
   handleImageSelection: (photoId: string, e?: MouseEvent) => void;
-  onImageClick?: (index: number) => void;
+  onImageClick?: (photoId: string) => void;
 }) => {
   return (
     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-[0.1rem]">
@@ -33,7 +33,6 @@ const PhotoGrid = ({
             onImageClick={onImageClick}
             route={route}
             item={item}
-            index={index}
           />
         );
       })}

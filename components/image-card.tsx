@@ -34,9 +34,8 @@ const ImageCard = ({
   imageState: "loading" | "loaded" | "error";
   item: Photo;
   route?: string;
-  index?: number;
   handleImageSelection: (photoId: string, e?: MouseEvent) => void;
-  onImageClick?: (index: number) => void;
+  onImageClick?: (photoId: string) => void;
 }) => {
   const pathname = usePathname();
   const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
@@ -84,10 +83,9 @@ const ImageCard = ({
         }
         if (selectedPhotoIds.length > 0) {
           e.preventDefault();
-        } else if (onImageClick && index !== undefined) {
+        } else if (onImageClick) {
           e.preventDefault();
-          console.log("Here");
-          onImageClick(index);
+          onImageClick(item._id);
         }
       }}
       onTouchStart={handleTouchStart}

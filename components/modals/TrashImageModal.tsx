@@ -17,6 +17,9 @@ import { useSwipeable } from "react-swipeable";
 import { motion, AnimatePresence } from "framer-motion";
 import IndividualPhotoLoader from "../individual-photo-loader";
 import useImageHandler from "@/hooks/useImageHandler";
+import TrashTopBar from "./trash/TrashTopBar";
+import TrashMobileActions from "./trash/TrashMobileActions";
+import TrashNavigation from "./trash/TrashNavigation";
 
 interface TrashImageModalProps {
   photos: Photo[];
@@ -118,130 +121,40 @@ export default function TrashImageModal({
       <div className="relative z-10 md:max-w-7xl md:max-h-[90vh] h-full w-full md:mx-4">
         {showOptions && (
           <>
-            {/* Top Bar */}
-            <div className="absolute top-4 z-20 flex justify-between items-center w-full px-4">
-              {/* Close button */}
-              <motion.button
-                onClick={onClose}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 bg-black/50 backdrop-blur-md border border-white/10 hover:bg-black/70 text-white rounded-full transition-colors"
-              >
-                <div className="lg:hidden">
-                  <ArrowLeft className="w-7 h-7" />
-                </div>
-                <div className="hidden lg:block">
-                  <X className="w-7 h-7" />
-                </div>
-              </motion.button>
+            <TrashTopBar
+              photo={photo}
+              timeLeft={timeLeft}
+              isLoading={isLoading}
+              onClose={onClose}
+              onRestore={async () => {
+                await restoretrashedPhoto([photo._id]);
+                onClose();
+              }}
+              onDelete={async () => {
+                await deletePhoto([photo._id]);
+                onClose();
+              }}
+            />
 
-              {/* Time left badge */}
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-md border border-white/20"
-              >
-                <Clock className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-semibold text-white">
-                  {timeLeft}
-                </span>
-              </motion.div>
+            <TrashMobileActions
+              photo={photo}
+              isLoading={isLoading}
+              onRestore={async () => {
+                await restoretrashedPhoto([photo._id]);
+                onClose();
+              }}
+              onDelete={async () => {
+                await deletePhoto([photo._id]);
+                onClose();
+              }}
+            />
 
-              {/* Desktop Action Buttons */}
-              <div className="hidden md:flex items-center gap-2">
-                <motion.button
-                  onClick={async () => {
-                    await restoretrashedPhoto([photo._id]);
-                    onClose();
-                  }}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-emerald-500/40 hover:border-emerald-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Restore"
-                >
-                  <RotateCcw className="w-5 h-5 text-white" />
-                </motion.button>
-
-                <motion.button
-                  onClick={async () => {
-                    await deletePhoto([photo._id]);
-                    onClose();
-                  }}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 hover:bg-red-500/40 hover:border-red-500/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Delete Permanently"
-                >
-                  <Trash2 className="w-5 h-5 text-white" />
-                </motion.button>
-              </div>
-
-              {/* Placeholder for spacing on mobile */}
-              <div className="w-11 md:hidden" />
-            </div>
-
-            {/* Bottom Action Bar (Mobile Only) */}
-            <div className="absolute bottom-28 z-20 flex justify-center items-center w-full px-4 md:hidden">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center gap-4 px-6 py-3 rounded-2xl bg-black/50 backdrop-blur-md border border-white/20"
-              >
-                {/* Restore Button */}
-                <motion.button
-                  onClick={async () => {
-                    await restoretrashedPhoto([photo._id]);
-                    onClose();
-                  }}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/40 hover:bg-emerald-500/40 border border-white/20 hover:border-emerald-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Restore
-                </motion.button>
-
-                {/* Separator */}
-                <div className="w-px h-8 bg-white/20" />
-
-                {/* Delete Permanently Button */}
-                <motion.button
-                  onClick={async () => {
-                    await deletePhoto([photo._id]);
-                    onClose();
-                  }}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/40 hover:bg-red-500/40 border border-white/20 hover:border-red-500/50 text-white font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete
-                </motion.button>
-              </motion.div>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="absolute bottom-20 lg:flex justify-center gap-6 w-full z-20 hidden">
-              <button
-                onClick={onPrevious}
-                className="p-3 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isFirst}
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={onNext}
-                className="p-3 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isLast}
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
+            <TrashNavigation
+              onNext={onNext}
+              onPrevious={onPrevious}
+              isFirst={isFirst}
+              isLast={isLast}
+            />
           </>
         )}
 
