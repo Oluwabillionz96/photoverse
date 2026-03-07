@@ -161,7 +161,7 @@ export default function PhotoViewer({ mode, navPrefix }: PhotoViewerProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center overflow-hidden">
       <div className="relative w-full h-full max-w-7xl max-h-screen md:max-h-[90vh] md:mx-4">
         {showOptions && (
           <>

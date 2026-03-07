@@ -82,6 +82,7 @@ const ImageCard = ({
         }
         if (selectedPhotoIds.length > 0) {
           e.preventDefault();
+          handleImageSelection(item._id);
         } else if (onImageClick) {
           e.preventDefault();
           onImageClick(item._id);
@@ -99,17 +100,24 @@ const ImageCard = ({
       {showPlaceholder && <PlaceHolder id={item._id} imageState={imageState} />}
       <ContextModal photoId={item._id} isFavourite={item.isFavourite}>
         {selectedPhotoIds.length > 0 && (
-          <input
-            type="checkbox"
-            id={item._id}
-            value={item._id}
-            checked={isSelected}
-            className="z-50 absolute cursor-pointer top-2 left-2 w-4 h-4"
-            onClick={(e: MouseEvent) => {
-              e.stopPropagation();
-            }}
-            onChange={() => handleImageSelection(item._id)}
-          />
+          <>
+            <div
+              className={`absolute inset-0 z-10 transition-colors duration-300 ${
+                isSelected ? "bg-primary/20" : "bg-black/20"
+              }`}
+            />
+            <input
+              type="checkbox"
+              id={item._id}
+              value={item._id}
+              checked={isSelected}
+              className="z-30 absolute cursor-pointer top-2 left-2 w-5 h-5 accent-primary"
+              onClick={(e: MouseEvent) => {
+                e.stopPropagation();
+              }}
+              onChange={() => handleImageSelection(item._id)}
+            />
+          </>
         )}
         <Image
           src={item?.link}

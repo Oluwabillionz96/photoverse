@@ -35,7 +35,7 @@ const FolderCard = ({
     <Link href={`/folders/${folder.name}`}>
       <div className="group relative overflow-hidden rounded-xl border border-border glass transition-all hover:shadow-lg hover:shadow-primary/20 hover:border-primary/50">
         <div className="relative aspect-4/3 bg-linear-to-br from-muted/50 to-muted overflow-hidden">
-          <div className="absolute right-3 top-3 z-50">
+          <div className="absolute right-3 top-3 z-30">
             <DropdownMenu open={openSideModal} onOpenChange={setOpenSideModal}>
               <DropdownMenuTrigger asChild>
                 <Button
