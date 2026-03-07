@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { EllipsisVertical, X } from "lucide-react";
+import { EllipsisVertical, RefreshCcw, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,10 +37,16 @@ const MobileTopNav = () => {
   const dispatch = useDispatch();
   const {
     loading,
-    mutations: { movePhotoTotrash, toggleIsFavourite },
+    mutations: {
+      movePhotoTotrash,
+      toggleIsFavourite,
+      restoretrashedPhoto,
+      deletePhoto,
+    },
     selectedPhotoIds,
   } = useImageHandler();
   const isSelected = selectedPhotoIds.length > 0;
+  const isTrash = pathname.startsWith("/trash");
   if (loading) return <MobileTopNavSkeleton />;
   return (
     <>
@@ -83,17 +89,46 @@ const MobileTopNav = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem
-                onClick={() => toggleIsFavourite(selectedPhotoIds)}
+                onClick={
+                  isTrash
+                    ? () => {
+                        restoretrashedPhoto(selectedPhotoIds);
+                      }
+                    : () => toggleIsFavourite(selectedPhotoIds)
+                }
               >
-                <FaRegHeart />
-                <p>Toggle favourites</p>
+                {!isTrash ? (
+                  <>
+                    <FaRegHeart />
+                    <p>Toggle favourites</p>
+                  </>
+                ) : (
+                  <>
+                    <RefreshCcw />
+                    <p>Restore Photo</p>
+                  </>
+                )}
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => movePhotoTotrash(selectedPhotoIds)}
+                onClick={
+                  isTrash
+                    ? () => {
+                        deletePhoto(selectedPhotoIds);
+                      }
+                    : () => movePhotoTotrash(selectedPhotoIds)
+                }
               >
                 <FaTrashAlt />
-                <p>Move To Trash</p>
+                {!isTrash ? (
+                  <>
+                    <p>Move To Trash</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Delete Photo</p>
+                  </>
+                )}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

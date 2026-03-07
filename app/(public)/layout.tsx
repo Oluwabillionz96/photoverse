@@ -4,29 +4,34 @@ import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { FaArrowLeft } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { selectedPhotoIds } = useSelector((state: Rootstate) => state.photo);
 
   const currentPath = pathname.startsWith("/favourites")
     ? "Favourites"
     : pathname.startsWith("/trash")
-    ? "Trash"
-    : "";
+      ? "Trash"
+      : "";
   return (
     <>
-      <div className="flex items-center mb-4 border-b border-border/30 pb-4 text-xl">
-        <Button
-          onClick={() => {
-            router.back();
-          }}
-          className="w-fit h-fit bg-transparent hover:bg-transparent flex items-center justify-center text-foreground"
-        >
-          <FaArrowLeft />
-        </Button>
-        <p className="font-semibold">{currentPath}</p>
-      </div>
+      {selectedPhotoIds.length < 1 && (
+        <div className="flex items-center mb-4 border-b border-border/30 pb-4 text-xl">
+          <Button
+            onClick={() => {
+              router.push("/photos");
+            }}
+            className="w-fit h-fit bg-transparent hover:bg-transparent flex items-center justify-center text-foreground"
+          >
+            <FaArrowLeft />
+          </Button>
+          <p className="font-semibold">{currentPath}</p>
+        </div>
+      )}
       {children}
     </>
   );

@@ -132,7 +132,7 @@ export const PhotoverseAPI = createApi({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["photos"],
+      invalidatesTags: ["photos", "favourite"],
     }),
     getFavourite: builder.query<GetPhotoResponse, { page: string | number }>({
       query: ({ page }) => `photos/favourite?limit=60&page=${page}`,
@@ -175,7 +175,7 @@ export const PhotoverseAPI = createApi({
         method: "DELETE",
         body,
       }),
-      invalidatesTags: ["folders", "photos", "trash"],
+      invalidatesTags: ["folders", "photos", "trash", "favourite"],
     }),
   }),
 });

@@ -26,7 +26,7 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
     let photoRoute = "/photos";
     if (pathname.startsWith("/trash")) {
       photoRoute = "/trash";
-    } else if (pathname.startsWith("/folders")) {
+    } else if (pathname.startsWith("/folders") || pathname.startsWith("/favourites")) {
       photoRoute = pathname;
     }
     router.push(`${photoRoute}/${photoId}?back=${encodeURIComponent(pathname)}`);

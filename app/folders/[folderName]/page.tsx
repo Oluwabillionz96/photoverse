@@ -14,6 +14,8 @@ import Pagination from "@/components/Pagination";
 import useCurrentPage from "@/hooks/useCurrentPage";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
 import DragAndDropOverlay from "@/components/drag-and-drop-overlay";
+import { useSelector } from "react-redux";
+import { Rootstate } from "@/lib/store";
 
 const Folder = () => {
   const params = useParams();
@@ -43,13 +45,15 @@ const Folder = () => {
     existingFiles: files,
   });
 
+  const {selectedPhotoIds} = useSelector((state:Rootstate) => state.photo)
+
   return (
     <section className="mx-2 h-fit md:py-4" {...dragHandlers}>
       <>
         {/* Drag and Drop Overlay */}
         <DragAndDropOverlay isDragging={isDragging} />
 
-        {files.length < 1 && (
+        {files.length < 1 && selectedPhotoIds.length < 1 && (
           <motion.div
             className="flex mb-6 items-center gap-4"
             initial={{ opacity: 0, y: -10 }}
