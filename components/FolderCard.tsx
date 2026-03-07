@@ -27,6 +27,9 @@ const FolderCard = ({
 
   // Get consistent gradient for this folder
   const gradient = getRandomGradient(folder._id);
+  const validPhotos = folder.photos
+    .filter((item) => item.isTrashed !== true)
+    .reverse();
 
   return (
     <Link href={`/folders/${folder.name}`}>
@@ -76,10 +79,10 @@ const FolderCard = ({
             </DropdownMenu>
           </div>
 
-          {folder.photos && folder.photos.length > 0 ? (
+          {validPhotos && validPhotos.length > 0 ? (
             // Show first photo as folder thumbnail
             <Image
-              src={folder.photos[folder.photos.length - 1].link}
+              src={validPhotos[0].link}
               alt={folder.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
