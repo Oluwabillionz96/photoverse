@@ -65,7 +65,7 @@ const Folder = () => {
                 onClick={() => push("/folders")}
                 variant="outline"
                 size="icon"
-                className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10"
+                className="glass border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-white"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>

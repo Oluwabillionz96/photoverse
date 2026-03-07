@@ -12,6 +12,7 @@ const HeroSection = () => {
     setOpenQuestion(openQuestion === index ? null : index);
   };
 
+
   const faqs = [
     {
       question: "What is this?",

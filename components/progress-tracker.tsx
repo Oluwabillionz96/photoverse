@@ -55,7 +55,11 @@ const ProgressTracker = ({
                   : "bg-linear-to-r from-primary to-accent bg-clip-text text-transparent"
               }`}
             >
-              {isError ? "Upload Failed" : "Uploading Photos"}
+              {isError
+                ? "Upload Failed"
+                : isLoading
+                  ? "Uploading..."
+                  : "Upload Complete"}
             </h2>
           </div>
         </div>
