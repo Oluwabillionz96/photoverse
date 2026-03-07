@@ -46,7 +46,7 @@ export default function ModalImage({ photo, direction }: ModalImageProps) {
         alt={"Image"}
         width={1200}
         height={800}
-        className="min-w-full max-h-[80vh] object-contain"
+        className="max-w-full max-h-full object-contain"
         priority
         loader={cloudinaryLoader}
         loading="eager"

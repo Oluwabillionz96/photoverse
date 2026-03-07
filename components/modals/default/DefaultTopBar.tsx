@@ -39,7 +39,7 @@ export default function DefaultTopBar({
       </motion.button>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-2">
+      <div className="hidden md:flex items-center gap-2">
         {/* Download Button */}
         <motion.a
           href={photo.link?.replace("/upload/", "/upload/fl_attachment/") || ""}
@@ -63,7 +63,9 @@ export default function DefaultTopBar({
               ? "border-pink-500/50 hover:bg-pink-500/40"
               : "border-white/20 hover:bg-white/10"
           }`}
-          title={photo.isFavourite ? "Remove from favorites" : "Add to favorites"}
+          title={
+            photo.isFavourite ? "Remove from favorites" : "Add to favorites"
+          }
         >
           {photo.isFavourite ? (
             <motion.div

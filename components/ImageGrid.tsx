@@ -2,10 +2,8 @@ import { Photo } from "@/lib/apiTypes";
 import useImageHandler from "@/hooks/useImageHandler";
 import PhotoLoader from "./loaders/PhotoLoader";
 import PhotoGrid from "./grid";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import TrashImageModal from "./modals/TrashImageModal";
-import { ImageModal } from "./ImageModal";
 
 export const cloudinaryLoader = ({
   src,
@@ -23,15 +21,15 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
   const { loading, month, imageStates, setImageStates, handleImageSelection } =
     useImageHandler(photos);
   const pathname = usePathname();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
+  const router = useRouter();
   const handleImageClick = (photoId: string) => {
-    const globalIndex = photos.findIndex((p) => p._id === photoId);
-    if (globalIndex !== -1) {
-      setSelectedImageIndex(globalIndex);
-      setIsModalOpen(true);
+    let photoRoute = "/photos";
+    if (pathname.startsWith("/trash")) {
+      photoRoute = "/trash";
+    } else if (pathname.startsWith("/folders")) {
+      photoRoute = pathname;
     }
+    router.push(`${photoRoute}/${photoId}?back=${encodeURIComponent(pathname)}`);
   };
 
   return (
@@ -41,22 +39,13 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
       ) : (
         <div className="space-y-4">
           {pathname.startsWith("/trash") ? (
-            <>
-              <PhotoGrid
-                images={photos}
-                imageStates={imageStates}
-                setImageStates={setImageStates}
-                handleImageSelection={handleImageSelection}
-                onImageClick={handleImageClick}
-              />
-              <TrashImageModal
-                photos={photos}
-                selectedIndex={selectedImageIndex}
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onChangeIndex={setSelectedImageIndex}
-              />
-            </>
+            <PhotoGrid
+              images={photos}
+              imageStates={imageStates}
+              setImageStates={setImageStates}
+              handleImageSelection={handleImageSelection}
+              onImageClick={handleImageClick}
+            />
           ) : (
             Object.keys(month).map((key, index) => {
               return (
@@ -77,32 +66,6 @@ const ImageGrid = ({ photos, route }: { photos: Photo[]; route: string }) => {
                 </div>
               );
             })
-          )}
-
-          {!pathname.startsWith("/trash") && (
-            <ImageModal
-              photo={photos[selectedImageIndex]}
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onNext={() => {
-                if (selectedImageIndex < photos.length - 1) {
-                  setSelectedImageIndex((prev) => prev + 1);
-                }
-              }}
-              onPrevious={() => {
-                if (selectedImageIndex > 0) {
-                  setSelectedImageIndex((prev) => prev - 1);
-                }
-              }}
-              disable={
-                selectedImageIndex === 0
-                  ? "left"
-                  : selectedImageIndex === photos.length - 1
-                    ? "right"
-                    : ""
-              }
-              loading={loading}
-            />
           )}
         </div>
       )}
